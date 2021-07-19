@@ -1,14 +1,8 @@
 import { Bot } from './bot';
 import {
     DevCommand,
-    DocsCommand,
     HelpCommand,
-    InfoCommand,
-    InviteCommand,
-    SupportCommand,
-    TestCommand,
-    TranslateCommand,
-    VoteCommand,
+    PuzzleCommand,
 } from './commands';
 import {
     CommandHandler,
@@ -45,27 +39,15 @@ async function start(): Promise<void> {
 
     // Commands
     let devCommand = new DevCommand();
-    let docsCommand = new DocsCommand();
-    let helpCommand = new HelpCommand();
-    let infoCommand = new InfoCommand();
-    let inviteCommand = new InviteCommand();
-    let supportCommand = new SupportCommand();
-    let testCommand = new TestCommand();
-    let translateCommand = new TranslateCommand();
-    let voteCommand = new VoteCommand();
+    let puzzleCommand = new PuzzleCommand();
+    let helpCommand = new HelpCommand(); 
 
     // Event handlers
     let guildJoinHandler = new GuildJoinHandler();
     let guildLeaveHandler = new GuildLeaveHandler();
     let commandHandler = new CommandHandler(Config.prefix, helpCommand, [
         devCommand,
-        docsCommand,
-        infoCommand,
-        inviteCommand,
-        supportCommand,
-        testCommand,
-        translateCommand,
-        voteCommand,
+        puzzleCommand,
     ]);
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);

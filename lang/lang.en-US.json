@@ -4,24 +4,6 @@
     },
     "embeds": {
         "displays": {
-            "welcome": {
-                "title": "Thank you for using {{REF:bot.name}}!",
-                "description": ["{{REF:bot.description}}"],
-                "fields": [
-                    {
-                        "name": "Important {{REF:fields.commands}}",
-                        "value": ["**{{REF:bot.prefix}} {{REF:commands.help}}** - View bot help."]
-                    },
-                    {
-                        "name": "{{REF:fields.links}}",
-                        "value": [
-                            "{{REF:links.docsEmbed}}",
-                            "{{REF:links.supportEmbed}}",
-                            "{{REF:links.inviteEmbed}}"
-                        ]
-                    }
-                ]
-            },
             "help": {
                 "title": "{{REF:bot.name}} - Help",
                 "description": "{{REF:bot.description}}",
@@ -29,45 +11,16 @@
                     {
                         "name": "{{REF:fields.commands}}",
                         "value": [
-                            "**{{REF:bot.prefix}} {{REF:commands.test}}** - Run the test command.",
-                            "**{{REF:bot.prefix}} {{REF:commands.info}}** - More information about {{REF:bot.name}}."
-                        ]
-                    },
-                    {
-                        "name": "{{REF:fields.links}}",
-                        "value": [
-                            "{{REF:links.docsEmbed}}",
-                            "{{REF:links.supportEmbed}}",
-                            "{{REF:links.inviteEmbed}}"
+                            "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
+                            "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle"
                         ]
                     }
                 ]
             },
-            "test": {
-                "description": "Test command works!"
-            },
-            "info": {
-                "title": "{{REF:bot.name}} - Info",
-                "fields": [
-                    { "name": "Author", "value": "{{REF:links.authorEmbed}}" },
-                    {
-                        "name": "{{REF:fields.links}}",
-                        "value": [
-                            "{{REF:links.sourceEmbed}}",
-                            "{{REF:links.docsEmbed}}",
-                            "{{REF:links.supportEmbed}}",
-                            "{{REF:links.inviteEmbed}}"
-                        ]
-                    },
-                    {
-                        "name": "Created With",
-                        "value": ["{{REF:links.templateEmbed}}"]
-                    }
-                ]
-            },
-            "translate": {
-                "title": "{{REF:bot.name}} - Translations",
-                "description": "Thank you to our translators who have made it possible for {{REF:bot.name}} to be used in the following languages. If you are interested in providing a translation, please contact the staff in our [support server]({{REF:links.support}})."
+            "puzzleBadUrl":{
+                "description": "URL must be a direct link to a jpg, png, or gif.",
+                "color": "{{REF:colors.error}}"
+
             },
             "dev": {
                 "title": "{{REF:bot.name}} - Developer Info",
@@ -106,22 +59,6 @@
                         ]
                     }
                 ]
-            },
-            "invite": {
-                "title": "{{REF:bot.name}} - Invite",
-                "description": "Click [here]({{REF:links.invite}}) to invite {{REF:bot.name}} to a server!"
-            },
-            "docs": {
-                "title": "{{REF:bot.name}} - Documentation",
-                "description": "Click [here]({{REF:links.docs}}/) to view the bot documentation."
-            },
-            "vote": {
-                "title": "{{REF:bot.name}} - Vote",
-                "description": "Support {{REF:bot.name}} by voting [here]({{REF:links.vote}})!"
-            },
-            "support": {
-                "title": "{{REF:bot.name}} - Support",
-                "description": "Need help? Join our [support server]({{REF:links.support}})!"
             }
         },
         "validation": {
@@ -141,11 +78,8 @@
                     {
                         "name": "Error code",
                         "value": "{{ERROR_CODE}}"
-                    },
-                    {
-                        "name": "Contact support",
-                        "value": "{{REF:links.support}}"
                     }
+                    
                 ],
                 "color": "{{REF:colors.error}}"
             },
@@ -163,16 +97,11 @@
             "bot": "/bot|command|cmd/i"
         },
         "commands": {
-            "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i",
-            "docs": "/\\b({{REF:commands.docs}}|d|documentation|readme|website|site)\\b/i",
+            "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i", 
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
-            "info": "/\\b({{REF:commands.info}}|i|information)\\b/i",
-            "invite": "/\\b({{REF:commands.invite}})\\b/i",
-            "support": "/\\b({{REF:commands.support}}|s)\\b/i",
-            "test": "/\\b({{REF:commands.test}}|t)\\b/i",
-            "translate": "/\\b({{REF:commands.translate}}|t|translation|translations|lang|langs|language|languages)\\b/i",
-            "vote": "/\\b({{REF:commands.vote}}|v)\\b/i"
-        }
+            "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i"
+        },
+        "puzzleImageExtensions": "/\\.(gif|png|jpe?g)$/i"
     },
     "refs": {
         "meta": {
@@ -181,9 +110,9 @@
             "translators": "[TranslatorName#1234](https://github.com/)"
         },
         "bot": {
-            "name": "My Bot",
-            "description": "{{REF:links.templateEmbed}} helps give developers a starting point for new Discord bots, so that much of the initial setup can be avoided and developers can instead focus on meaningful bot features.",
-            "prefix": "bot"
+            "name": "ahiru bot",
+            "description": "a bot that saves you 15s in making a jigsaw puzzle. it also has an OCR and DeepL function btw",
+            "prefix": "~"
         },
         "colors": {
             "success": "00ff83",
@@ -191,15 +120,8 @@
             "error": "#ff4a4a"
         },
         "commands": {
-            "dev": "dev",
-            "docs": "docs",
             "help": "help",
-            "info": "info",
-            "invite": "invite",
-            "support": "support",
-            "test": "test",
-            "translate": "translate",
-            "vote": "vote"
+            "puzzle": "puzzle"
         },
         "lists": {
             "languageItem": "**{{LANGUAGE_NAME}}** (`{{LANGUAGE_KEYWORD}}`)"
@@ -211,22 +133,7 @@
         "other": {
             "na": "N/A"
         },
-        "links": {
-            "invite": "https://discord.com/",
-            "inviteEmbed": "[Invite {{REF:bot.name}} to a Server!]({{REF:links.invite}})",
-            "docs": "https://top.gg/",
-            "docsEmbed": "[View Documentation]({{REF:links.docs}})",
-            "vote": "https://top.gg/",
-            "voteEmbed": "[Vote for {{REF:bot.name}}!]({{REF:links.vote}})",
-            "support": "https://support.discord.com/",
-            "supportEmbed": "[Join Support Server]({{REF:links.support}})",
-            "stream": "https://www.twitch.tv/novakevin",
-            "author": "https://github.com/",
-            "authorEmbed": "[My Name]({{REF:links.author}})",
-            "source": "https://github.com/",
-            "sourceEmbed": "[View Source Code]({{REF:links.source}})",
-            "template": "https://github.com/KevinNovak/Discord-Bot-TypeScript-Template",
-            "templateEmbed": "[Discord Bot TypeScript Template]({{REF:links.template}})"
+        "links": { 
         },
         "messages": {
             "missingEmbedPerms": [
