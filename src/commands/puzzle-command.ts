@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
-import { MessageUtils } from '../utils';
+import { MathUtils, MessageUtils } from '../utils';
 import { Command } from './command';
 import FormData from 'form-data';
 import  { parse,valid } from 'node-html-parser';
@@ -28,8 +28,7 @@ export class PuzzleCommand implements Command {
         try {
             imgUrl = args[2];
             numOfPieces = Number.parseInt(args[3]);
-            numOfPieces = Math.max(Config.puzzle.minimumNumberOfPieces,
-                Math.min(numOfPieces, Config.puzzle.maximumNumberOfPieces));
+            numOfPieces = MathUtils.clamp(numOfPieces, Config.puzzle.minimumNumberOfPieces,Config.puzzle.maximumNumberOfPieces);
             isRotation = args[4];
         } catch (error) { }
         if (!this.isValidImageArg(imgUrl)) {

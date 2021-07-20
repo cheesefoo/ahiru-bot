@@ -99,7 +99,9 @@
         "commands": {
             "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i", 
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
-            "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i"
+            "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
+            "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
+            "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i"
         },
         "puzzleImageExtensions": "/\\.(gif|png|jpe?g)$/i"
     },
@@ -121,7 +123,10 @@
         },
         "commands": {
             "help": "help",
-            "puzzle": "puzzle"
+            "puzzle": "puzzle",
+            "dev": "dev",
+            "ocr": "ocr",
+            "deepl": "deepl"
         },
         "lists": {
             "languageItem": "**{{LANGUAGE_NAME}}** (`{{LANGUAGE_KEYWORD}}`)"
