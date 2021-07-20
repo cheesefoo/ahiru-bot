@@ -60,7 +60,7 @@ async function start(): Promise<void> {
     let reactionHandler = new ReactionHandler([]);
 
     let bot = new Bot(
-        Config.client.token,
+        process.env.discord,
         client,
         guildJoinHandler,
         guildLeaveHandler,
