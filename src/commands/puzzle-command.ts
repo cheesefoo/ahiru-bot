@@ -4,10 +4,10 @@ import fetch from 'node-fetch';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
-import { MathUtils, MessageUtils } from '../utils';
+import { MathUtils, MessageUtils, UrlUtils } from '../utils';
 import { Command } from './command';
 import FormData from 'form-data';
-import  { parse,valid } from 'node-html-parser';
+import { parse, valid } from 'node-html-parser';
 
 let Config = require("../../config/config.json")
 
@@ -24,14 +24,23 @@ export class PuzzleCommand implements Command {
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+        if (args.length == 2) {
+
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.puzzleHelp', data.lang()));
+            return;
+        }
         let imgUrl: any, numOfPieces: any, isRotation: any;
         try {
             imgUrl = args[2];
-            numOfPieces = Number.parseInt(args[3]);
-            numOfPieces = MathUtils.clamp(numOfPieces, Config.puzzle.minimumNumberOfPieces,Config.puzzle.maximumNumberOfPieces);
-            isRotation = args[4];
-        } catch (error) { }
-        if (!this.isValidImageArg(imgUrl)) {
+            numOfPieces = Number.parseInt(args[3]) ?? 400;
+            numOfPieces = MathUtils.clamp(numOfPieces, Config.puzzle.minimumNumberOfPieces, Config.puzzle.maximumNumberOfPieces);
+            isRotation = args[4] ?? false;
+        } catch (error) {
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.puzzleHelp', data.lang()));
+            return;
+
+        }
+        if (!UrlUtils.isValidImageArg(imgUrl)) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displays.puzzleBadUrl', data.lang()));
         } else {
             let reply = await this.getPuzzle(imgUrl, numOfPieces, isRotation);
@@ -82,14 +91,5 @@ export class PuzzleCommand implements Command {
     }
 
 
-    private isValidImageArg(imgUrl: string): boolean {
-        imgUrl = imgUrl.toLowerCase();
-        let validExtensions = Config.puzzle.validExtensions;
-        let valid = false;
-        validExtensions.forEach((xt: string) => {
-            valid = valid || imgUrl.endsWith(xt);
-        });
-        return valid;
 
-    }
 }
