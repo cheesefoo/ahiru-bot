@@ -22,6 +22,26 @@
                 "color": "{{REF:colors.error}}"
 
             },
+            "puzzleHelp":{
+                "title": "Puzzle - Help",
+                "description": "Create a jigsaw puzzle from an image",
+                "fields": [
+                    {
+                        "name": "Usage",
+                        "value": [
+                            "~puzzle <url> <# of pieces>"                            
+                        ]
+                    },
+                    {
+                        "name": "Parameters",
+                        "value": [
+                            "<Direct link to an image, must end in jpg/jpeg/gif/png>",
+                            "<Number of pieces, between 6 and 1000, default 400>"
+                        ]
+                    }
+                ]
+            },
+
             "dev": {
                 "title": "{{REF:bot.name}} - Developer Info",
                 "fields": [
@@ -59,6 +79,10 @@
                         ]
                     }
                 ]
+            },
+            "ocrBadImage":{
+                "description": "Couldn't detect an image in your message.",
+                "color": "{{REF:colors.error}}"
             }
         },
         "validation": {
