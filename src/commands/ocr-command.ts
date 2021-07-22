@@ -15,65 +15,72 @@ import { ImageAnnotatorClient } from '@google-cloud/vision';
 let Config = require("../../config/config.json")
 
 export class OCRCommand implements Command {
-    public requireGuild = false;
-    public requirePerms = [];
-    private client = new ImageAnnotatorClient();
+	public requireGuild = false;
+	public requirePerms = [];
 
-    public keyword(langCode: LangCode): string {
-        return Lang.getRef('commands.ocr', langCode);
-    }
 
-    public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.ocr', langCode);
-    }
+	public keyword(langCode: LangCode): string {
+		return Lang.getRef('commands.ocr', langCode);
+	}
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+	public regex(langCode: LangCode): RegExp {
+		return Lang.getRegex('commands.ocr', langCode);
+	}
 
-        let embedUrl: string, url: string, detectedText: string;
-        msg.attachments.forEach((attachment: MessageAttachment) => {
-            let u = attachment.url;
-            if (u != undefined) {
-                embedUrl = u;
-                return;
-            }
-        })
-        url = embedUrl ?? args[2];
-        console.log(url);
+	public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
 
-        if (url == undefined) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.ocrBadImage', data.lang()));
-        } else {
-            try {
+		let embedUrl: string, url: string, detectedText: string;
+		msg.attachments.forEach((attachment: MessageAttachment) => {
+			let u = attachment.url;
+			if (u != undefined) {
+				embedUrl = u;
+				return;
+			}
+		})
+		url = embedUrl ?? args[2];
+		console.log(url);
 
-                const request =
-                {
-                    "image": {
-                        "source": {
-                            "imageUri": `${url}`
-                        }
-                    },
-                    // "features": [{ "type": "TEXT_DETECTION" }],
-                    "imageContext": {
-                        "languageHints": ["JA"],
-                        "textDetectionParams": {
-                            "enableTextDetectionConfidenceScore": "true"
-                        }
-                    }
-                };
-                const requests = {
-                    "requests": [request]
-                };
-                
-                const [result] = await this.client.textDetection(request);
-                const detections = result.fullTextAnnotation;
-                detectedText = detections.text;
-                console.log(detectedText);
-                await MessageUtils.send(msg.channel, detectedText);
-            } catch (err) {
-                console.log(err);
-                await MessageUtils.send(msg.channel, err);
-            }
-        }
-    }
+		if (url == undefined) {
+			await MessageUtils.send(msg.channel, Lang.getEmbed('displays.ocrBadImage', data.lang()));
+		} else {
+			try {
+				let googleApiKey:string = process.env.privatekey;
+				
+				googleApiKey = googleApiKey.replace(/\\n/g,"\n");
+
+
+
+				const options = { "credentials": { "client_email": process.env.email, "private_key": googleApiKey  }};
+				const client = new ImageAnnotatorClient(options);
+				const request =
+				{
+					"image": {
+						"source": {
+							"imageUri": `${url}`
+						}
+					},
+					// "features": [{ "type": "TEXT_DETECTION" }],
+					"imageContext": {
+						"languageHints": ["JA"],
+						"textDetectionParams": {
+							"enableTextDetectionConfidenceScore": "true"
+						}
+					}
+				};
+				const requests = {
+					"requests": [request]
+				};
+				await client.initialize();
+				const [result] = await client.textDetection(request);
+				const detections = result.fullTextAnnotation;
+				detectedText = detections.text;
+				console.log(detectedText);
+				await MessageUtils.send(msg.channel, `\`\`\`${detectedText}\`\`\``);
+			} catch (err) {
+				console.log(err);
+				await MessageUtils.send(msg.channel, err);
+			}
+		}
+	}
 }
 
