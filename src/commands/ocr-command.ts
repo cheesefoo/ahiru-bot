@@ -63,12 +63,24 @@ export class OCRCommand implements Command {
                 const requests = {
                     "requests": [request]
                 };
-                
+
                 const [result] = await this.client.textDetection(request);
+                const errMsg = result.error.message;
+                if (errMsg != undefined) {
+                    if (result.error.message == 'We can not access the URL currently. Please download the content and pass it in.') {
+                        await MessageUtils.send(msg.channel, Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang()));
+                        return;
+                    }
+                    await MessageUtils.send(msg.channel, Lang.getEmbed('displays.OCRGenericError', data.lang(), {
+                        ERROR: errMsg,
+                    }));
+                    return;
+                }
                 const detections = result.fullTextAnnotation;
+
                 detectedText = detections.text;
                 console.log(detectedText);
-                await MessageUtils.send(msg.channel, detectedText);
+                await MessageUtils.send(msg.channel, `\`\`\`${detectedText}\`\`\``);
             } catch (err) {
                 console.log(err);
                 await MessageUtils.send(msg.channel, err);
