@@ -63,13 +63,7 @@ export class PuzzleCommand implements Command {
         // let resp = await fetch('https://www.jigsawexplorer.com/create-a-custom-jigsaw-puzzle/', options)
         let resp = await fetch('https://www.jigsawexplorer.com/jigsaw-puzzle-result/', options)
             .then(res => res.text());
-        // const re = /(<style.*<\/style>)|(<script.*<\/script>)/mgis
-        // resp = resp.replace(re, "");
-        // console.log(resp);
-        // let fix = resp;
-        // let fug = fix.split("</body")
-        // let xml = `${fug[0]}${fug[1]}`
-        // let xml = resp.replace(/&/g,"");
+            
         const html = parse(resp, {
             blockTextElements: {
                 script: false,	// keep text content when parsing

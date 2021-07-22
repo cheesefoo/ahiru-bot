@@ -7,29 +7,35 @@
             "help": {
                 "title": "{{REF:bot.name}} - Help",
                 "description": "{{REF:bot.description}}",
-                "fields": [
-                    {
-                        "name": "{{REF:fields.commands}}",
-                        "value": [
-                            "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
-                            "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle"
-                        ]
-                    }
-                ]
+                "fields": [{
+                    "name": "{{REF:fields.commands}}",
+                    "value": [
+                        "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
+                        "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle"
+                    ]
+                }]
             },
-            "puzzleBadUrl":{
+            "puzzleBadUrl": {
                 "description": "URL must be a direct link to a jpg, png, or gif.",
                 "color": "{{REF:colors.error}}"
 
             },
-            "puzzleHelp":{
+            "OCRCanNotAccessUrl": {
+                "description": "Google Vision API can't read that URL at the moment; try again later. If the problem persists, try re-uploading it somewhere else.",
+                "color": "{{REF:colors.error}}"
+            },
+            "OCRGenericError": {
+                "description": "Error: {{ERROR}}",
+                "color": "{{REF:colors.error}}"
+
+            },
+            "puzzleHelp": {
                 "title": "Puzzle - Help",
                 "description": "Create a jigsaw puzzle from an image",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Usage",
                         "value": [
-                            "~puzzle <url> <# of pieces>"                            
+                            "~puzzle <url> <# of pieces>"
                         ]
                     },
                     {
@@ -44,8 +50,7 @@
 
             "dev": {
                 "title": "{{REF:bot.name}} - Developer Info",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Versions",
                         "value": [
                             "**Node.js**: {{NODE_VERSION}}",
@@ -80,7 +85,7 @@
                     }
                 ]
             },
-            "ocrBadImage":{
+            "ocrBadImage": {
                 "description": "Couldn't detect an image in your message.",
                 "color": "{{REF:colors.error}}"
             }
@@ -98,12 +103,11 @@
         "errors": {
             "command": {
                 "description": "Something went wrong!",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Error code",
                         "value": "{{ERROR_CODE}}"
                     }
-                    
+
                 ],
                 "color": "{{REF:colors.error}}"
             },
@@ -121,7 +125,7 @@
             "bot": "/bot|command|cmd/i"
         },
         "commands": {
-            "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i", 
+            "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i",
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
             "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
             "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
@@ -162,8 +166,7 @@
         "other": {
             "na": "N/A"
         },
-        "links": { 
-        },
+        "links": {},
         "messages": {
             "missingEmbedPerms": [
                 "I don't have all permissions required to send messages here!",
