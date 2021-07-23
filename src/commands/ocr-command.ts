@@ -18,6 +18,10 @@ export class OCRCommand implements Command {
 		return Lang.getRef('commands.ocr', langCode);
 	}
 
+    public regex(langCode: LangCode): RegExp {
+		return Lang.getRegex('commands.ocr', langCode);
+	}
+
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displays.OCRHelp', data.lang()));
