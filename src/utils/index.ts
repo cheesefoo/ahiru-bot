@@ -8,4 +8,3 @@ export { RegexUtils } from './regex-utils';
 export { ShardUtils } from './shard-utils';
 export { StringUtils } from './string-utils';
 export { UrlUtils } from './url-utils';
-

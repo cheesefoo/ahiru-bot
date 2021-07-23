@@ -7,18 +7,23 @@
             "help": {
                 "title": "{{REF:bot.name}} - Help",
                 "description": "{{REF:bot.description}}",
-                "fields": [{
-                    "name": "{{REF:fields.commands}}",
-                    "value": [
-                        "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
-                        "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle"
-                    ]
-                }]
+                "fields": [
+                    {
+                        "name": "{{REF:fields.commands}}",
+                        "value": [
+                            "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
+                            "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle",
+                            "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
+                            "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
+                            "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org",
+                            "**{{REF:bot.prefix}}{{REF:commands.kanji}} <kanji>** - search Jisho.org for kanji"
+                        ]
+                    }
+                ]
             },
             "puzzleBadUrl": {
                 "description": "URL must be a direct link to a jpg, png, or gif.",
                 "color": "{{REF:colors.error}}"
-
             },
             "OCRCanNotAccessUrl": {
                 "description": "Google Vision API can't read that URL at the moment; try again later. If the problem persists, try re-uploading it somewhere else.",
@@ -27,16 +32,14 @@
             "OCRGenericError": {
                 "description": "Error: {{ERROR}}",
                 "color": "{{REF:colors.error}}"
-
             },
             "puzzleHelp": {
                 "title": "Puzzle - Help",
                 "description": "Create a jigsaw puzzle from an image",
-                "fields": [{
+                "fields": [
+                    {
                         "name": "Usage",
-                        "value": [
-                            "~puzzle <url> <# of pieces>"
-                        ]
+                        "value": ["~puzzle <url> <# of pieces>"]
                     },
                     {
                         "name": "Parameters",
@@ -47,10 +50,61 @@
                     }
                 ]
             },
-
+            "deepLHelp": {
+                "title": "DeepL - Help",
+                "description": "Translates text to English or Japanese",
+                "fields": [
+                    {
+                        "name": "Usage",
+                        "value": ["~deepl <text to translate>"]
+                    }
+                ]
+            },
+            "OCRHelp": {
+                "title": "OCR - Help",
+                "description": "Extract text from an image. Assumes text is in Japanese.",
+                "fields": [
+                    {
+                        "name": "Usage",
+                        "value": [
+                            "~ocr <url to image>",
+                            "~ocr (no args, attach an image to message)"
+                        ]
+                    }
+                ]
+            },
+            "jishoHelp": {
+                "title": "Jisho - Help",
+                "description": "Perform a kanji lookup Search jisho.org",
+                "fields": [
+                    {
+                        "name": "Usage",
+                        "value": [
+                            "~jisho <a single kanji>"
+                        ]
+                    }
+                ]
+            },
+            "jishoKanjiError": {
+                "description": "Error: {{ERROR}}",
+                "color": "{{REF:colors.error}}"
+            },
+            "jishoResult": {
+                "description": "No search results found for {{SEARCH_TERM}}",
+                "color": "{{REF:colors.jisho}}"
+            },
+            "jishoNoResults": {
+                "description": "No search results found for {{SEARCH_TERM}}",
+                "color": "{{REF:colors.jisho}}"
+            },
+            "jishoGenericError": {
+                "description": "Error : {{ERROR}}",
+                "color": "{{REF:colors.error}}"
+            },
             "dev": {
                 "title": "{{REF:bot.name}} - Developer Info",
-                "fields": [{
+                "fields": [
+                    {
                         "name": "Versions",
                         "value": [
                             "**Node.js**: {{NODE_VERSION}}",
@@ -103,11 +157,11 @@
         "errors": {
             "command": {
                 "description": "Something went wrong!",
-                "fields": [{
+                "fields": [
+                    {
                         "name": "Error code",
                         "value": "{{ERROR_CODE}}"
                     }
-
                 ],
                 "color": "{{REF:colors.error}}"
             },
@@ -129,7 +183,8 @@
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
             "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
             "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
-            "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i"
+            "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i",
+            "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i"
         },
         "puzzleImageExtensions": "/\\.(gif|png|jpe?g)$/i"
     },
@@ -147,14 +202,16 @@
         "colors": {
             "success": "00ff83",
             "warning": "ffcc66",
-            "error": "#ff4a4a"
+            "error": "ff4a4a",
+            "jisho": "56d926"
         },
         "commands": {
             "help": "help",
             "puzzle": "puzzle",
             "dev": "dev",
             "ocr": "ocr",
-            "deepl": "deepl"
+            "deepl": "deepl",
+            "jisho": "jisho"
         },
         "lists": {
             "languageItem": "**{{LANGUAGE_NAME}}** (`{{LANGUAGE_KEYWORD}}`)"

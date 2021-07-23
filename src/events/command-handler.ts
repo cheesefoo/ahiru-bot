@@ -21,7 +21,7 @@ export class CommandHandler {
         private prefix: string,
         private helpCommand: Command,
         private commands: Command[]
-    ) { }
+    ) {}
 
     public shouldHandle(msg: Message, args: string[]): boolean {
         if (args[0].startsWith(this.prefix + this.prefix)) {
@@ -109,19 +109,19 @@ export class CommandHandler {
             Logger.error(
                 msg.channel instanceof TextChannel || msg.channel instanceof NewsChannel
                     ? Logs.error.commandGuild
-                        .replace('{MESSAGE_ID}', msg.id)
-                        .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replace('{USER_TAG}', msg.author.tag)
-                        .replace('{USER_ID}', msg.author.id)
-                        .replace('{CHANNEL_NAME}', msg.channel.name)
-                        .replace('{CHANNEL_ID}', msg.channel.id)
-                        .replace('{GUILD_NAME}', msg.guild.name)
-                        .replace('{GUILD_ID}', msg.guild.id)
+                          .replace('{MESSAGE_ID}', msg.id)
+                          .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replace('{USER_TAG}', msg.author.tag)
+                          .replace('{USER_ID}', msg.author.id)
+                          .replace('{CHANNEL_NAME}', msg.channel.name)
+                          .replace('{CHANNEL_ID}', msg.channel.id)
+                          .replace('{GUILD_NAME}', msg.guild.name)
+                          .replace('{GUILD_ID}', msg.guild.id)
                     : Logs.error.commandOther
-                        .replace('{MESSAGE_ID}', msg.id)
-                        .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replace('{USER_TAG}', msg.author.tag)
-                        .replace('{USER_ID}', msg.author.id),
+                          .replace('{MESSAGE_ID}', msg.id)
+                          .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replace('{USER_TAG}', msg.author.tag)
+                          .replace('{USER_ID}', msg.author.id),
                 error
             );
         }

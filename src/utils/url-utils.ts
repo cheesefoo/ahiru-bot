@@ -1,4 +1,4 @@
-let Config = require("../../config/config.json");
+let Config = require('../../config/config.json');
 
 export class UrlUtils {
     public static isValidImageArg(imgUrl: string): boolean {
@@ -9,6 +9,5 @@ export class UrlUtils {
             valid = valid || imgUrl.endsWith(xt);
         });
         return valid;
-
     }
 }
