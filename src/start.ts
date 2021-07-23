@@ -1,10 +1,11 @@
 import { Bot } from './bot';
 import {
+    DeepLCommand,
     DevCommand,
     HelpCommand,
+    JishoCommand,
+    OCRCommand,
     PuzzleCommand,
-    DeepLCommand,
-    OCRCommand
 } from './commands';
 import {
     CommandHandler,
@@ -42,9 +43,10 @@ async function start(): Promise<void> {
     // Commands
     let devCommand = new DevCommand();
     let puzzleCommand = new PuzzleCommand();
-    let helpCommand = new HelpCommand(); 
-    let deepLCommand = new DeepLCommand(); 
-    let ocrCommand = new OCRCommand(); 
+    let helpCommand = new HelpCommand();
+    let deepLCommand = new DeepLCommand();
+    let ocrCommand = new OCRCommand();
+    let jishoCommand = new JishoCommand();
 
     // Event handlers
     let guildJoinHandler = new GuildJoinHandler();
@@ -53,7 +55,8 @@ async function start(): Promise<void> {
         devCommand,
         puzzleCommand,
         deepLCommand,
-        ocrCommand
+        ocrCommand,
+        jishoCommand,
     ]);
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
@@ -70,7 +73,11 @@ async function start(): Promise<void> {
     );
 
     await bot.start();
-    await client.setPresence('LISTENING','太陽少女|~help','https://music.youtube.com/playlist?list=OLAK5uy_lnTdmXQPPwyf1d4_6ytaZlplpjTmwaS-I');
+    await client.setPresence(
+        'LISTENING',
+        '太陽少女|~help',
+        'https://music.youtube.com/playlist?list=OLAK5uy_lnTdmXQPPwyf1d4_6ytaZlplpjTmwaS-I'
+    );
 }
 
 process.on('unhandledRejection', (reason, promise) => {
