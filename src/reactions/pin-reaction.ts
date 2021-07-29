@@ -7,7 +7,7 @@ import { FormatUtils, MessageUtils } from '../utils';
 let Config = require('../../config/config.json');
 
 export class PinReaction implements Reaction {
-    public emoji: string = Config.reactions.convert;
+    public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
     constructor(
@@ -22,6 +22,7 @@ export class PinReaction implements Reaction {
         //pleiades = 831379672431329330
         //venndiagram = 870361524789723187
         const starboardChannel = "831379672431329330";
+        const threshold = 5;
 
         if (msgReaction.emoji.name != "SubaPin") {
             return;
@@ -33,6 +34,11 @@ export class PinReaction implements Reaction {
         }
         //dont respond to anything on the starboard
         if (msg.channel.id == starboardChannel) {
+            return;
+        }
+
+        //doesnt hit threshold
+        if (msgReaction.count < threshold) {
             return;
         }
 
@@ -68,7 +74,7 @@ export class PinReaction implements Reaction {
                 .setDescription(msg.cleanContent)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp(new Date())
-                .setFooter(` 1 | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
+                .setFooter(`${threshold} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
                 .setImage(image);
             await starChannel.send({ embed });
         }
