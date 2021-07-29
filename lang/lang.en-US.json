@@ -15,8 +15,7 @@
                             "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle",
                             "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
                             "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
-                            "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org",
-                            "**{{REF:bot.prefix}}{{REF:commands.kanji}} <kanji>** - search Jisho.org for kanji"
+                            "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org"
                         ]
                     }
                 ]

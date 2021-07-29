@@ -9,7 +9,9 @@ import {
     StringResolvable,
     TextChannel,
     User,
+    
 } from 'discord.js-light';
+import { EmbedUtils } from './embed-utils';
 
 export class MessageUtils {
     public static async send(target: User | Channel, content: StringResolvable): Promise<Message> {
@@ -37,7 +39,14 @@ export class MessageUtils {
             }
         }
     }
-
+    public static content(msg: Message): string {
+        return [
+            msg.content,
+            ...msg.embeds.filter(embed => !embed.provider).map(embed => EmbedUtils.content(embed)),
+        ]
+            .filter(Boolean)
+            .join('\n');
+    }
     public static async reply(msg: Message, content: StringResolvable): Promise<Message> {
         try {
             return await msg.reply(content);
