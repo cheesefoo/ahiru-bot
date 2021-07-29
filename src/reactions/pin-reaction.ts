@@ -7,7 +7,7 @@ import { FormatUtils, MessageUtils } from '../utils';
 let Config = require('../../config/config.json');
 
 export class PinReaction implements Reaction {
-    public emoji: string = Config.reactions.convert;
+    public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
     constructor(
