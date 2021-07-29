@@ -26,6 +26,7 @@ export class Bot {
         private guildLeaveHandler: GuildLeaveHandler,
         private messageHandler: MessageHandler,
         private reactionHandler: ReactionHandler,
+        private reactionRemoveHandler: ReactionHandler,
         private jobService: JobService
     ) {}
 
@@ -45,6 +46,10 @@ export class Bot {
         this.client.on(
             Constants.Events.MESSAGE_REACTION_ADD,
             (messageReaction: MessageReaction, user: User) => this.onReaction(messageReaction, user)
+        );
+        this.client.on(
+            Constants.Events.MESSAGE_REACTION_REMOVE,
+            (messageReaction: MessageReaction, user: User) => this.onReactionRemove(messageReaction, user)
         );
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
@@ -135,6 +140,26 @@ export class Bot {
 
         try {
             await this.reactionHandler.process(msgReaction, reactor);
+        } catch (error) {
+            Logger.error(Logs.error.reaction, error);
+        }
+    }
+
+    private async onReactionRemove(msgReaction: MessageReaction, reactor: User): Promise<void> {
+        if (
+            !this.ready ||
+            (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(reactor.id))
+        ) {
+            return;
+        }
+
+        msgReaction = await PartialUtils.fillReaction(msgReaction);
+        if (!msgReaction) {
+            return;
+        }
+
+        try {
+            await this.reactionRemoveHandler.process(msgReaction, reactor);
         } catch (error) {
             Logger.error(Logs.error.reaction, error);
         }

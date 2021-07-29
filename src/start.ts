@@ -18,6 +18,8 @@ import {
 import { CustomClient } from './extensions';
 import { JobService, Logger } from './services';
 
+import { UnPinReaction, PinReaction } from './reactions';
+
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
@@ -60,7 +62,14 @@ async function start(): Promise<void> {
     ]);
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
-    let reactionHandler = new ReactionHandler([]);
+
+    
+    let pinReaction = new PinReaction(1);
+    let reactionHandler = new ReactionHandler([pinReaction]);
+
+    
+    let unpinReaction = new UnPinReaction();
+    let reactionRemoveHandler = new ReactionHandler([unpinReaction]);
 
     let bot = new Bot(
         process.env.discord,
@@ -69,6 +78,7 @@ async function start(): Promise<void> {
         guildLeaveHandler,
         messageHandler,
         reactionHandler,
+        reactionRemoveHandler,
         new JobService([])
     );
 
