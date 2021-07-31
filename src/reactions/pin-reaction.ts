@@ -74,7 +74,7 @@ export class PinReaction implements Reaction {
                 .setDescription(msg.cleanContent)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp(new Date())
-                .setFooter(` ${threshold} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
+                .setFooter(`${threshold} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
                 .setImage(image);
             await starChannel.send({ embed });
         }
