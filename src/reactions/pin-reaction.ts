@@ -36,9 +36,9 @@ export class PinReaction implements Reaction {
         if (msg.channel.id == starboardChannel) {
             return;
         }
-
         //doesnt hit threshold
-        if(msgReaction.count < threshold){
+        if(msgReaction.count < threshold) {
+			console.log(msgReaction.count);
             return;
         }
 
@@ -56,7 +56,7 @@ export class PinReaction implements Reaction {
                 .setColor(foundStar.color)
                 .setTitle("Jump to message")
                 .setURL(msg.url)
-                .setDescription(foundStar.description)
+                .setDescription(foundStar?.description)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp()
                 .setFooter(`${parseInt(star[1]) + 1} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
