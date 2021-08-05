@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16-slim
 
 # Create app directory
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Expose ports
-EXPOSE 8080
+EXPOSE 8888
 
 # Run the application
 CMD [ "node", "dist/app.js" ]

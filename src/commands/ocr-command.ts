@@ -1,4 +1,4 @@
-import { Message, MessageAttachment } from 'discord.js-light'; 
+import { Message, MessageAttachment } from 'discord.js-light';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
@@ -23,7 +23,7 @@ export class OCRCommand implements Command {
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
-        if (args.length == 2) {
+        if (args.length == 1) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displays.OCRHelp', data.lang()));
             return;
         }
@@ -64,7 +64,7 @@ export class OCRCommand implements Command {
                 };
 
                 const [result] = await this.client.textDetection(request);
-                const errMsg = result.error.message;
+                const errMsg = result?.error?.message;
                 if (errMsg != undefined) {
                     if (
                         result.error.message ==
