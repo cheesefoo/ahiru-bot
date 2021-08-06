@@ -12,7 +12,6 @@ let Config = require('../../config/config.json');
 export class OCRCommand implements Command {
     public requireGuild = false;
     public requirePerms = [];
-    private client = new ImageAnnotatorClient();
 
     public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.ocr', langCode);
@@ -45,6 +44,13 @@ export class OCRCommand implements Command {
             );
         } else {
             try {
+                let googleApiKey: string = process.env.privatekey;
+
+                googleApiKey = googleApiKey.replace(/\\n/g, "\n");
+
+
+                const options = { "credentials": { "client_email": process.env.email, "private_key": googleApiKey } };
+                const client = new ImageAnnotatorClient(options);
                 const request = {
                     image: {
                         source: {
@@ -63,7 +69,7 @@ export class OCRCommand implements Command {
                     requests: [request],
                 };
 
-                const [result] = await this.client.textDetection(request);
+                const [result] = await client.textDetection(request);
                 const errMsg = result?.error?.message;
                 if (errMsg != undefined) {
                     if (
