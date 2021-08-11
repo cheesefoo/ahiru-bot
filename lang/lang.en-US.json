@@ -78,9 +78,7 @@
                 "fields": [
                     {
                         "name": "Usage",
-                        "value": [
-                            "~jisho <a single kanji>"
-                        ]
+                        "value": ["~jisho <a single kanji>"]
                     }
                 ]
             },

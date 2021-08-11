@@ -4,14 +4,15 @@ import {
     DMChannel,
     EmojiResolvable,
     Message,
+    MessageAttachment,
     MessageReaction,
     NewsChannel,
     StringResolvable,
     TextChannel,
     User,
-    
 } from 'discord.js-light';
 import { EmbedUtils } from './embed-utils';
+import { UrlUtils } from './url-utils';
 
 export class MessageUtils {
     public static async send(target: User | Channel, content: StringResolvable): Promise<Message> {
@@ -39,6 +40,7 @@ export class MessageUtils {
             }
         }
     }
+
     public static content(msg: Message): string {
         return [
             msg.content,
@@ -47,6 +49,7 @@ export class MessageUtils {
             .filter(Boolean)
             .join('\n');
     }
+
     public static async reply(msg: Message, content: StringResolvable): Promise<Message> {
         try {
             return await msg.reply(content);
@@ -59,6 +62,26 @@ export class MessageUtils {
                 throw error;
             }
         }
+    }
+
+    public static async getEmbedUrl(msg: Message): Promise<string> {
+        let embedUrl;
+        msg.attachments.forEach((attachment: MessageAttachment) => {
+            let u = attachment.url;
+            if (u !== undefined) {
+                embedUrl = u;
+                return;
+            }
+        });
+        return embedUrl;
+    }
+
+    public static async getUrl(msg: Message, args: string[]): Promise<string> | undefined {
+        let url = await MessageUtils.getEmbedUrl(msg);
+        if (url === undefined && UrlUtils.isValidHttpUrl(args[2])) {
+            url = args[2];
+        }
+        return url;
     }
 
     public static async edit(msg: Message, content: StringResolvable): Promise<Message> {

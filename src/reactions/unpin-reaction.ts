@@ -10,8 +10,7 @@ export class UnPinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor(
-    ) { }
+    constructor() {}
 
     public async execute(
         msgReaction: MessageReaction,
@@ -20,8 +19,8 @@ export class UnPinReaction implements Reaction {
     ): Promise<void> {
         //pleiades = 831379672431329330
         //venndiagram = 870361524789723187
-        const starboardChannel = "831379672431329330";
-        if (msgReaction.emoji.name != "SubaPin") {
+        const starboardChannel = '831379672431329330';
+        if (msgReaction.emoji.name != 'SubaPin') {
             return;
         }
         let msg = msgReaction.message;
@@ -34,30 +33,36 @@ export class UnPinReaction implements Reaction {
             return;
         }
 
-
         const emoji = msg.client.emojis.cache.find(e => e.name === 'SubaPin');
-        const starChannel = msg.guild.channels.cache.get(starboardChannel) as TextChannel
-        if (!starChannel) { MessageUtils.send(reactor, "i cant find the starboard channel :("); }
+        const starChannel = msg.guild.channels.cache.get(starboardChannel) as TextChannel;
+        if (!starChannel) {
+            MessageUtils.send(reactor, 'i cant find the starboard channel :(');
+        }
         const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
         const stars = fetchedMessages.find(m => m.embeds[0].footer.text.endsWith(msg.id));
 
         if (stars) {
             const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);
             const foundStar = stars.embeds[0];
-            const image = msg.attachments.size > 0 ? await this.extension(emoji, msg.attachments.first().url) : '';
+            const image =
+                msg.attachments.size > 0
+                    ? await this.extension(emoji, msg.attachments.first().url)
+                    : '';
             const embed = new MessageEmbed()
                 .setColor(foundStar.color)
-                .setTitle("Jump to message")
+                .setTitle('Jump to message')
                 .setURL(msg.url)
                 .setDescription(foundStar.description)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp()
-                .setFooter(`${parseInt(star[1]) - 1} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
+                .setFooter(
+                    `${parseInt(star[1]) - 1} | ${msg.id}`,
+                    `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
+                )
                 .setImage(image);
             const starMsg = await starChannel.messages.fetch(stars.id);
             await starMsg.edit({ embed });
             if (parseInt(star[1]) - 1 == 0) starMsg.delete({ timeout: 1000 });
-
         }
     }
 

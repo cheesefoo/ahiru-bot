@@ -7,7 +7,7 @@ import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
 import { MathUtils, MessageUtils, UrlUtils } from '../utils';
-import { Command } from './command'; 
+import { Command } from './command';
 
 let Config = require('../../config/config.json');
 

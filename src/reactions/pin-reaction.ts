@@ -10,9 +10,7 @@ export class PinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor(
-        private numReactionsRequired: Number
-    ) { }
+    constructor(private numReactionsRequired: Number) {}
 
     public async execute(
         msgReaction: MessageReaction,
@@ -21,10 +19,10 @@ export class PinReaction implements Reaction {
     ): Promise<void> {
         //pleiades = 831379672431329330
         //venndiagram = 870361524789723187
-        const starboardChannel = "831379672431329330";
+        const starboardChannel = '831379672431329330';
         const threshold = 5;
 
-        if (msgReaction.emoji.name != "SubaPin") {
+        if (msgReaction.emoji.name != 'SubaPin') {
             return;
         }
         let msg = msgReaction.message;
@@ -43,40 +41,59 @@ export class PinReaction implements Reaction {
         }
 
         const emoji = msg.client.emojis.cache.find(e => e.name === 'SubaPin');
-        const starChannel = msg.guild.channels.cache.get(starboardChannel) as TextChannel
-        if (!starChannel) { MessageUtils.send(reactor, "i cant find the starboard channel :("); }
+        const starChannel = msg.guild.channels.cache.get(starboardChannel) as TextChannel;
+        if (!starChannel) {
+            MessageUtils.send(reactor, 'i cant find the starboard channel :(');
+        }
         const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
         const stars = fetchedMessages.find(m => m.embeds[0].footer.text.endsWith(msg.id));
 
         if (stars) {
             const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);
             const foundStar = stars.embeds[0];
-            const image = msg.attachments.size > 0 ? await this.extension(emoji, msg.attachments.first().url) : '';
+            const image =
+                msg.attachments.size > 0
+                    ? await this.extension(emoji, msg.attachments.first().url)
+                    : '';
             const embed = new MessageEmbed()
                 .setColor(foundStar.color)
-                .setTitle("Jump to message")
+                .setTitle('Jump to message')
                 .setURL(msg.url)
-                .setDescription(foundStar.description)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp()
-                .setFooter(`${parseInt(star[1]) + 1} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
+                .setFooter(
+                    `${parseInt(star[1]) + 1} | ${msg.id}`,
+                    `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
+                )
                 .setImage(image);
+            if (foundStar.description != null) embed.setDescription(foundStar.description);
+
             const starMsg = await starChannel.messages.fetch(stars.id);
             await starMsg.edit({ embed });
+            console.log(`Edited ${msg.id}, ${msgReaction.count} pins`);
         }
         if (!stars) {
-            const image = msg.attachments.size > 0 ? await this.extension(msgReaction, msg.attachments.first().url) : '';
-            if (image === '' && msg.cleanContent.length < 1) { MessageUtils.send(reactor, `you cannot star an empty message`); }
+            const image =
+                msg.attachments.size > 0
+                    ? await this.extension(msgReaction, msg.attachments.first().url)
+                    : '';
+            if (image === '' && msg.cleanContent.length < 1) {
+                MessageUtils.send(reactor, `you cannot star an empty message`);
+            }
             const embed = new MessageEmbed()
                 .setColor(0xf6e146)
-                .setTitle("Jump to message")
+                .setTitle('Jump to message')
                 .setURL(msg.url)
                 .setDescription(msg.cleanContent)
                 .setAuthor(msg.author.tag, msg.author.displayAvatarURL())
                 .setTimestamp(new Date())
-                .setFooter(`${threshold} | ${msg.id}`, `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`)
+                .setFooter(
+                    `${threshold} | ${msg.id}`,
+                    `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
+                )
                 .setImage(image);
             await starChannel.send({ embed });
+            console.log(`Pinned ${msg.id}, ${msgReaction.count} pins`);
         }
     }
 

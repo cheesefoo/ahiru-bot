@@ -23,8 +23,6 @@ export class ReactionHandler implements EventHandler {
             return;
         }
 
-        
-
         // Only handle messages from the following channel types
         if (
             !(
@@ -54,7 +52,7 @@ export class ReactionHandler implements EventHandler {
 
         // TODO: Get data from database
         let data = new EventData();
-        
+
         // Execute the reaction
         await reaction.execute(msgReaction, reactor, data);
     }

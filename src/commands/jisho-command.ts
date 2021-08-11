@@ -33,11 +33,13 @@ export class JishoCommand implements Command {
             await this.jisho
                 .searchForKanji(text)
                 .then(async result => {
-                    if(result.found == false){
+                    if (result.found == false) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.jishoKanjiError', data.lang(), { ERROR: `${text} not found.` })
-                        )
+                            Lang.getEmbed('displays.jishoKanjiError', data.lang(), {
+                                ERROR: `${text} not found.`,
+                            })
+                        );
                         return;
                     }
                     let embed = {
@@ -96,15 +98,13 @@ export class JishoCommand implements Command {
                     // console.log('Stroke order GIF: ' + result.strokeOrderGifUri);
                     // console.log('Jisho Uri: ' + result.uri);
                 })
-                .catch(
-                    async err => {
-                        await MessageUtils.send(
-                            msg.channel,
-                            Lang.getEmbed('displays.kanjiError', data.lang(), { ERROR: err.toString() })
-                        )
-                        return;
-                    }
-                );
+                .catch(async err => {
+                    await MessageUtils.send(
+                        msg.channel,
+                        Lang.getEmbed('displays.kanjiError', data.lang(), { ERROR: err.toString() })
+                    );
+                    return;
+                });
             return;
         }
         // else {

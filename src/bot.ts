@@ -49,7 +49,8 @@ export class Bot {
         );
         this.client.on(
             Constants.Events.MESSAGE_REACTION_REMOVE,
-            (messageReaction: MessageReaction, user: User) => this.onReactionRemove(messageReaction, user)
+            (messageReaction: MessageReaction, user: User) =>
+                this.onReactionRemove(messageReaction, user)
         );
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)

@@ -63,11 +63,9 @@ async function start(): Promise<void> {
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
 
-    
     let pinReaction = new PinReaction(1);
     let reactionHandler = new ReactionHandler([pinReaction]);
 
-    
     let unpinReaction = new UnPinReaction();
     let reactionRemoveHandler = new ReactionHandler([unpinReaction]);
 

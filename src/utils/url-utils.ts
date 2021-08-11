@@ -1,3 +1,5 @@
+import { URL } from 'url';
+
 let Config = require('../../config/config.json');
 
 export class UrlUtils {
@@ -9,5 +11,17 @@ export class UrlUtils {
             valid = valid || imgUrl.endsWith(xt);
         });
         return valid;
+    }
+
+    public static isValidHttpUrl(str: string): boolean {
+        let url;
+
+        try {
+            url = new URL(str);
+        } catch (_) {
+            return false;
+        }
+
+        return url.protocol === 'http:' || url.protocol === 'https:';
     }
 }
