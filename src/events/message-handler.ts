@@ -1,8 +1,10 @@
-import { DMChannel, Message, NewsChannel, TextChannel } from 'discord.js-light';
+import { DMChannel, Message, NewsChannel, Permissions, TextChannel } from 'discord.js-light';
 
 import { CommandHandler, EventHandler, TriggerHandler } from '.';
 
 export class MessageHandler implements EventHandler {
+    private regx = /(https:\/\/)?(www\.)?(((discord(app)?)?\.com\/invite)|((discord(app)?)?\.gg))\/(?<invite>.+)/gm
+
     constructor(private commandHandler: CommandHandler, private triggerHandler: TriggerHandler) {}
 
     public async process(msg: Message): Promise<void> {
@@ -20,6 +22,13 @@ export class MessageHandler implements EventHandler {
             )
         ) {
             return;
+        }
+         
+        let isDiscordInvite = this.regx.test(msg.content.toLowerCase().replace(/\s+/g, ''));
+        if(isDiscordInvite){
+            if(!msg.member.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
+                await msg.delete();
+            }
         }
 
         // Process command

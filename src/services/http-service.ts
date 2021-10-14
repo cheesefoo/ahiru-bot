@@ -2,10 +2,10 @@ import fetch, { Response } from 'node-fetch';
 import { URL } from 'url';
 
 export class HttpService {
-    public async get(url: string | URL, authorization: string): Promise<Response> {
+    public async get(url: string | URL, authorization?: string, header?: { [key: string]: string; }): Promise<Response> {
         return await fetch(url, {
             method: 'get',
-            headers: {
+            headers: header ? header : {
                 Authorization: authorization,
                 Accept: 'application/json',
             },

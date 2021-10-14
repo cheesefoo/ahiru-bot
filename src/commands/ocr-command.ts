@@ -7,61 +7,51 @@ import { Command } from './command';
 
 let Config = require('../../config/config.json');
 
-export class OCRCommand implements Command
-{
+export class OCRCommand implements Command {
     public requireGuild = false;
     public requirePerms = [];
 
-    public keyword(langCode: LangCode): string
-    {
+    public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.ocr', langCode);
     }
 
-    public regex(langCode: LangCode): RegExp
-    {
+    public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commands.ocr', langCode);
     }
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void>
-    {
-
-
+    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         let url = await MessageUtils.getUrl(msg, args);
         let detectedText: string;
 
-        if (url === undefined)
-        {
-            if (args.length === 2)
-            {
-                await MessageUtils.send(msg.channel, Lang.getEmbed('displays.OCRHelp', data.lang()));
+        if (url === undefined) {
+            if (args.length === 2) {
+                await MessageUtils.send(
+                    msg.channel,
+                    Lang.getEmbed('displays.OCRHelp', data.lang())
+                );
                 return;
             }
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('displays.ocrBadImage', data.lang()),
+                Lang.getEmbed('displays.ocrBadImage', data.lang())
             );
-        } else
-        {
-            try
-            {
+        } else {
+            try {
                 const result = await ApiUtils.OCRRequest(url);
                 const errMsg = result?.error?.message;
-                if (errMsg !== undefined)
-                {
-                    if (errMsg.startsWith('We can not access the URL currently)'))
-                    {
+                if (errMsg !== undefined) {
+                    if (errMsg.startsWith('We can not access the URL currently)')) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang()),
+                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang())
                         );
                         return;
-                    } else
-                    {
+                    } else {
                         await MessageUtils.send(
                             msg.channel,
                             Lang.getEmbed('displays.OCRGenericError', data.lang(), {
                                 ERROR: errMsg,
-                            }),
+                            })
                         );
                         return;
                     }
@@ -71,8 +61,7 @@ export class OCRCommand implements Command
                 detectedText = detections.text;
                 console.log(detectedText);
                 await MessageUtils.send(msg.channel, `\`\`\`${detectedText}\`\`\``);
-            } catch (err)
-            {
+            } catch (err) {
                 console.log(err);
                 await MessageUtils.send(msg.channel, err);
             }

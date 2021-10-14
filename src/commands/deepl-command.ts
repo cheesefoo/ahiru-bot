@@ -8,55 +8,44 @@ import { Command } from './command';
 
 let Config = require('../../config/config.json');
 
-export class DeepLCommand implements Command
-{
+export class DeepLCommand implements Command {
     public requireGuild = false;
     public requirePerms = [];
     public deeplEmoji = '<:deepl:866753521393991683>';
 
-    public keyword(langCode: LangCode): string
-    {
+    public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.deepl', langCode);
     }
 
-    public regex(langCode: LangCode): RegExp
-    {
+    public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commands.deepl', langCode);
     }
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void>
-    {
-
+    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         let url = await MessageUtils.getUrl(msg, args);
         let detectedText;
         let text;
-        if (url == undefined && args.length === 2)
-        {
+        if (url == undefined && args.length === 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displays.deepLHelp', data.lang()));
             return;
         }
-        if (url != undefined)
-        {
-            try
-            {
+        if (url != undefined) {
+            try {
                 const result = await ApiUtils.OCRRequest(url);
                 const errMsg = result?.error?.message;
-                if (errMsg !== undefined)
-                {
-                    if (errMsg.startsWith('We can not access the URL currently)'))
-                    {
+                if (errMsg !== undefined) {
+                    if (errMsg.startsWith('We can not access the URL currently)')) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang()),
+                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang())
                         );
                         return;
-                    } else
-                    {
+                    } else {
                         await MessageUtils.send(
                             msg.channel,
                             Lang.getEmbed('displays.OCRGenericError', data.lang(), {
                                 ERROR: errMsg,
-                            }),
+                            })
                         );
                         return;
                     }
@@ -66,20 +55,19 @@ export class DeepLCommand implements Command
                 detectedText = detections.text;
                 console.log(detectedText);
                 text = detectedText;
-            } catch (err)
-            {
+            } catch (err) {
                 console.log(err);
                 await MessageUtils.send(msg.channel, err);
             }
-        } else
-        {
-            if (args.length === 2)
-            {
-                await MessageUtils.send(msg.channel, Lang.getEmbed('displays.deepLHelp', data.lang()));
+        } else {
+            if (args.length === 2) {
+                await MessageUtils.send(
+                    msg.channel,
+                    Lang.getEmbed('displays.deepLHelp', data.lang())
+                );
                 return;
             }
-            text = args.slice(2).reduce((prev, cur, _index, _array) =>
-            {
+            text = args.slice(2).reduce((prev, cur, _index, _array) => {
                 return prev + cur;
             });
         }
@@ -94,8 +82,7 @@ export class DeepLCommand implements Command
         });
         let tl = await ApiUtils.ParseTranslations(resp.data.translations[0]);
 
-        if (tl != undefined)
-        {
+        if (tl != undefined) {
             tl = `${emoji}:${tl}`;
         }
         await MessageUtils.send(msg.channel, tl);

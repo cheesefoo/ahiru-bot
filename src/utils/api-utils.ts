@@ -8,12 +8,12 @@ export class ApiUtils {
     public static async OCRRequest(
         url: string
     ): Promise<google.cloud.vision.v1.IAnnotateImageResponse> {
-        let googleApiKey: string = process.env.privatekey;
+        let googleApiKey: string = Config.google.private_key;
 
-        googleApiKey = googleApiKey.replace(/\\n/g, '\n');
+        // googleApiKey = googleApiKey.replace(/\\n/g, '\n');
 
         const options = {
-            credentials: { client_email: process.env.email, private_key: googleApiKey },
+            credentials: { client_email: Config.google.email, private_key: googleApiKey },
         };
         const client = new ImageAnnotatorClient(options);
         const request = {

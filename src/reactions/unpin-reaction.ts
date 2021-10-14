@@ -10,7 +10,7 @@ export class UnPinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor() {}
+    constructor() { }
 
     public async execute(
         msgReaction: MessageReaction,
@@ -39,11 +39,18 @@ export class UnPinReaction implements Reaction {
             MessageUtils.send(reactor, 'i cant find the starboard channel :(');
         }
         const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
-        const stars = fetchedMessages.find(m => m.embeds[0].footer.text.endsWith(msg.id));
+        const starboardedMessage = fetchedMessages.find(m =>
+            m.embeds[0]?.footer.text.endsWith(msg.id)
+        );
 
-        if (stars) {
-            const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);
-            const foundStar = stars.embeds[0];
+        if (starboardedMessage) {
+            if (starboardedMessage.author.id !== msg.client.user.id) {
+                return;
+            }
+            const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(
+                starboardedMessage.embeds[0].footer.text
+            );
+            const foundStar = starboardedMessage.embeds[0];
             const image =
                 msg.attachments.size > 0
                     ? await this.extension(emoji, msg.attachments.first().url)
@@ -60,9 +67,9 @@ export class UnPinReaction implements Reaction {
                     `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
                 )
                 .setImage(image);
-            const starMsg = await starChannel.messages.fetch(stars.id);
+            const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
             await starMsg.edit({ embed });
-            if (parseInt(star[1]) - 1 == 0) starMsg.delete({ timeout: 1000 });
+            if (parseInt(star[1]) - 1 <= 5) starMsg.delete({ timeout: 1000 });
         }
     }
 

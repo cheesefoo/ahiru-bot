@@ -10,7 +10,7 @@ export class PinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor(private numReactionsRequired: Number) {}
+    constructor(private numReactionsRequired: Number) { }
 
     public async execute(
         msgReaction: MessageReaction,
@@ -46,11 +46,18 @@ export class PinReaction implements Reaction {
             MessageUtils.send(reactor, 'i cant find the starboard channel :(');
         }
         const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
-        const stars = fetchedMessages.find(m => m.embeds[0].footer.text.endsWith(msg.id));
+        const starboardedMessage = fetchedMessages.find(m =>
+            m.embeds[0]?.footer.text.endsWith(msg.id)
+        );
 
-        if (stars) {
-            const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);
-            const foundStar = stars.embeds[0];
+        if (starboardedMessage) {
+            if (starboardedMessage.author.id !== msg.client.user.id) {
+                return;
+            }
+            const star = /^([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(
+                starboardedMessage.embeds[0].footer.text
+            );
+            const foundStar = starboardedMessage.embeds[0];
             const image =
                 msg.attachments.size > 0
                     ? await this.extension(emoji, msg.attachments.first().url)
@@ -66,13 +73,15 @@ export class PinReaction implements Reaction {
                     `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
                 )
                 .setImage(image);
-            if (foundStar.description != null) embed.setDescription(foundStar.description);
+            if (foundStar.description != null) {
+                embed.setDescription(foundStar.description);
+            }
 
-            const starMsg = await starChannel.messages.fetch(stars.id);
+            const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
             await starMsg.edit({ embed });
             console.log(`Edited ${msg.id}, ${msgReaction.count} pins`);
         }
-        if (!stars) {
+        if (!starboardedMessage) {
             const image =
                 msg.attachments.size > 0
                     ? await this.extension(msgReaction, msg.attachments.first().url)
