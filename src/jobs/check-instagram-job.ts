@@ -49,10 +49,13 @@ export class CheckInstagram implements Job {
     }
 
     public async buildEmbed(res) {
-        // console.log("res\n");
-        // console.log(res);
+
         let json = await res.json();
+        console.log("json\n");
+        console.log(json);
         let node = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"];
+        console.log("node\n");
+        console.log(node);
         let url = node["shortcode"]
         let embed = {
             color: 0xec054c,
@@ -67,5 +70,5 @@ export class CheckInstagram implements Job {
         };
         return embed;
 
-    } 
+    }
 }
