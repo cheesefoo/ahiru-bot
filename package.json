@@ -7,18 +7,8 @@
     },
     "main": "dist/start.js",
     "scripts": {
-        "lint": "tslint --project .",
-        "lint:fix": "tslint --fix --project .",
-        "format": "prettier --check .",
-        "format:fix": "prettier --write .",
-        "build": "tsc --project tsconfig.json",
-        "start": "npm run build && node --enable-source-maps dist/start.js",
-        "start:dev": "ts-node-dev --watch src/**/*.ts,config/**/*.json,lang/**/*.json src/start.ts",
-        "start:shard": "npm run build && node --enable-source-maps dist/app.js",
-        "start:pm2": "npm run build && npm run pm2:start",
-        "pm2:start": "pm2 start process.json",
-        "pm2:stop": "pm2 stop process.json",
-        "pm2:delete": "pm2 delete process.json"
+        "start": "node dist/index.js",
+        "postinstall": "tsc"
     },
     "dependencies": {
         "@discordjs/rest": "^0.1.0-canary.0",
