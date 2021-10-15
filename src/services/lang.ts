@@ -46,6 +46,7 @@ export class Lang {
     }
 
     private static messageEmbedTm: TypeMapper<MessageEmbed> = (jsonValue: any) => {
+        console.log(jsonValue);
         return new MessageEmbed({
             author: jsonValue.author,
             title: Utils.join(jsonValue.title, '\n'),
