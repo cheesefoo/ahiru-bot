@@ -24,7 +24,7 @@ export class JishoCommand implements Command {
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.jishoHelp', data.lang()));
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.jishoHelp', data.lang()));
             return;
         }
         let text = args.slice(2).reduce((prev, cur, _index, _array) => {
@@ -37,7 +37,7 @@ export class JishoCommand implements Command {
                     if (result.found == false) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.jishoKanjiError', data.lang(), {
+                            Lang.getEmbed('displayEmbeds.jishoKanjiError', data.lang(), {
                                 ERROR: `${text} not found.`,
                             })
                         );
@@ -102,7 +102,7 @@ export class JishoCommand implements Command {
                 .catch(async err => {
                     await MessageUtils.send(
                         msg.channel,
-                        Lang.getEmbed('displays.kanjiError', data.lang(), { ERROR: err.toString() })
+                        Lang.getEmbed('displayEmbeds.kanjiError', data.lang(), { ERROR: err.toString() })
                     );
                     return;
                 });
@@ -114,7 +114,7 @@ export class JishoCommand implements Command {
         //         if (response.data.length == 0) {
         //             await MessageUtils.send(
         //                 msg.channel,
-        //                 Lang.getEmbed('displays.jishoNoResults', data.lang(), { SEARCH_TERM: text })
+        //                 Lang.getEmbed('displayEmbeds.jishoNoResults', data.lang(), { SEARCH_TERM: text })
         //             );
         //         }
         //         console.log(response);
@@ -126,6 +126,6 @@ export class JishoCommand implements Command {
         //     } catch (error) {}
         // }
 
-        await MessageUtils.send(msg.channel, Lang.getEmbed('displays.jishoHelp', data.lang()));
+        await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.jishoHelp', data.lang()));
     }
 }

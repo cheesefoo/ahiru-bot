@@ -26,7 +26,7 @@ export class PuzzleCommand implements Command {
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.puzzleHelp', data.lang()));
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.puzzleHelp', data.lang()));
             return;
         }
         let imgUrl: any, numOfPieces: any, isRotation: any;
@@ -40,13 +40,13 @@ export class PuzzleCommand implements Command {
             );
             isRotation = args[4] ?? false;
         } catch (error) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.puzzleHelp', data.lang()));
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.puzzleHelp', data.lang()));
             return;
         }
         if (!UrlUtils.isValidImageArg(imgUrl)) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('displays.puzzleBadUrl', data.lang())
+                Lang.getEmbed('displayEmbeds.puzzleBadUrl', data.lang())
             );
         } else {
             let reply = await this.getPuzzle(imgUrl, numOfPieces, isRotation);

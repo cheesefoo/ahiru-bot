@@ -28,13 +28,13 @@ export class OCRCommand implements Command {
             if (args.length === 2) {
                 await MessageUtils.send(
                     msg.channel,
-                    Lang.getEmbed('displays.OCRHelp', data.lang())
+                    Lang.getEmbed('displayEmbeds.OCRHelp', data.lang())
                 );
                 return;
             }
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('displays.ocrBadImage', data.lang())
+                Lang.getEmbed('displayEmbeds.ocrBadImage', data.lang())
             );
         } else {
             try {
@@ -44,13 +44,13 @@ export class OCRCommand implements Command {
                     if (errMsg.startsWith('We can not access the URL currently)')) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang())
+                            Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang())
                         );
                         return;
                     } else {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRGenericError', data.lang(), {
+                            Lang.getEmbed('displayEmbeds.OCRGenericError', data.lang(), {
                                 ERROR: errMsg,
                             })
                         );

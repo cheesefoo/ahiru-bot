@@ -27,7 +27,7 @@ export class DeepLCommand implements Command {
         let detectedText;
         let text;
         if (url == undefined && args.length === 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displays.deepLHelp', data.lang()));
+            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
             return;
         }
         if (url != undefined) {
@@ -38,13 +38,13 @@ export class DeepLCommand implements Command {
                     if (errMsg.startsWith('We can not access the URL currently)')) {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRCanNotAccessUrl', data.lang())
+                            Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang())
                         );
                         return;
                     } else {
                         await MessageUtils.send(
                             msg.channel,
-                            Lang.getEmbed('displays.OCRGenericError', data.lang(), {
+                            Lang.getEmbed('displayEmbeds.OCRGenericError', data.lang(), {
                                 ERROR: errMsg,
                             })
                         );
@@ -64,7 +64,7 @@ export class DeepLCommand implements Command {
             if (args.length === 2) {
                 await MessageUtils.send(
                     msg.channel,
-                    Lang.getEmbed('displays.deepLHelp', data.lang())
+                    Lang.getEmbed('displayEmbeds.deepLHelp', data.lang())
                 );
                 return;
             }
