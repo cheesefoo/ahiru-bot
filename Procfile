@@ -1,1 +1,1 @@
-worker: node --enable-source-maps dist/start.js
+worker: npm run start
