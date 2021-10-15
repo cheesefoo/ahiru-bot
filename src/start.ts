@@ -86,7 +86,7 @@ async function start(): Promise<void> {
         guildLeaveHandler,
         messageHandler,
         reactionHandler,
-        new JobService([]),
+        jobService,
         interactionHandler
     );
 
