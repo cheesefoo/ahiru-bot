@@ -51,56 +51,21 @@ export class CheckInstagram implements Job {
     public async buildEmbed(res) {
         // console.log("res\n");
         // console.log(res);
-        let url = await this.get_last_publication_url(res);
+        let json = await res.json();
+        let node = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"];
+        let url = node["shortcode"]
         let embed = {
             color: 0xec054c,
             title: `New post from @${this.username}`,
             url: `https://www.instagram.com/p/${url}/`,
 
-            description: await this.get_description_photo(res),
-            image: { "url": await this.get_last_thumb_url(res) },
+            description: node["edge_media_to_caption"]["edges"][0]["node"]["text"],
+            image: { "url": node["thumbnail_src"] },
             thumbnail: {
-                "url": await this.get_last_thumb_url(res)
+                "url": node["thumbnail_src"]
             }
         };
         return embed;
 
-    }
-
-    public async get_user_fullname(html) {
-        return await html.json()["graphql"]["user"]["full_name"]
-    }
-
-
-    public async get_total_photos(html): Number {
-        return await html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["count"]
-    }
-
-
-    public async get_last_publication_url(html) {
-        // let json = await html.json();
-        // console.log("json\n");
-        // console.log(json);
-        // let json2 = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
-        // console.log("json2\n");
-        // console.log(json2);
-        // return json;
-        return await html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
-    }
-
-
-    public async get_last_photo_url(html) {
-        return await html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["display_url"]
-    }
-
-
-    public async get_last_thumb_url(html) {
-        return await html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["thumbnail_src"]
-    }
-
-
-    public async get_description_photo(html) {
-        return await html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["edge_media_to_caption"]["edges"][0]["node"]["text"]
-    }
-
+    } 
 }
