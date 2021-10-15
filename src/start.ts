@@ -80,7 +80,7 @@ async function start(): Promise<void> {
     let jobService = new JobService([new CheckInstagram(httpService, client)])
 
     let bot = new Bot(
-        Config.client.token,
+        process.env.discord_token,
         client,
         guildJoinHandler,
         guildLeaveHandler,

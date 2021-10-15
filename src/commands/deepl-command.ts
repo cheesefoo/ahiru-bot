@@ -78,7 +78,7 @@ export class DeepLCommand implements Command {
         let resp = await translate({
             text: text,
             target_lang: 'EN',
-            auth_key: Config.deepl.key,
+            auth_key: process.env.deepl_key,
             free_api: true,
         });
         let tl = await ApiUtils.ParseTranslations(resp.data.translations[0]);
