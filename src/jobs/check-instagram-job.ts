@@ -78,7 +78,7 @@ export class CheckInstagram implements Job {
 
 
     public async get_last_publication_url(html) {
-        let json = html.json();
+        let json = await html.json();
         console.log("json\n");
         console.log(json);
         let json2 = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
