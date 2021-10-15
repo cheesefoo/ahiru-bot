@@ -30,20 +30,18 @@ export class CheckTwitter implements Job {
     let twitter = new Twitter({
       bearer_token: process.env.twitter_token
     });
-    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${testId}`;
-    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: testId });
-    // console.log(res);
-    if (res["meta"]["result_count"] == 0) {
-      // console.log("No space found")
-      //Logger.info(Logs.info.jobCompleted.replace('{JOB}', 'CheckSpaces'));
+    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${subaId}`;
+    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: subaId });
 
-      // return;
-    } else {
+    //There is a live space
+    if (res["meta"]["result_count"] != 0) {
       let spaceId = res["data"][0].id;
       try {
+        //Check if we've seen it already
         if (await DatabaseUtils.CheckIfExists("SPACES", spaceId)) {
           Logger.info(Logs.info.spaces.replace('{SC}', spaceId));
         } else {
+          //New, post to discord
           await DatabaseUtils.Insert("SPACES", spaceId);
           let embed = await this.buildEmbed(spaceId);
           let ch: TextChannel = this.client.channels.cache.get(this.broadcastChannel) as TextChannel;

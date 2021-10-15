@@ -8,13 +8,10 @@ export class DatabaseUtils {
         let client = await this.Connect();
 
         try {
-            let res = await client.query(`SELECT * from ${table} WHERE shortcode='${shortcode}'`);
-            console.log("query ok ");
-            if (res.rows.length == 0) {
-                console.log("length 0  ");
+            let res = await client.query(`SELECT * from ${table} WHERE shortcode='${shortcode}'`); 
+            if (res.rows.length == 0) { 
                 return false;
-            } else {
-                console.log("length not 0  ");
+            } else { 
                 return true;
             }
         }
@@ -29,7 +26,6 @@ export class DatabaseUtils {
         let client = await this.Connect();
         try {
             let res = await client.query(`INSERT INTO ${table} (shortcode) VALUES('${shortcode}')`);
-            console.log("insert ok ");
         }
         catch (error) {
             Logger.error(Logs.error.database.replace('{DB}', table), error);
