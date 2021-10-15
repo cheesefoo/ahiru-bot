@@ -11,7 +11,7 @@ let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 let baseEndpoint = "https://api.twitter.com/2/spaces/search"
 // let testId = '1449090654542434308'
-let testId = '790344487'
+let testId = '1140467090341523456'
 let subaId = '1027853566780698624'
 export class CheckTwitter implements Job {
   public name = 'Check Twitter';
@@ -39,13 +39,14 @@ export class CheckTwitter implements Job {
     let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${testId}`;
     let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: testId });
 
+    Logger.info(Logs.info.nospace);
     //There is a live space
     if (res["meta"]["result_count"] != 0) {
       let spaceId = res["data"][0].id;
       try {
         //Check if we've seen it already
         if (await DatabaseUtils.CheckIfExists("SPACES", spaceId)) {
-          Logger.info(Logs.info.spaces.replace('{SC}', spaceId));
+          Logger.info(Logs.info.spacesold.replace('{SC}', spaceId));
         } else {
           //New, post to discord
           await DatabaseUtils.Insert("SPACES", spaceId);

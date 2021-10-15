@@ -15,7 +15,8 @@
         "guildJoined": "Guild '{GUILD_NAME}' ({GUILD_ID}) joined.",
         "guildLeft": "Guild '{GUILD_NAME}' ({GUILD_ID}) left.",
         "instagram": "IG post is old. {SC}",
-        "spaces": "space is old. {SC}",
+        "spacesold": "space is old. {SC}",
+        "nospace": "no space live",
         "checkInstagram": "Checking instagram.",
         "checkTwitter": "Checking Twitter space."
     },
