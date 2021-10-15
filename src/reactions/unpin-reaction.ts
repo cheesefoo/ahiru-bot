@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js-light';
+import { MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js';
 
 import { Reaction } from '.';
 import { EventData } from '../models/internal-models';
@@ -10,7 +10,7 @@ export class UnPinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor() { }
+    constructor() {}
 
     public async execute(
         msgReaction: MessageReaction,
@@ -68,8 +68,8 @@ export class UnPinReaction implements Reaction {
                 )
                 .setImage(image);
             const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
-            await starMsg.edit({ embed });
-            if (parseInt(star[1]) - 1 <= 5) starMsg.delete({ timeout: 1000 });
+            await starMsg.edit({embeds: [embed] });
+            if (parseInt(star[1]) - 1 <= 5) starMsg.delete();
         }
     }
 

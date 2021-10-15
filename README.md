@@ -1,7 +1,9 @@
 # Discord Bot TypeScript Template
 
-[![discord.js-light](https://img.shields.io/github/package-json/dependency-version/KevinNovak/Discord-Bot-TypeScript-Template/discord.js-light)](https://github.com/timotejroiko/discord.js-light)
+[![discord.js](https://img.shields.io/github/package-json/dependency-version/KevinNovak/Discord-Bot-TypeScript-Template/discord.js)](https://discord.js.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/KevinNovak/Discord-Bot-TypeScript-Template.svg)](https://github.com/KevinNovak/Discord-Bot-TypeScript-Template/stargazers)
+[![Pull Requests](https://img.shields.io/badge/Pull%20Requests-Welcome!-brightgreen)](https://github.com/KevinNovak/Discord-Bot-TypeScript-Template/pulls)
 
 **Discord bot** - A discord.js bot template written with TypeScript.
 
@@ -25,8 +27,7 @@ For help using this template, feel free to [join our support server](https://dis
 ### Developer Friendly:
 
 -   Written with TypeScript.
--   Uses the [discord.js-light](https://github.com/timotejroiko/discord.js-light) framework.
-    -   Based on [discord.js](https://discord.js.org/), but more memory efficient.
+-   Uses the [discord.js](https://discord.js.org/) framework.
 -   Built-in debugging setup for VSCode.
 -   Support for running with the [PM2](https://pm2.keymetrics.io/) process manger.
 -   Support for running with [Docker](https://www.docker.com/).
@@ -97,15 +98,15 @@ A welcome message is sent to the server and owner when the bot is added.
 
 You can run the bot in 4 different modes:
 
-1. Dev Mode
+1. Normal Mode
+    - Type `npm start`.
+    - This runs the bot directly with Node and without shards.
+    - Use this mode if you don't need sharding.
+2. Dev Mode
     - Type `npm start:dev`.
     - This runs the bot with [ts-node-dev](https://www.npmjs.com/package/ts-node-dev).
     - Use this mode for general development.
     - TypeScript files are compiled automatically as they are changed.
-2. Normal Mode
-    - Type `npm start`.
-    - This runs the bot directly with Node and without shards.
-    - Use this mode if you don't need sharding.
 3. Shard Mode
     - Type `npm run start:shard`.
     - This runs the bot directly with Node and with sharding enabled.

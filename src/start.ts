@@ -1,53 +1,62 @@
+import { Options } from 'discord.js';
+
 import { Bot } from './bot';
 import {
     DeepLCommand,
     DevCommand,
+    DocsCommand,
     HelpCommand,
+    InfoCommand,
+    InviteCommand,
     JishoCommand,
     OCRCommand,
     PuzzleCommand,
+    SupportCommand,
+    TestCommand,
+    TranslateCommand,
+    VoteCommand,
 } from './commands';
 import {
     CommandHandler,
     GuildJoinHandler,
     GuildLeaveHandler,
+    InteractionHandler,
     MessageHandler,
     ReactionHandler,
     TriggerHandler,
 } from './events';
 import { CustomClient } from './extensions';
-import { JobService, Logger } from './services';
-
-import { UnPinReaction, PinReaction } from './reactions';
+import { CheckInstagram } from './jobs';
+import { HttpService, JobService, Logger } from './services';
 
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
 async function start(): Promise<void> {
     let client = new CustomClient({
-        // discord.js Options
-        ws: { intents: Config.client.intents },
+        intents: Config.client.intents,
         partials: Config.client.partials,
-        messageCacheMaxSize: Config.client.caches.messages.size,
-        messageCacheLifetime: Config.client.caches.messages.lifetime,
-        messageSweepInterval: Config.client.caches.messages.sweepInterval,
-
-        // discord.js-light Options
-        cacheGuilds: Config.client.caches.guilds,
-        cacheRoles: Config.client.caches.roles,
-        cacheEmojis: Config.client.caches.emojis,
-        cacheChannels: Config.client.caches.channels,
-        cacheOverwrites: Config.client.caches.overwrites,
-        cachePresences: Config.client.caches.presences,
-        disabledEvents: Config.client.disabledEvents,
+        makeCache: Options.cacheWithLimits({
+            // Keep default caching behavior
+            ...Options.defaultMakeCacheSettings,
+            // Override specific options from config
+            ...Config.client.caches,
+        }),
     });
 
     // Commands
     let devCommand = new DevCommand();
-    let puzzleCommand = new PuzzleCommand();
+    let docsCommand = new DocsCommand();
     let helpCommand = new HelpCommand();
-    let deepLCommand = new DeepLCommand();
+    let infoCommand = new InfoCommand();
+    let inviteCommand = new InviteCommand();
+    let supportCommand = new SupportCommand();
+    let testCommand = new TestCommand();
+    let translateCommand = new TranslateCommand();
+    let voteCommand = new VoteCommand();
     let ocrCommand = new OCRCommand();
+    let deepLCommand = new DeepLCommand();
+    let puzzleCommand = new PuzzleCommand();
     let jishoCommand = new JishoCommand();
 
     // Event handlers
@@ -59,15 +68,16 @@ async function start(): Promise<void> {
         deepLCommand,
         ocrCommand,
         jishoCommand,
+        voteCommand
     ]);
+
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
+    let reactionHandler = new ReactionHandler([]);
+    let interactionHandler = new InteractionHandler(commandHandler);
 
-    let pinReaction = new PinReaction(1);
-    let reactionHandler = new ReactionHandler([pinReaction]);
-
-    let unpinReaction = new UnPinReaction();
-    let reactionRemoveHandler = new ReactionHandler([unpinReaction]);
+    let httpService = new HttpService();
+    let jobService = new JobService([new CheckInstagram(httpService, client)])
 
     let bot = new Bot(
         Config.client.token,
@@ -76,16 +86,11 @@ async function start(): Promise<void> {
         guildLeaveHandler,
         messageHandler,
         reactionHandler,
-        reactionRemoveHandler,
-        new JobService([])
+        new JobService([]),
+        interactionHandler
     );
 
     await bot.start();
-    await client.setPresence(
-        'LISTENING',
-        '太陽少女|~help',
-        'https://music.youtube.com/playlist?list=OLAK5uy_lnTdmXQPPwyf1d4_6ytaZlplpjTmwaS-I'
-    );
 }
 
 process.on('unhandledRejection', (reason, promise) => {

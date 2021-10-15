@@ -1,4 +1,4 @@
-import { Message } from 'discord.js-light';
+import { Message } from 'discord.js';
 import fetch from 'node-fetch';
 
 import FormData from 'form-data';
@@ -12,6 +12,7 @@ import { Command } from './command';
 let Config = require('../../config/config.json');
 
 export class PuzzleCommand implements Command {
+    public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
 
@@ -20,7 +21,7 @@ export class PuzzleCommand implements Command {
     }
 
     public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.puzzle', langCode);
+        return Lang.getRegex('commandRegexes.puzzle', langCode);
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {

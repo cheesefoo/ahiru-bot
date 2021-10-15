@@ -1,5 +1,6 @@
-import { ActivityType, ShardingManager } from 'discord.js-light';
+import { ActivityType, ShardingManager } from 'discord.js';
 
+import { CustomClient } from '../extensions';
 import { BotSite } from '../models/config-models';
 import { HttpService, Lang, Logger } from '../services';
 import { ShardUtils } from '../utils';
@@ -25,22 +26,24 @@ export class UpdateServerCountJob implements Job {
 
         let type: ActivityType = 'STREAMING';
         let name = `to ${serverCount.toLocaleString()} servers`;
-        let url = Lang.getRef('links.stream', Lang.Default);
+        let url = Lang.getCom('links.stream');
 
-        await this.shardManager.broadcastEval(`
-            (async () => {
-                return await this.setPresence('${type}', '${name}', '${url}');
-            })();
-        `);
+        await this.shardManager.broadcastEval(
+            async (client, context) => {
+                let customClient = client as CustomClient;
+                return customClient.setPresence(context.type, context.name, context.url);
+            },
+            { context: { type, name, url } }
+        );
 
         Logger.info(
-            Logs.info.updatedServerCount.replace('{SERVER_COUNT}', serverCount.toLocaleString())
+            Logs.info.updatedServerCount.replaceAll('{SERVER_COUNT}', serverCount.toLocaleString())
         );
 
         for (let botSite of this.botSites) {
             try {
                 let body = JSON.parse(
-                    botSite.body.replace('{{SERVER_COUNT}}', serverCount.toString())
+                    botSite.body.replaceAll('{{SERVER_COUNT}}', serverCount.toString())
                 );
                 let res = await this.httpService.post(botSite.url, botSite.authorization, body);
 
@@ -49,13 +52,13 @@ export class UpdateServerCountJob implements Job {
                 }
             } catch (error) {
                 Logger.error(
-                    Logs.error.updatedServerCountSite.replace('{BOT_SITE}', botSite.name),
+                    Logs.error.updatedServerCountSite.replaceAll('{BOT_SITE}', botSite.name),
                     error
                 );
                 continue;
             }
 
-            Logger.info(Logs.info.updatedServerCountSite.replace('{BOT_SITE}', botSite.name));
+            Logger.info(Logs.info.updatedServerCountSite.replaceAll('{BOT_SITE}', botSite.name));
         }
     }
 }

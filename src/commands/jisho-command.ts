@@ -1,4 +1,4 @@
-import { Message } from 'discord.js-light';
+import { Message } from 'discord.js';
 
 import JishoAPI from 'unofficial-jisho-api';
 import { LangCode } from '../models/enums';
@@ -9,6 +9,7 @@ import { Command } from './command';
 import { MessageEmbed } from 'discord.js';
 
 export class JishoCommand implements Command {
+    public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
     public jisho = new JishoAPI();
@@ -18,7 +19,7 @@ export class JishoCommand implements Command {
     }
 
     public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.jisho', langCode);
+        return Lang.getRegex('commandRegexes.jisho', langCode);
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
@@ -80,7 +81,7 @@ export class JishoCommand implements Command {
                         },
                     };
 
-                    msg.channel.send({ embed: embed });
+                    msg.channel.send({ embeds: [embed] });
                     // console.log('Found: ' + result.found);
                     // console.log('Taught in: ' + result.taughtIn);
                     // console.log('JLPT level: ' + result.jlptLevel);

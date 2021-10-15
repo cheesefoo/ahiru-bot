@@ -1,4 +1,11 @@
-import { GuildMember, Message, NewsChannel, Permissions, TextChannel } from 'discord.js-light';
+import {
+    GuildMember,
+    Message,
+    NewsChannel,
+    Permissions,
+    TextChannel,
+    ThreadChannel,
+} from 'discord.js';
 import { RateLimiter } from 'discord.js-rate-limiter';
 
 import { Command } from '../commands';
@@ -21,7 +28,7 @@ export class CommandHandler {
         private prefix: string,
         private helpCommand: Command,
         private commands: Command[]
-    ) {}
+    ) { }
 
     public shouldHandle(msg: Message, args: string[]): boolean {
         if (args[0].startsWith(this.prefix + this.prefix)) {
@@ -31,6 +38,7 @@ export class CommandHandler {
             args.splice(1, 0, args[0].slice(1));
             args[0] = this.prefix;
         }
+        
         return (
             [this.prefix, `<@${msg.client.user.id}>`, `<@!${msg.client.user.id}>`].includes(
                 args[0].toLowerCase()
@@ -73,10 +81,18 @@ export class CommandHandler {
             return;
         }
 
+        if (command.requireDev && !Config.developers.includes(msg.author.id)) {
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('validationEmbeds.devOnlyCommand', data.lang())
+            );
+            return;
+        }
+
         if (command.requireGuild && !msg.guild) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('validation.serverOnlyCommand', data.lang())
+                Lang.getEmbed('validationEmbeds.serverOnlyCommand', data.lang())
             );
             return;
         }
@@ -84,7 +100,7 @@ export class CommandHandler {
         if (msg.member && !this.hasPermission(msg.member, command)) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('validation.permissionRequired', data.lang())
+                Lang.getEmbed('validationEmbeds.permissionRequired', data.lang())
             );
             return;
         }
@@ -97,7 +113,7 @@ export class CommandHandler {
             try {
                 await MessageUtils.send(
                     msg.channel,
-                    Lang.getEmbed('errors.command', data.lang(), {
+                    Lang.getEmbed('errorEmbeds.command', data.lang(), {
                         ERROR_CODE: msg.id,
                     })
                 );
@@ -107,21 +123,23 @@ export class CommandHandler {
 
             // Log command error
             Logger.error(
-                msg.channel instanceof TextChannel || msg.channel instanceof NewsChannel
+                msg.channel instanceof TextChannel ||
+                    msg.channel instanceof NewsChannel ||
+                    msg.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                          .replace('{MESSAGE_ID}', msg.id)
-                          .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                          .replace('{USER_TAG}', msg.author.tag)
-                          .replace('{USER_ID}', msg.author.id)
-                          .replace('{CHANNEL_NAME}', msg.channel.name)
-                          .replace('{CHANNEL_ID}', msg.channel.id)
-                          .replace('{GUILD_NAME}', msg.guild.name)
-                          .replace('{GUILD_ID}', msg.guild.id)
+                        .replaceAll('{MESSAGE_ID}', msg.id)
+                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                        .replaceAll('{USER_TAG}', msg.author.tag)
+                        .replaceAll('{USER_ID}', msg.author.id)
+                        .replaceAll('{CHANNEL_NAME}', msg.channel.name)
+                        .replaceAll('{CHANNEL_ID}', msg.channel.id)
+                        .replaceAll('{GUILD_NAME}', msg.guild.name)
+                        .replaceAll('{GUILD_ID}', msg.guild.id)
                     : Logs.error.commandOther
-                          .replace('{MESSAGE_ID}', msg.id)
-                          .replace('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                          .replace('{USER_TAG}', msg.author.tag)
-                          .replace('{USER_ID}', msg.author.id),
+                        .replaceAll('{MESSAGE_ID}', msg.id)
+                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                        .replaceAll('{USER_TAG}', msg.author.tag)
+                        .replaceAll('{USER_ID}', msg.author.id),
                 error
             );
         }
@@ -137,13 +155,16 @@ export class CommandHandler {
             return true;
         }
 
-        // Members with "Manage Server" have permission for all commands
-        if (member.hasPermission(Permissions.FLAGS.MANAGE_GUILD)) {
+        // Developers and members with "Manage Server" have permission for all commands
+        if (
+            member.permissions.has(Permissions.FLAGS.MANAGE_GUILD) ||
+            Config.developers.includes(member.id)
+        ) {
             return true;
         }
 
         // Check if member has required permissions for command
-        if (!member.hasPermission(command.requirePerms)) {
+        if (!member.permissions.has(command.requirePerms)) {
             return false;
         }
 

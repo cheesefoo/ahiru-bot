@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js-light';
+import { MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js';
 
 import { Reaction } from '.';
 import { EventData } from '../models/internal-models';
@@ -10,7 +10,7 @@ export class PinReaction implements Reaction {
     public emoji: string = Config.reactions.pin;
     public requireGuild = true;
 
-    constructor(private numReactionsRequired: Number) { }
+    constructor(private numReactionsRequired: Number) {}
 
     public async execute(
         msgReaction: MessageReaction,
@@ -78,7 +78,7 @@ export class PinReaction implements Reaction {
             }
 
             const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
-            await starMsg.edit({ embed });
+            await starMsg.edit({ embeds:[embed] });
             console.log(`Edited ${msg.id}, ${msgReaction.count} pins`);
         }
         if (!starboardedMessage) {
@@ -101,7 +101,7 @@ export class PinReaction implements Reaction {
                     `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
                 )
                 .setImage(image);
-            await starChannel.send({ embed });
+            await starChannel.send({ embeds:[embed] });
             console.log(`Pinned ${msg.id}, ${msgReaction.count} pins`);
         }
     }

@@ -1,4 +1,4 @@
-import { Guild } from 'discord.js-light';
+import { Guild } from 'discord.js';
 
 import { Lang, Logger } from '../services';
 import { ClientUtils, MessageUtils } from '../utils';
@@ -10,8 +10,8 @@ export class GuildJoinHandler implements EventHandler {
     public async process(guild: Guild): Promise<void> {
         Logger.info(
             Logs.info.guildJoined
-                .replace('{GUILD_NAME}', guild.name)
-                .replace('{GUILD_ID}', guild.id)
+                .replaceAll('{GUILD_NAME}', guild.name)
+                .replaceAll('{GUILD_ID}', guild.id)
         );
 
         // TODO: Get data from database
@@ -24,17 +24,24 @@ export class GuildJoinHandler implements EventHandler {
         if (notifyChannel) {
             await MessageUtils.send(
                 notifyChannel,
-                Lang.getEmbed('displays.welcome', guildLang).setAuthor(guild.name, guild.iconURL())
+                Lang.getEmbed('displayEmbeds.welcome', guildLang).setAuthor(
+                    guild.name,
+                    guild.iconURL()
+                )
             );
         }
 
         // Send welcome message to owner
         // TODO: Replace "Lang.Default" here with the owner's language
         let ownerLang = Lang.Default;
-        if (guild.owner) {
+        let owner = await guild.fetchOwner();
+        if (owner) {
             await MessageUtils.send(
-                guild.owner.user,
-                Lang.getEmbed('displays.welcome', ownerLang).setAuthor(guild.name, guild.iconURL())
+                owner.user,
+                Lang.getEmbed('displayEmbeds.welcome', ownerLang).setAuthor(
+                    guild.name,
+                    guild.iconURL()
+                )
             );
         }
     }

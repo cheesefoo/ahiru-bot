@@ -1,4 +1,4 @@
-import djs, { Message } from 'discord.js-light';
+import djs, { Message } from 'discord.js';
 import fileSize from 'filesize';
 import typescript from 'typescript';
 
@@ -11,6 +11,7 @@ import { Command } from './command';
 let TsConfig = require('../../tsconfig.json');
 
 export class DevCommand implements Command {
+    public requireDev = true;
     public requireGuild = false;
     public requirePerms = [];
 
@@ -19,7 +20,7 @@ export class DevCommand implements Command {
     }
 
     public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.dev', langCode);
+        return Lang.getRegex('commandRegexes.dev', langCode);
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
@@ -33,7 +34,7 @@ export class DevCommand implements Command {
                 if (error.name.includes('SHARDING_IN_PROCESS')) {
                     await MessageUtils.send(
                         msg.channel,
-                        Lang.getEmbed('errors.startupInProcess', data.lang())
+                        Lang.getEmbed('errorEmbeds.startupInProcess', data.lang())
                     );
                     return;
                 } else {
@@ -47,7 +48,7 @@ export class DevCommand implements Command {
         let memory = process.memoryUsage();
         await MessageUtils.send(
             msg.channel,
-            Lang.getEmbed('displays.dev', data.lang(), {
+            Lang.getEmbed('displayEmbeds.dev', data.lang(), {
                 NODE_VERSION: process.version,
                 TS_VERSION: `v${typescript.version}`,
                 ES_VERSION: TsConfig.compilerOptions.target,
@@ -70,7 +71,7 @@ export class DevCommand implements Command {
                     serverCount > 0
                         ? fileSize(memory.heapUsed / serverCount)
                         : Lang.getRef('other.na', data.lang()),
-                SHARD_ID: (msg.guild?.shardID ?? 0).toString(),
+                SHARD_ID: (msg.guild?.shardId ?? 0).toString(),
                 SERVER_ID: msg.guild?.id ?? Lang.getRef('other.na', data.lang()),
                 BOT_ID: msg.client.user.id,
                 USER_ID: msg.author.id,

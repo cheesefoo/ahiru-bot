@@ -2,13 +2,14 @@ import {
     Client,
     Constants,
     Guild,
+    Interaction,
     Message,
     MessageReaction,
     RateLimitData,
     User,
-} from 'discord.js-light';
+} from 'discord.js';
 
-import { GuildJoinHandler, GuildLeaveHandler, MessageHandler, ReactionHandler } from './events';
+import { CommandHandler, GuildJoinHandler, GuildLeaveHandler, MessageHandler, ReactionHandler, InteractionHandler } from './events';
 import { JobService, Logger } from './services';
 import { PartialUtils } from './utils';
 
@@ -26,9 +27,9 @@ export class Bot {
         private guildLeaveHandler: GuildLeaveHandler,
         private messageHandler: MessageHandler,
         private reactionHandler: ReactionHandler,
-        private reactionRemoveHandler: ReactionHandler,
-        private jobService: JobService
-    ) {}
+        private jobService: JobService,
+        private interactionHandler: InteractionHandler
+    ) { }
 
     public async start(): Promise<void> {
         this.registerListeners();
@@ -47,14 +48,21 @@ export class Bot {
             Constants.Events.MESSAGE_REACTION_ADD,
             (messageReaction: MessageReaction, user: User) => this.onReaction(messageReaction, user)
         );
-        this.client.on(
-            Constants.Events.MESSAGE_REACTION_REMOVE,
-            (messageReaction: MessageReaction, user: User) =>
-                this.onReactionRemove(messageReaction, user)
-        );
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
         );
+        this.client.on(Constants.Events.INTERACTION_CREATE, (interaction: Interaction) => this.onInteraction(interaction));
+    }
+    private async onInteraction(interaction: Interaction): Promise<void> {
+
+        if (!interaction.isCommand()) return; 
+
+        try {
+            await this.interactionHandler.process(interaction);
+        } catch (error) {
+            Logger.error(Logs.error.message, error);
+        }       
+
     }
 
     private async login(token: string): Promise<void> {
@@ -66,9 +74,9 @@ export class Bot {
         }
     }
 
-    private onReady(): void {
+    private async onReady(): Promise<void> {
         let userTag = this.client.user.tag;
-        Logger.info(Logs.info.clientLogin.replace('{USER_TAG}', userTag));
+        Logger.info(Logs.info.clientLogin.replaceAll('{USER_TAG}', userTag));
 
         if (!Debug.dummyMode.enabled) {
             this.jobService.start();
@@ -141,26 +149,6 @@ export class Bot {
 
         try {
             await this.reactionHandler.process(msgReaction, reactor);
-        } catch (error) {
-            Logger.error(Logs.error.reaction, error);
-        }
-    }
-
-    private async onReactionRemove(msgReaction: MessageReaction, reactor: User): Promise<void> {
-        if (
-            !this.ready ||
-            (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(reactor.id))
-        ) {
-            return;
-        }
-
-        msgReaction = await PartialUtils.fillReaction(msgReaction);
-        if (!msgReaction) {
-            return;
-        }
-
-        try {
-            await this.reactionRemoveHandler.process(msgReaction, reactor);
         } catch (error) {
             Logger.error(Logs.error.reaction, error);
         }

@@ -1,11 +1,7 @@
-FROM node:16-slim
+FROM node:15
 
 # Create app directory
 WORKDIR /app
-
-ENV privatekey="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCN1Bmwt94zRPD9\ngY6AALAkX3yqhRllWDDOekyKREaqzXiYGSjew9iRDT9VuuOsd/70QXL7k/iOBafH\n2XSb6frgGoqwyhTwdO1ejAhqHhvNrSgYKGVQzcqWsreiyvFzmvAEzClw6Z17nOwD\nxgmz6YPETN0cqn8xS4HgCm9lLAeQET55LOkv84hzFAqloYP32PwwYG4JrTslmxKA\nB3rIGxVVdBoVz2WxM0Bx07fOryh0iNtsXWDWGEu8F0ChY1+5ANTYSTZIUTaMXOBN\ncb3fPpCZhQ5ctkGA7ggsudVfnICsyCwupLGsAZMwYmSQ5PF/ZJDlPXn2TN2akKBz\nyGOwYw41AgMBAAECggEAH7qbErdXrOWX+kaxH/7HaSO5ipZjM5JyvMaMeARFQPHd\nsD00sP1kZjLt/9pjE9L2hSNdO14DpZYrTmDeHwFN4DPf4iQbYh3ueo/eVAsvUiiS\nRzFGVTjswSDzRyaatK+tUY1xGfMRibV18XQs+IRdt50wfDjCYr9PK1V6TUp32KlF\nqH20zgIiIXmMlWEfML0RGSlbO/QXkl7sQ/4Mo+Bsz1+JMf6CLNTm9M9MOn9Vw5Sc\nEO5IHmxZZ3Q2hV/RNrMF1n6k+GbERojQ1adML/cqCSgGNmJ8ZaXmsQUPZemmGanc\nKfD85tQVEikjJuSNhtk4L9cTVGk1fTy7v+AyQ0kV8wKBgQDCLBFehP2iXrcMi9Pr\n9xW9pTgzidLh4uzt0pUtCc8wp1t1y35zQaueLmE1PEqZPQmae5LE1vEESgQftWVn\n+d+Km/ZUS2/1FIYrw2ooGwkFvGQDcyKPh7ziUyzQXRu7VFSDcUScaINO2K5mA6OJ\nNZ8pbkUa0yTsyhrwlq1Dz+AXbwKBgQC6/T6mZENlR2FZFviLvUFQOi8XprS85oyJ\nq/K3T9+2V8gwvl17GDdcq4+dybUKOpb/ZrKMMy2aVcBdhsH9HY/k5LlIGN++BwhC\nzzlcCWrOZ6cHkf2ZH972kU/CmTbVVYTjGwgnWyuTKic6vzuwvjiOjKkY27cD70he\nMrd5UdoCmwKBgFtaAj320aE/cF09t9FvKNJVVfChag6OBawKA9bxo4Gfax8rQu2U\nutortd4m5G3d0pPUiYOEIFZFQFVusSvO2kXLBIQ6DY0/P7R9Nodx2LfTHzakR2FB\nmjLcsNvCwlZK4YwJkR8I6KYCuWITWjAmgyAp2ec56Uhh+XSxXwjlVuePAoGBAI2z\nW8a8NFaLwTnCLpe208f4T7ecnVqJW/b4VvaTkPSdkRdfK3gc4ddYK31nXcpinArv\nyF52ahiK4zv84wTtYh4TNlVshCF9MsVuRAl7GXVRF0KlX4iqnkw70jWl5efE5u8z\njPpGHL9pMlFSmelWPYXJElvEJOzWaAD6bg+B97QBAoGAW/UAWEXh/fm8nW2I5W4g\n2e25xdAsn3Lm56jdjrfVZBwKbLiNDp4UwgRTzxU/WJMw7mXUOMmAwAPI4KVeWUf5\nKnKoh3t/AN1xVZDu64S8dPdxjWXfa2kEgWIRP11H1a5SJDuDT97kdDOnrIB59RKY\nAWrm/AI8GmNd135OIa+nr9Q=\n-----END PRIVATE KEY-----\n"
-
-ENV email=vision@subatomoen-54ddd.iam.gserviceaccount.com
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -20,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Expose ports
-EXPOSE 8888
+EXPOSE 8080
 
 # Run the application
 CMD [ "node", "dist/app.js" ]

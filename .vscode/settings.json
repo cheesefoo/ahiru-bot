@@ -15,10 +15,12 @@
         "cmds",
         "datas",
         "discordbotlist",
+        "discordjs",
         "discordlabs",
         "filesize",
         "ondiscord",
         "parens",
+        "pino",
         "regexes",
         "respawn",
         "varchar"

@@ -1,4 +1,4 @@
-import { Message } from 'discord.js-light';
+import { Message } from 'discord.js';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
@@ -8,6 +8,7 @@ import { Command } from './command';
 let Config = require('../../config/config.json');
 
 export class OCRCommand implements Command {
+    public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
 
@@ -16,7 +17,7 @@ export class OCRCommand implements Command {
     }
 
     public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.ocr', langCode);
+        return Lang.getRegex('commandRegexes.ocr', langCode);
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {

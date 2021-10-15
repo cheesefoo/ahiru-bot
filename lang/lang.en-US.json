@@ -1,24 +1,19 @@
 {
-    "defaultEmbed": {
-        "color": "#0099ff"
-    },
-    "embeds": {
-        "displays": {
+    "data": {
+        "displayEmbeds": {
             "help": {
                 "title": "{{REF:bot.name}} - Help",
                 "description": "{{REF:bot.description}}",
-                "fields": [
-                    {
-                        "name": "{{REF:fields.commands}}",
-                        "value": [
-                            "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
-                            "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle",
-                            "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
-                            "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
-                            "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org"
-                        ]
-                    }
-                ]
+                "fields": [{
+                    "name": "{{REF:fields.commands}}",
+                    "value": [
+                        "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
+                        "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle",
+                        "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
+                        "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
+                        "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org"
+                    ]
+                }]
             },
             "puzzleBadUrl": {
                 "description": "URL must be a direct link to a jpg, png, or gif.",
@@ -35,8 +30,7 @@
             "puzzleHelp": {
                 "title": "Puzzle - Help",
                 "description": "Create a jigsaw puzzle from an image",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Usage",
                         "value": ["~puzzle <url> <# of pieces>"]
                     },
@@ -52,35 +46,31 @@
             "deepLHelp": {
                 "title": "DeepL - Help",
                 "description": "Translates text to English or Japanese",
-                "fields": [
-                    {
-                        "name": "Usage",
-                        "value": ["~deepl <text to translate>"]
-                    }
-                ]
+                "fields": [{
+                    "name": "Usage",
+                    "value": ["~deepl <text to translate>"]
+                }]
             },
             "OCRHelp": {
                 "title": "OCR - Help",
                 "description": "Extract text from an image. Assumes text is in Japanese.",
-                "fields": [
-                    {
-                        "name": "Usage",
-                        "value": [
-                            "~ocr <url to image>",
-                            "~ocr (no args, attach an image to message)"
-                        ]
-                    }
-                ]
+                "fields": [{
+                    "name": "Usage",
+                    "value": [
+                        "~ocr <url to image>",
+                        "~ocr (no args, attach an image to message)"
+                    ]
+                }]
             },
             "jishoHelp": {
                 "title": "Jisho - Help",
                 "description": "Perform a kanji lookup Search jisho.org",
-                "fields": [
-                    {
-                        "name": "Usage",
-                        "value": ["~jisho <a single kanji>"]
-                    }
-                ]
+                "fields": [{
+                    "name": "Usage",
+                    "value": [
+                        "~jisho <a single kanji>"
+                    ]
+                }]
             },
             "jishoKanjiError": {
                 "description": "Error: {{ERROR}}",
@@ -100,8 +90,7 @@
             },
             "dev": {
                 "title": "{{REF:bot.name}} - Developer Info",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Versions",
                         "value": [
                             "**Node.js**: {{NODE_VERSION}}",
@@ -141,55 +130,60 @@
                 "color": "{{REF:colors.error}}"
             }
         },
-        "validation": {
+        "validationEmbeds": {
+            "devOnlyCommand": {
+                "description": "This command can only be used by developers.",
+                "color": "{{COM:colors.warning}}"
+            },
             "serverOnlyCommand": {
                 "description": "This command can only be used in a server.",
-                "color": "{{REF:colors.warning}}"
+                "color": "{{COM:colors.warning}}"
             },
             "permissionRequired": {
                 "description": "You don't have permission to run that command!",
-                "color": "{{REF:colors.warning}}"
+                "color": "{{COM:colors.warning}}"
             }
         },
-        "errors": {
+        "errorEmbeds": {
             "command": {
                 "description": "Something went wrong!",
-                "fields": [
-                    {
+                "fields": [{
                         "name": "Error code",
                         "value": "{{ERROR_CODE}}"
+                    },
+                    {
+                        "name": "Contact support",
+                        "value": "{{COM:links.support}}"
                     }
                 ],
-                "color": "{{REF:colors.error}}"
+                "color": "{{COM:colors.error}}"
             },
             "startupInProcess": {
-                "description": "{{REF:bot.name}} is still starting up. Try again later.",
-                "color": "{{REF:colors.warning}}"
+                "description": "{{COM:bot.name}} is still starting up. Try again later.",
+                "color": "{{COM:colors.warning}}"
             }
-        }
-    },
-    "regexes": {
-        "meta": {
+        },
+        "metaRegexes": {
             "language": "/\\b({{REF:meta.language}}|en US|English)\\b/i"
         },
-        "channels": {
+        "channelRegexes": {
             "bot": "/bot|command|cmd/i"
         },
-        "commands": {
+        "commandRegexes": {
             "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i",
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
             "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
             "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
             "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i",
-            "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i"
-        },
-        "puzzleImageExtensions": "/\\.(gif|png|jpe?g)$/i"
+            "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i",
+            "vote": "/\\b({{REF:commands.vote}}|v)\\b/i"
+        }
     },
     "refs": {
         "meta": {
             "language": "en-US",
             "languageDisplay": "English",
-            "translators": "[TranslatorName#1234](https://github.com/)"
+            "translators": "nobody"
         },
         "bot": {
             "name": "ahiru bot",
@@ -203,9 +197,16 @@
             "jisho": "56d926"
         },
         "commands": {
-            "help": "help",
-            "puzzle": "puzzle",
             "dev": "dev",
+            "docs": "docs",
+            "help": "help",
+            "info": "info",
+            "invite": "invite",
+            "support": "support",
+            "test": "test",
+            "translate": "translate",
+            "vote": "vote",
+            "puzzle": "puzzle",
             "ocr": "ocr",
             "deepl": "deepl",
             "jisho": "jisho"

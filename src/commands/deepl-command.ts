@@ -1,5 +1,5 @@
 import translate from 'deepl';
-import { Message } from 'discord.js-light';
+import { Message } from 'discord.js';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
@@ -9,6 +9,7 @@ import { Command } from './command';
 let Config = require('../../config/config.json');
 
 export class DeepLCommand implements Command {
+    public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
     public deeplEmoji = '<:deepl:866753521393991683>';
@@ -18,7 +19,7 @@ export class DeepLCommand implements Command {
     }
 
     public regex(langCode: LangCode): RegExp {
-        return Lang.getRegex('commands.deepl', langCode);
+        return Lang.getRegex('commandRegexes.deepl', langCode);
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {

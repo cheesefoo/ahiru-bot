@@ -1,30 +1,26 @@
 import {
-    Channel,
+    Collection,
     DiscordAPIError,
-    DMChannel,
     EmojiResolvable,
     Message,
     MessageAttachment,
+    MessageEmbed,
+    MessageOptions,
     MessageReaction,
-    NewsChannel,
-    StringResolvable,
-    TextChannel,
+    Snowflake,
+    TextBasedChannels,
     User,
-} from 'discord.js-light';
-import { EmbedUtils } from './embed-utils';
-import { UrlUtils } from './url-utils';
+} from 'discord.js';
+import { UrlUtils } from '.';
 
 export class MessageUtils {
-    public static async send(target: User | Channel, content: StringResolvable): Promise<Message> {
+    public static async send(
+        target: User | TextBasedChannels,
+        content: string | MessageEmbed | MessageOptions
+    ): Promise<Message> {
         try {
-            if (
-                target instanceof User ||
-                target instanceof DMChannel ||
-                target instanceof TextChannel ||
-                target instanceof NewsChannel
-            ) {
-                return await target.send(content);
-            }
+            let msgOptions = this.messageOptions(content);
+            return await target.send(msgOptions);
         } catch (error) {
             // 10003: "Unknown channel"
             // 10004: "Unknown guild"
@@ -41,18 +37,13 @@ export class MessageUtils {
         }
     }
 
-    public static content(msg: Message): string {
-        return [
-            msg.content,
-            ...msg.embeds.filter(embed => !embed.provider).map(embed => EmbedUtils.content(embed)),
-        ]
-            .filter(Boolean)
-            .join('\n');
-    }
-
-    public static async reply(msg: Message, content: StringResolvable): Promise<Message> {
+    public static async reply(
+        msg: Message,
+        content: string | MessageEmbed | MessageOptions
+    ): Promise<Message> {
         try {
-            return await msg.reply(content);
+            let msgOptions = this.messageOptions(content);
+            return await msg.reply(msgOptions);
         } catch (error) {
             // 10008: "Unknown Message" (Message was deleted)
             // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
@@ -64,10 +55,27 @@ export class MessageUtils {
         }
     }
 
+    public static async edit(
+        msg: Message,
+        content: string | MessageEmbed | MessageOptions
+    ): Promise<Message> {
+        try {
+            let msgOptions = this.messageOptions(content);
+            return await msg.edit(msgOptions);
+        } catch (error) {
+            // 10008: "Unknown Message" (Message was deleted)
+            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
+            if (error instanceof DiscordAPIError && [10008, 50007].includes(error.code)) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
     public static async getEmbedUrl(msg: Message): Promise<string> {
         let embedUrl;
-        msg.attachments.forEach((attachment: MessageAttachment) => {
-            let u = attachment.url;
+        msg.attachments.forEach(a => {
+            let u = a.url;
             if (u !== undefined) {
                 embedUrl = u;
                 return;
@@ -75,27 +83,12 @@ export class MessageUtils {
         });
         return embedUrl;
     }
-
     public static async getUrl(msg: Message, args: string[]): Promise<string> | undefined {
         let url = await MessageUtils.getEmbedUrl(msg);
         if (url === undefined && UrlUtils.isValidHttpUrl(args[2])) {
             url = args[2];
         }
         return url;
-    }
-
-    public static async edit(msg: Message, content: StringResolvable): Promise<Message> {
-        try {
-            return await msg.edit(content);
-        } catch (error) {
-            // 10008: "Unknown Message" (Message was deleted)
-            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
-            if (error instanceof DiscordAPIError && [10008, 50007].includes(error.code)) {
-                return;
-            } else {
-                throw error;
-            }
-        }
     }
 
     public static async react(msg: Message, emoji: EmojiResolvable): Promise<MessageReaction> {
@@ -124,5 +117,17 @@ export class MessageUtils {
                 throw error;
             }
         }
+    }
+
+    private static messageOptions(content: string | MessageEmbed | MessageOptions): MessageOptions {
+        let options: MessageOptions = {};
+        if (typeof content === 'string') {
+            options.content = content;
+        } else if (content instanceof MessageEmbed) {
+            options.embeds = [content];
+        } else {
+            options = content;
+        }
+        return options;
     }
 }

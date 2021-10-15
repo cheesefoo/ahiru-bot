@@ -1,4 +1,4 @@
-import { ShardingManager } from 'discord.js-light';
+import { ShardingManager } from 'discord.js';
 import 'reflect-metadata';
 
 import { Api } from './api';
@@ -59,7 +59,7 @@ async function start(): Promise<void> {
 
     // Jobs
     let jobs = [
-        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService),
+        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService) 
     ].filter(Boolean);
     let jobService = new JobService(jobs);
 
@@ -78,6 +78,10 @@ async function start(): Promise<void> {
         await masterApiService.ready();
     }
 }
+
+process.on('unhandledRejection', (reason, promise) => {
+    Logger.error(Logs.error.unhandledRejection, reason);
+});
 
 start().catch(error => {
     Logger.error(Logs.error.unspecified, error);

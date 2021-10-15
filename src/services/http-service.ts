@@ -1,19 +1,21 @@
-import fetch, { Response } from 'node-fetch';
+import fetch, { HeaderInit, Response } from 'node-fetch';
 import { URL } from 'url';
 
 export class HttpService {
-    public async get(url: string | URL, authorization?: string, header?: { [key: string]: string; }): Promise<Response> {
-        return await fetch(url, {
+    public async get(url: string | URL, authorization: string): Promise<Response> {
+        return fetch(url, {
             method: 'get',
-            headers: header ? header : {
+            headers: {
                 Authorization: authorization,
                 Accept: 'application/json',
             },
         });
     }
 
+ 
+
     public async post(url: string | URL, authorization: string, body?: object): Promise<Response> {
-        return await fetch(url, {
+        return fetch(url, {
             method: 'post',
             headers: {
                 Authorization: authorization,
@@ -25,7 +27,7 @@ export class HttpService {
     }
 
     public async put(url: string | URL, authorization: string, body?: object): Promise<Response> {
-        return await fetch(url, {
+        return fetch(url, {
             method: 'put',
             headers: {
                 Authorization: authorization,
@@ -41,7 +43,7 @@ export class HttpService {
         authorization: string,
         body?: object
     ): Promise<Response> {
-        return await fetch(url, {
+        return fetch(url, {
             method: 'delete',
             headers: {
                 Authorization: authorization,
