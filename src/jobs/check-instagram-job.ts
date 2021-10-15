@@ -1,10 +1,10 @@
 import fetch, { HeaderInit } from 'node-fetch';
 import { BotSite } from '../models/config-models';
 import { HttpService, Lang, Logger } from '../services';
-import { ShardUtils } from '../utils';
+import { MessageUtils, ShardUtils } from '../utils';
 import { Job } from './job';
 
-import { Client, Collection, Guild, GuildMember } from 'discord.js';
+import { Channel, Client, Collection, Guild, GuildMember, TextChannel } from 'discord.js';
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 
@@ -27,9 +27,9 @@ export class CheckInstagram implements Job {
 
 
     private url: string = `https://www.instagram.com/${this.username}/feed/?__a=1`;
-    constructor(private httpService: HttpService, private client: Client) { }
+    constructor(private client: Client) { }
 
-    public async run(client): Promise<void> {
+    public async run(): Promise<void> {
         try {
             let res = await fetch(this.url, {
                 method: 'get',
@@ -39,8 +39,8 @@ export class CheckInstagram implements Job {
                 throw res;
             }
             let embed = await this.buildEmbed(res);
-            let ch = client.channels.cache.get(this.broadcastChannel);
-            ch.send({ embeds: [embed] });
+            let ch: TextChannel = this.client.channels.cache.get(this.broadcastChannel) as TextChannel;
+            MessageUtils.send(ch, { embeds: [embed] });
         } catch (error) {
             Logger.error(Logs.error.job.replace('{JOB}', 'CheckInstagram'), error);
         }
