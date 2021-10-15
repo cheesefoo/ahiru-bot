@@ -11,7 +11,7 @@ let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 let baseEndpoint = "https://api.twitter.com/2/spaces/search"
 // let testId = '1449090654542434308'
-let testId = '1140467090341523456'
+let testId = '313289241'
 let subaId = '1027853566780698624'
 export class CheckTwitter implements Job {
   public name = 'Check Twitter';
