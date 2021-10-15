@@ -76,8 +76,7 @@ async function start(): Promise<void> {
     let reactionHandler = new ReactionHandler([]);
     let interactionHandler = new InteractionHandler(commandHandler);
 
-    let httpService = new HttpService();
-    let jobService = new JobService([new CheckInstagram(httpService, client)])
+    let jobService = new JobService([new CheckInstagram(client)])
 
     let bot = new Bot(
         process.env.discord_token,
