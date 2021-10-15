@@ -26,7 +26,7 @@ import {
     TriggerHandler,
 } from './events';
 import { CustomClient } from './extensions';
-import { CheckInstagram } from './jobs';
+import { CheckInstagram,CheckTwitter } from './jobs';
 import { HttpService, JobService, Logger } from './services';
 
 let Config = require('../config/config.json');
@@ -76,7 +76,7 @@ async function start(): Promise<void> {
     let reactionHandler = new ReactionHandler([]);
     let interactionHandler = new InteractionHandler(commandHandler);
 
-    let jobService = new JobService([new CheckInstagram(client)])
+    let jobService = new JobService([new CheckInstagram(client),new CheckTwitter(client)])
 
     let bot = new Bot(
         process.env.discord_token,
