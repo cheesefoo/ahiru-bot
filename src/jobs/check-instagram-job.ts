@@ -51,7 +51,7 @@ export class CheckInstagram implements Job {
     public async buildEmbed(res) {
         console.log("res\n");
         console.log(res);
-        let url = this.get_last_publication_url(res);
+        let url = await this.get_last_publication_url(res);
         let embed = {
             color: 0xec054c,
             title: `New post from @${this.username}`,
@@ -77,7 +77,7 @@ export class CheckInstagram implements Job {
     }
 
 
-    public get_last_publication_url(html) {
+    public async get_last_publication_url(html) {
         let json = html.json();
         console.log("json\n");
         console.log(json);
