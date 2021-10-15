@@ -20,7 +20,7 @@ export class CheckTwitter implements Job {
 
   constructor(private client: Client) { }
 
-  private broadcastChannel = '825378176993722378';
+  private broadcastChannel = '722257568361087057';
 
   public async run(): Promise<void> {
     await this.Check();
