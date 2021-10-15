@@ -20,7 +20,10 @@ export class CheckTwitter implements Job {
 
   constructor(private client: Client) { }
 
-  private broadcastChannel = '722257568361087057';
+  //subastream
+  // private broadcastChannel = '722257568361087057';
+  //test
+  private broadcastChannel = '825378176993722378';
 
   public async run(): Promise<void> {
     await this.Check();
@@ -28,10 +31,13 @@ export class CheckTwitter implements Job {
 
   private async Check() {
     let twitter = new Twitter({
+
+
       bearer_token: process.env.twitter_token
+
     });
-    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${subaId}`;
-    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: subaId });
+    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${testId}`;
+    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: testId });
 
     //There is a live space
     if (res["meta"]["result_count"] != 0) {
