@@ -57,12 +57,13 @@ export class CheckInstagram implements Job {
         console.log("node\n");
         console.log(node);
         let url = node["shortcode"]
+        let desc = node["edge_media_to_caption"]["edges"][0]?.node?.["text"];
         let embed = {
             color: 0xec054c,
             title: `New post from @${this.username}`,
             url: `https://www.instagram.com/p/${url}/`,
 
-            description: node["edge_media_to_caption"]["edges"][0]["node"]["text"],
+            description: desc ?? "",
             image: { "url": node["thumbnail_src"] },
             thumbnail: {
                 "url": node["thumbnail_src"]
