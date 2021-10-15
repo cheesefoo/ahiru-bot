@@ -21,9 +21,9 @@ export class CheckTwitter implements Job {
   constructor(private client: Client) { }
 
   //subastream
-  // private broadcastChannel = '722257568361087057';
+  private broadcastChannel = '722257568361087057';
   //test
-  private broadcastChannel = '825378176993722378';
+  // private broadcastChannel = '825378176993722378';
 
   public async run(): Promise<void> {
     await this.Check();
@@ -36,10 +36,9 @@ export class CheckTwitter implements Job {
       bearer_token: process.env.twitter_token
 
     });
-    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${testId}`;
-    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: testId });
+    let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${subaId}`;
+    let res = await twitter.get<Response>("spaces/by/creator_ids", { user_ids: subaId });
 
-    Logger.info(Logs.info.nospace);
     //There is a live space
     if (res["meta"]["result_count"] != 0) {
       let spaceId = res["data"][0].id;
@@ -57,6 +56,9 @@ export class CheckTwitter implements Job {
       } catch (error) {
         Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
       }
+    } else {
+      Logger.info(Logs.info.nospace);
+
     }
     Logger.info(Logs.info.jobCompleted.replace('{JOB}', 'CheckTwitter'));
   }
@@ -68,7 +70,7 @@ export class CheckTwitter implements Job {
     let embed = {
       color: 0x1DA1F2,
 
-      title: `Subaru Twitter Space started!`,
+      title: `Subaru Twitter Space started! (auto-recording NYI)`,
       url: listenUrl,
     }
     return embed;
