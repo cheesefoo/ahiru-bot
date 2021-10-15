@@ -20,7 +20,7 @@ export class CheckInstagram implements Job {
         'User-Agent':
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
     };
-    private username: string = 'subatomoen';
+    private username: string = 'subatomos';
     // private username:string = 'oozorasubaru';
 
     private broadcastChannel = '825378176993722378';
