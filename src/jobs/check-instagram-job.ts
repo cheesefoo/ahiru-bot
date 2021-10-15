@@ -49,7 +49,7 @@ export class CheckInstagram implements Job {
     }
 
     public async buildEmbed(res) {
-        console.log(res);
+        console.log("res\n" + res);
         let url = this.get_last_publication_url(res);
         let embed = {
             color: 0xec054c,
@@ -77,8 +77,10 @@ export class CheckInstagram implements Job {
 
 
     public get_last_publication_url(html) {
-        let json = html.json()["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
-        console.log(json);
+        let json = html.json();
+        console.log("json\n" + json);
+        let json2 = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
+        console.log("json2\n" + json2)
         return json;
     }
 
