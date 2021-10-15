@@ -1,7 +1,7 @@
 import fetch, { HeaderInit } from 'node-fetch';
 import { BotSite } from '../models/config-models';
 import { HttpService, Lang, Logger } from '../services';
-import { MessageUtils, ShardUtils } from '../utils';
+import { DatabaseUtils, MessageUtils, ShardUtils } from '../utils';
 import { Job } from './job';
 
 import { Channel, Client, Collection, Guild, GuildMember, TextChannel } from 'discord.js';
@@ -10,18 +10,16 @@ let Logs = require('../../lang/logs.json');
 
 export class CheckInstagram implements Job {
 
-    public name = 'Update Server Count';
-    public schedule: string = Config.jobs.updateServerCount.schedule;
-    public log: boolean = Config.jobs.updateServerCount.log;
-    private lastImageId: string;
-    private botSites: BotSite[];
+    public name = 'Check Instagram';
+    public schedule: string = Config.jobs.checkInstagram.schedule;
+    public log: boolean = Config.jobs.checkInstagram.log; 
     private headers: HeaderInit = {
         Host: 'www.instagram.com',
         'User-Agent':
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
     };
-    private username: string = 'subatomos';
-    // private username:string = 'oozorasubaru';
+    // private username: string = 'subatomos';
+    private username:string = 'oozorasubaru';
 
     private broadcastChannel = '825378176993722378';
 
@@ -38,9 +36,17 @@ export class CheckInstagram implements Job {
             if (!res.ok) {
                 throw res;
             }
-            let embed = await this.buildEmbed(res);
-            let ch: TextChannel = this.client.channels.cache.get(this.broadcastChannel) as TextChannel;
-            MessageUtils.send(ch, { embeds: [embed] });
+            let json = await res.json();
+
+            const shortcode = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"]["shortcode"];
+            if (await DatabaseUtils.CheckIfExists("INSTAGRAM", shortcode)) {
+                Logger.info(Logs.info.instagram.replace('{SC}', shortcode));
+            } else {
+                await DatabaseUtils.Insert("INSTAGRAM", shortcode);
+                let embed = await this.buildEmbed(json);
+                let ch: TextChannel = this.client.channels.cache.get(this.broadcastChannel) as TextChannel;
+                MessageUtils.send(ch, { embeds: [embed] });
+            }
         } catch (error) {
             Logger.error(Logs.error.job.replace('{JOB}', 'CheckInstagram'), error);
         }
@@ -48,14 +54,14 @@ export class CheckInstagram implements Job {
         Logger.info(Logs.info.jobCompleted.replace('{JOB}', 'CheckInstagram'));
     }
 
-    public async buildEmbed(res) {
+    public async buildEmbed(json) {
 
-        let json = await res.json();
-        console.log("json\n");
-        console.log(json);
+        // console.log("json\n");
+        // console.log(json);
         let node = json["graphql"]["user"]["edge_owner_to_timeline_media"]["edges"][0]["node"];
-        console.log("node\n");
-        console.log(node);
+        let pfp = json["graphql"]["user"]["profile_pic_url_hd"];
+        // console.log("node\n");
+        // console.log(node);
         let url = node["shortcode"]
         let desc = node["edge_media_to_caption"]["edges"][0]?.node?.["text"];
         let embed = {
@@ -66,7 +72,7 @@ export class CheckInstagram implements Job {
             description: desc ?? "",
             image: { "url": node["thumbnail_src"] },
             thumbnail: {
-                "url": node["thumbnail_src"]
+                "url": pfp
             }
         };
         return embed;
