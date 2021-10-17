@@ -4,14 +4,14 @@ let Logs = require('../../lang/logs.json');
 
 export class DatabaseUtils {
 
-    static async CheckIfExists(table: "SPACES" | "INSTAGRAM", shortcode: string) {
+    static async CheckIfExists(table: "SPACES" | "INSTAGRAM", shortcode: string, url?) {
         let client = await this.Connect();
 
         try {
-            let res = await client.query(`SELECT * from ${table} WHERE shortcode='${shortcode}'`); 
-            if (res.rows.length == 0) { 
+            let res = await client.query(`SELECT * from ${table} WHERE shortcode='${shortcode}'`);
+            if (res.rows.length == 0) {
                 return false;
-            } else { 
+            } else {
                 return true;
             }
         }
@@ -22,10 +22,10 @@ export class DatabaseUtils {
             client.end();
         }
     }
-    static async Insert(table: "SPACES" | "INSTAGRAM", shortcode: string) {
+    static async Insert(table: "SPACES" | "INSTAGRAM", shortcode: string, url? : string) {
         let client = await this.Connect();
         try {
-            let res = await client.query(`INSERT INTO ${table} (shortcode) VALUES('${shortcode}')`);
+            let res = await client.query(`INSERT INTO ${table} (shortcode, url) VALUES('${shortcode}', '${url}')`);
         }
         catch (error) {
             Logger.error(Logs.error.database.replace('{DB}', table), error);
@@ -34,6 +34,21 @@ export class DatabaseUtils {
             client.end();
         }
     }
+
+    /*
+        static async Insert(table: "SPACES" | "INSTAGRAM", shortcode: string, metadata?:string, baseUrl?:string) {
+        let client = await this.Connect();
+        try {
+            let res = await client.query(`INSERT INTO ${table} (shortcode, metadata, url) VALUES('${shortcode}', '${metadata}', '${baseUrl}')`);
+        }
+        catch (error) {
+            Logger.error(Logs.error.database.replace('{DB}', table), error);
+        }
+        finally {
+            client.end();
+        }
+    }
+    */
 
 
     private static async Connect(): Promise<Client> {

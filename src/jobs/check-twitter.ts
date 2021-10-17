@@ -7,6 +7,7 @@ import { MessageUtils, ShardUtils, DatabaseUtils } from '../utils';
 import { Job } from './job';
 
 import { Channel, Client, Collection, Guild, GuildMember, TextChannel } from 'discord.js';
+import { TwitterSpaceUtils } from '../utils/twitter-space-utils';
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 let baseEndpoint = "https://api.twitter.com/2/spaces/search"
@@ -31,8 +32,6 @@ export class CheckTwitter implements Job {
 
   private async Check() {
     let twitter = new Twitter({
-
-
       bearer_token: process.env.twitter_token
 
     });
@@ -42,16 +41,21 @@ export class CheckTwitter implements Job {
     //There is a live space
     if (res["meta"]["result_count"] != 0) {
       let spaceId = res["data"][0].id;
+      let state = res["data"][0].state;
       try {
         //Check if we've seen it already
         if (await DatabaseUtils.CheckIfExists("SPACES", spaceId)) {
           Logger.info(Logs.info.spacesold.replace('{SC}', spaceId));
         } else {
           //New, post to discord
-          await DatabaseUtils.Insert("SPACES", spaceId);
           let embed = await this.buildEmbed(spaceId);
           let ch: TextChannel = this.client.channels.cache.get(this.broadcastChannel) as TextChannel;
-          MessageUtils.send(ch, { embeds: [embed] });
+          await MessageUtils.send(ch, { embeds: [embed] });
+          let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
+          let url = await TwitterSpaceUtils.GetURL(metadata);
+          await MessageUtils.send(ch, "@venndiagram#7498\n" + "`" + url + "`");
+
+          await DatabaseUtils.Insert("SPACES", spaceId, url.toString());
         }
       } catch (error) {
         Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
