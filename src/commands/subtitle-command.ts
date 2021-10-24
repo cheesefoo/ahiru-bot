@@ -48,9 +48,9 @@ export class SubtitleCommand implements Command {
             let fontSize = 100;
 
             do {
-                
+
                 context.font = `${fontSize -= 10}px sans-serif`;
-                
+
             } while (context.measureText(text).width > canvas.width - 100);
 
             // Return the result to use in the actual canvas
@@ -58,19 +58,11 @@ export class SubtitleCommand implements Command {
         };
         // Assign the decided font to the canvas
         ctx.font = applyText(canvas, text);
-        ctx.fillStyle = '#1fe5ea';
-        ctx.strokeStyle = 'black';
         ctx.textAlign = "center";
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height *0.9, canvas.width - 1000, 18)
-
-
+        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, canvas.width - 1000, 18)
 
         // Use the helpful Attachment class structure to process the file for you
-        const attachment = new MessageAttachment(canvas.toBuffer(), 'profile-image.png');
-
-
-
-
+        const attachment = new MessageAttachment(canvas.toBuffer(), 'yourgarbagememe.png');
 
         await MessageUtils.send(msg.channel, { files: [attachment] });
     }
@@ -109,7 +101,10 @@ export class SubtitleCommand implements Command {
                 line = test;
             }
         }
-
+        context.strokeStyle = 'black';
+        context.lineWidth = 8;
+        context.strokeText(line, x, y);
+        context.fillStyle = '#1fe5ea';
         context.fillText(line, x, y);
     }
 
