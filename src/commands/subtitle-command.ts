@@ -9,7 +9,8 @@ import Canvas from 'canvas';
 
 
 let Config = require('../../config/config.json');
-let template = require("../../static/template.png");
+// let template = require("../../static/template.png");
+
 export class SubtitleCommand implements Command {
     public requireDev = false;
     public requireGuild = false;
@@ -24,8 +25,7 @@ export class SubtitleCommand implements Command {
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
-
-
+        let template = '../../static/template.png';
         let text;
         if (args.length === 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
