@@ -11,7 +11,8 @@
                         "**{{REF:bot.prefix}}{{REF:commands.puzzle}} <direct link to img> <# of pieces>** - makes a puzzle",
                         "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
                         "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
-                        "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org"
+                        "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org",
+                        "**{{REF:bot.prefix}}{{REF:commands.subtitle}} <caption text>** - clutter chat with a garbage meme"
                     ]
                 }]
             },
@@ -72,6 +73,17 @@
                     ]
                 }]
             },
+            "subtitleHelp": {
+                "title": "Subtitle - Help",
+                "description": "generate a shitpost lol",
+                "fields": [{
+                    "name": "Usage",
+                    "value": [
+                        "~subtitle <text in caption>"
+                    ]
+                }]
+            },
+
             "jishoKanjiError": {
                 "description": "Error: {{ERROR}}",
                 "color": "{{REF:colors.error}}"
@@ -176,6 +188,7 @@
             "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
             "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i",
             "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i",
+            "subtitle": "/\\b({{REF:commands.subtitle}}|subtitle|meme)\\b/i",
             "vote": "/\\b({{REF:commands.vote}}|v)\\b/i"
         }
     },
@@ -209,7 +222,8 @@
             "puzzle": "puzzle",
             "ocr": "ocr",
             "deepl": "deepl",
-            "jisho": "jisho"
+            "jisho": "jisho",
+            "subtitle": "subtitle"
         },
         "lists": {
             "languageItem": "**{{LANGUAGE_NAME}}** (`{{LANGUAGE_KEYWORD}}`)"

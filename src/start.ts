@@ -15,6 +15,7 @@ import {
     TestCommand,
     TranslateCommand,
     VoteCommand,
+    SubtitleCommand
 } from './commands';
 import {
     CommandHandler,
@@ -26,7 +27,7 @@ import {
     TriggerHandler,
 } from './events';
 import { CustomClient } from './extensions';
-import { CheckInstagram,CheckTwitter } from './jobs';
+import { CheckInstagram, CheckTwitter } from './jobs';
 import { HttpService, JobService, Logger } from './services';
 
 let Config = require('../config/config.json');
@@ -58,6 +59,7 @@ async function start(): Promise<void> {
     let deepLCommand = new DeepLCommand();
     let puzzleCommand = new PuzzleCommand();
     let jishoCommand = new JishoCommand();
+    let subtitleCommand = new SubtitleCommand();
 
     // Event handlers
     let guildJoinHandler = new GuildJoinHandler();
@@ -68,7 +70,8 @@ async function start(): Promise<void> {
         deepLCommand,
         ocrCommand,
         jishoCommand,
-        voteCommand
+        voteCommand,
+        subtitleCommand
     ]);
 
     let triggerHandler = new TriggerHandler([]);
@@ -76,7 +79,7 @@ async function start(): Promise<void> {
     let reactionHandler = new ReactionHandler([]);
     let interactionHandler = new InteractionHandler(commandHandler);
 
-    let jobService = new JobService([new CheckInstagram(client),new CheckTwitter(client)])
+    let jobService = new JobService([new CheckInstagram(client), new CheckTwitter(client)])
 
     let bot = new Bot(
         process.env.discord_token,
