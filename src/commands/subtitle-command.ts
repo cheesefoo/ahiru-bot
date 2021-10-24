@@ -76,7 +76,7 @@ export class SubtitleCommand implements Command {
         await MessageUtils.send(msg.channel, { files: [attachment] });
     }
     private wrapText(context, text, x, y, maxWidth, lineHeight) {
-
+        console.log(text)
         var words = text.split(' '),
             line = '',
             lineCount = 0,
@@ -101,6 +101,7 @@ export class SubtitleCommand implements Command {
             metrics = context.measureText(test);
 
             if (metrics.width > maxWidth && i > 0) {
+                console.log(line);
                 context.strokeText(line, x, y);
                 context.fillText(line, x, y);
                 line = words[i] + ' ';
