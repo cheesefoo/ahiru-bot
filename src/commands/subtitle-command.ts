@@ -45,11 +45,12 @@ export class SubtitleCommand implements Command {
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         // Pass the entire Canvas object because you'll need access to its width and context
+        let fontSize = 100;
         const applyText = (canvas, text) => {
             const context = canvas.getContext('2d');
 
             // Declare a base size of the font
-            let fontSize = 100;
+
 
             do {
 
@@ -61,12 +62,13 @@ export class SubtitleCommand implements Command {
             return context.font;
         };
         // Assign the decided font to the canvas
-        ctx.font = applyText(canvas, text);
+        // ctx.font = applyText(canvas, text);
+        ctx.font = '100px sans-serif';
         ctx.textAlign = "center";
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 8;
         ctx.fillStyle = '#1fe5ea';
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, 1440, ctx.font.fontsize)
+        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, 1440, fontSize)
 
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new MessageAttachment(canvas.toBuffer(), 'yourgarbagememe.png');
@@ -99,7 +101,7 @@ export class SubtitleCommand implements Command {
             metrics = context.measureText(test);
 
             if (metrics.width > maxWidth && i > 0) {
-                context.strokeText(text, x, y);
+                context.strokeText(line, x, y);
                 context.fillText(line, x, y);
                 line = words[i] + ' ';
                 y += lineHeight;
