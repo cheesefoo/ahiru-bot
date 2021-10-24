@@ -63,7 +63,7 @@ export class SubtitleCommand implements Command {
         };
         // Assign the decided font to the canvas
         // ctx.font = applyText(canvas, text);
-        ctx.font = '100px sans-serif';
+        ctx.font = `${fontSize}px sans-serif`;
         ctx.textAlign = "center";
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 8;
@@ -112,8 +112,8 @@ export class SubtitleCommand implements Command {
                 line = test;
             }
         }
-        context.strokeText(text, x, y);
-        context.fillText(text, x, y);
+        context.strokeText(line, x, y);
+        context.fillText(line, x, y);
     }
 
 }
