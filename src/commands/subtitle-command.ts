@@ -32,7 +32,7 @@ export class SubtitleCommand implements Command {
         }
 
         text = args.slice(2).reduce((prev, cur, _index, _array) => {
-            return prev + cur;
+            return prev + ' ' + cur;
         });
         if (text.length > 100) {
             await MessageUtils.send(msg.channel, "no");
