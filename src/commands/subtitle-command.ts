@@ -34,8 +34,8 @@ export class SubtitleCommand implements Command {
         text = args.slice(2).reduce((prev, cur, _index, _array) => {
             return prev + ' ' + cur;
         });
-        if (text.length > 100) {
-            await MessageUtils.send(msg.channel, "no");
+        if (text.length > 50) {
+            await MessageUtils.send(msg.channel, "sentence too long lol");
             return;
         }
         const canvas = Canvas.createCanvas(1920, 1080);
@@ -68,7 +68,7 @@ export class SubtitleCommand implements Command {
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 8;
         ctx.fillStyle = '#1fe5ea';
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, 1440, fontSize)
+        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, 1660, fontSize)
 
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new MessageAttachment(canvas.toBuffer(), 'yourgarbagememe.png');
