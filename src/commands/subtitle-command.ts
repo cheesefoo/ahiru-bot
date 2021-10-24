@@ -25,7 +25,7 @@ export class SubtitleCommand implements Command {
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
-        let template = '../../static/template.png';
+        let template = 'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
         let text;
         if (args.length === 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
