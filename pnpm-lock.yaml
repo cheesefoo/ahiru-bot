@@ -11,7 +11,7 @@ specifiers:
   '@types/pg': ^8.6.1
   '@types/pino': 6.3.11
   '@types/remove-markdown': 0.3.1
-  canvas: ^2.8.0
+  canvas: ^2.6.0
   class-transformer: 0.4.0
   class-validator: 0.13.1
   deepl: ^1.0.13
