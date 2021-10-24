@@ -9,7 +9,7 @@
     "scripts": {
         "start": "node dist/start.js",
         "testlol": "node ./dist/utils/twitter-space-utils.js",
-        "postinstall": "tsc && cp -r src/static dist/static"
+        "postinstall": "tsc"
     },
     "dependencies": {
         "@discordjs/rest": "^0.1.0-canary.0",
