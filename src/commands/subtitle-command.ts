@@ -34,8 +34,11 @@ export class SubtitleCommand implements Command {
         text = args.slice(2).reduce((prev, cur, _index, _array) => {
             return prev + cur;
         });
-        if (text.length > 50)
-            const canvas = Canvas.createCanvas(1920, 1080);
+        if (text.length > 100) {
+            await MessageUtils.send(msg.channel, "no");
+            return;
+        }
+        const canvas = Canvas.createCanvas(1920, 1080);
         const ctx = canvas.getContext('2d');
 
         const background = await Canvas.loadImage(template);
