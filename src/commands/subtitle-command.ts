@@ -45,7 +45,7 @@ export class SubtitleCommand implements Command {
             const context = canvas.getContext('2d');
 
             // Declare a base size of the font
-            let fontSize = 70;
+            let fontSize = 100;
 
             do {
                 
@@ -58,9 +58,10 @@ export class SubtitleCommand implements Command {
         };
         // Assign the decided font to the canvas
         ctx.font = applyText(canvas, text);
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = '#1fe5ea';
+        ctx.strokeStyle = 'black';
         ctx.textAlign = "center";
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height *0.8, canvas.width - 1000, 18)
+        this.wrapText(ctx, text, canvas.width / 2, canvas.height *0.9, canvas.width - 1000, 18)
 
 
 
