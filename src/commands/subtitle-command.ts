@@ -1,10 +1,11 @@
 import { Message, MessageAttachment } from 'discord.js';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
-import { Lang } from '../services';
+import { Lang, Logger } from '../services';
 import { MessageUtils } from '../utils';
 import { Command } from './command';
 import Canvas from 'canvas';
+import { Url } from 'url';
 
 
 let Config = require('../../config/config.json');
@@ -24,11 +25,35 @@ export class SubtitleCommand implements Command {
     }
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
-        let template = 'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
-        let text: string;
+        let template, text: string;
+        let x, y, fontSize, lineWidth: number;
         if (args.length === 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.subtitleHelp', data.lang()));
             return;
+        }
+        console.log(args[1].toString())
+        switch (args[1]) {
+            case "fist":
+            case "arthur":
+                {
+                    template = 'https://cdn.discordapp.com/attachments/870361524789723187/902359723809075231/template2.png';
+                    x = 499;
+                    y = 433;
+                    fontSize = 24;
+                    lineWidth = 3;
+                    break;
+                }
+            case "think":
+            default:
+                {
+                    template = 'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
+                    x = 1920;
+                    y = 1080;
+                    fontSize = 100
+                    lineWidth = 8;
+                    break;
+                }
+
         }
 
         text = args.slice(2).reduce((prev, cur, _index, _array) => {
@@ -38,14 +63,14 @@ export class SubtitleCommand implements Command {
             await MessageUtils.send(msg.channel, "sentence too long lol");
             return;
         }
-        const canvas = Canvas.createCanvas(1920, 1080);
+        const canvas = Canvas.createCanvas(x, y);
         const ctx = canvas.getContext('2d');
 
         const background = await Canvas.loadImage(template);
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         // Pass the entire Canvas object because you'll need access to its width and context
-        let fontSize = 100;
+
         const applyText = (canvas, text) => {
             const context = canvas.getContext('2d');
 
@@ -66,9 +91,9 @@ export class SubtitleCommand implements Command {
         ctx.font = `${fontSize}px sans-serif`;
         ctx.textAlign = "center";
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 8;
+        ctx.lineWidth = lineWidth;
         ctx.fillStyle = '#1fe5ea';
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, 1660, fontSize)
+        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, canvas.width * 0.85, fontSize)
 
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new MessageAttachment(canvas.toBuffer(), 'yourgarbagememe.png');

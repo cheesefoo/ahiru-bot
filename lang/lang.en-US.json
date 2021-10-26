@@ -79,7 +79,7 @@
                 "fields": [{
                     "name": "Usage",
                     "value": [
-                        "~subtitle <text in caption>"
+                        "~(think|fist) <text in caption>"
                     ]
                 }]
             },
@@ -188,7 +188,7 @@
             "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
             "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i",
             "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i",
-            "subtitle": "/\\b({{REF:commands.subtitle}}|subtitle|meme)\\b/i",
+            "subtitle": "/\\b({{REF:commands.subtitle}}|subtitle|meme|think|fist|arthur)\\b/i",
             "vote": "/\\b({{REF:commands.vote}}|v)\\b/i"
         }
     },
