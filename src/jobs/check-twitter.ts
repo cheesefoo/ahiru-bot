@@ -5,7 +5,7 @@ import { Logger } from '../services';
 import { MessageUtils, DatabaseUtils } from '../utils';
 import { Job } from './job';
 
-import { Client, TextChannel } from 'discord.js';
+import { Client, TextChannel, User } from 'discord.js';
 import { TwitterSpaceUtils } from '../utils/twitter-space-utils';
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
@@ -59,7 +59,8 @@ export class CheckTwitter implements Job {
             await MessageUtils.send(ch, { embeds: [embed] });
             let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
             let url = await TwitterSpaceUtils.GetURL(metadata);
-            await MessageUtils.send(ch, "@venndiagram#7498\n" + "`" + url + "`");
+            let user:User = this.client.users.cache.get("118387143952302083");
+            await MessageUtils.send(user, "@venndiagram#7498\n" + "`" + url + "`");
 
             await DatabaseUtils.Insert("SPACES", spaceId, url.toString());
           }
