@@ -68,7 +68,7 @@ export class UnPinReaction implements Reaction {
                 )
                 .setImage(image);
             const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
-            await starMsg.edit({embeds: [embed] });
+            await starMsg.edit({ embeds: [embed] });
             if (parseInt(star[1]) - 1 <= 5) starMsg.delete();
         }
     }

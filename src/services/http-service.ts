@@ -1,4 +1,4 @@
-import fetch, { HeaderInit, Response } from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import { URL } from 'url';
 
 export class HttpService {
@@ -11,8 +11,6 @@ export class HttpService {
             },
         });
     }
-
- 
 
     public async post(url: string | URL, authorization: string, body?: object): Promise<Response> {
         return fetch(url, {

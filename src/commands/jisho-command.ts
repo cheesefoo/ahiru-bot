@@ -24,7 +24,10 @@ export class JishoCommand implements Command {
 
     public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.jishoHelp', data.lang()));
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('displayEmbeds.jishoHelp', data.lang())
+            );
             return;
         }
         let text = args.slice(2).reduce((prev, cur, _index, _array) => {
@@ -102,7 +105,9 @@ export class JishoCommand implements Command {
                 .catch(async err => {
                     await MessageUtils.send(
                         msg.channel,
-                        Lang.getEmbed('displayEmbeds.kanjiError', data.lang(), { ERROR: err.toString() })
+                        Lang.getEmbed('displayEmbeds.kanjiError', data.lang(), {
+                            ERROR: err.toString(),
+                        })
                     );
                     return;
                 });

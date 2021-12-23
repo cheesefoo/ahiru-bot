@@ -5,7 +5,6 @@ import { URL } from 'url';
 
 import { LangCode } from '../models/enums';
 
-
 export class Lang {
     public static Default = LangCode.EN_US;
 
@@ -23,11 +22,10 @@ export class Lang {
     }
 
     public static getRegex(location: string, langCode: LangCode): RegExp {
-
-        let r = this.linguini.get(location, langCode, TypeMappers.RegExp);
-        let t = this.linguini.get(location, this.Default, TypeMappers.RegExp);
-
-        return (r ?? t);
+        return (
+            this.linguini.get(location, langCode, TypeMappers.RegExp) ??
+            this.linguini.get(location, this.Default, TypeMappers.RegExp)
+        );
     }
 
     public static getRef(
@@ -46,21 +44,24 @@ export class Lang {
     }
 
     private static messageEmbedTm: TypeMapper<MessageEmbed> = (jsonValue: any) => {
-        console.log(jsonValue);
         return new MessageEmbed({
             author: jsonValue.author,
             title: Utils.join(jsonValue.title, '\n'),
             url: jsonValue.url,
-            thumbnail: jsonValue.thumbnail,
+            thumbnail: {
+                url: jsonValue.thumbnail,
+            },
             description: Utils.join(jsonValue.description, '\n'),
             fields: jsonValue.fields?.map(field => ({
                 name: Utils.join(field.name, '\n'),
                 value: Utils.join(field.value, '\n'),
             })),
-            image: jsonValue.image,
+            image: {
+                url: jsonValue.image,
+            },
             footer: {
                 text: Utils.join(jsonValue.footer?.text, '\n'),
-                iconURL: Utils.join(jsonValue.footer?.icon, '\n'),
+                iconURL: jsonValue.footer?.icon,
             },
             timestamp: jsonValue.timestamp ? Date.now() : undefined,
             color: jsonValue.color ?? '#0099ff',

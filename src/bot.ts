@@ -9,7 +9,13 @@ import {
     User,
 } from 'discord.js';
 
-import { CommandHandler, GuildJoinHandler, GuildLeaveHandler, MessageHandler, ReactionHandler, InteractionHandler } from './events';
+import {
+    CommandHandler,
+    GuildJoinHandler,
+    GuildLeaveHandler,
+    MessageHandler,
+    ReactionHandler,
+} from './events';
 import { JobService, Logger } from './services';
 import { PartialUtils } from './utils';
 
@@ -26,10 +32,10 @@ export class Bot {
         private guildJoinHandler: GuildJoinHandler,
         private guildLeaveHandler: GuildLeaveHandler,
         private messageHandler: MessageHandler,
+        private commandHandler: CommandHandler,
         private reactionHandler: ReactionHandler,
-        private jobService: JobService,
-        private interactionHandler: InteractionHandler
-    ) { }
+        private jobService: JobService
+    ) {}
 
     public async start(): Promise<void> {
         this.registerListeners();
@@ -44,6 +50,9 @@ export class Bot {
         this.client.on(Constants.Events.GUILD_CREATE, (guild: Guild) => this.onGuildJoin(guild));
         this.client.on(Constants.Events.GUILD_DELETE, (guild: Guild) => this.onGuildLeave(guild));
         this.client.on(Constants.Events.MESSAGE_CREATE, (msg: Message) => this.onMessage(msg));
+        this.client.on(Constants.Events.INTERACTION_CREATE, (intr: Interaction) =>
+            this.onInteraction(intr)
+        );
         this.client.on(
             Constants.Events.MESSAGE_REACTION_ADD,
             (messageReaction: MessageReaction, user: User) => this.onReaction(messageReaction, user)
@@ -51,18 +60,6 @@ export class Bot {
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
         );
-        this.client.on(Constants.Events.INTERACTION_CREATE, (interaction: Interaction) => this.onInteraction(interaction));
-    }
-    private async onInteraction(interaction: Interaction): Promise<void> {
-
-        if (!interaction.isCommand()) return; 
-
-        try {
-            await this.interactionHandler.process(interaction);
-        } catch (error) {
-            Logger.error(Logs.error.message, error);
-        }       
-
     }
 
     private async login(token: string): Promise<void> {
@@ -131,6 +128,22 @@ export class Bot {
             await this.messageHandler.process(msg);
         } catch (error) {
             Logger.error(Logs.error.message, error);
+        }
+    }
+
+    private async onInteraction(intr: Interaction): Promise<void> {
+        if (
+            !intr.isCommand() ||
+            !this.ready ||
+            (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(intr.user.id))
+        ) {
+            return;
+        }
+
+        try {
+            await this.commandHandler.process(intr);
+        } catch (error) {
+            Logger.error(Logs.error.command, error);
         }
     }
 

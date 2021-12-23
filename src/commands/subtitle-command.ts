@@ -7,7 +7,6 @@ import { Command } from './command';
 import Canvas from 'canvas';
 import { Url } from 'url';
 
-
 let Config = require('../../config/config.json');
 // let template = require("../../static/template.png");
 
@@ -28,39 +27,41 @@ export class SubtitleCommand implements Command {
         let template, text: string;
         let x, y, fontSize, lineWidth: number;
         if (args.length === 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.subtitleHelp', data.lang()));
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('displayEmbeds.subtitleHelp', data.lang())
+            );
             return;
         }
-        console.log(args[1].toString())
+        console.log(args[1].toString());
         switch (args[1]) {
-            case "fist":
-            case "arthur":
-                {
-                    template = 'https://cdn.discordapp.com/attachments/870361524789723187/902359723809075231/template2.png';
-                    x = 499;
-                    y = 433;
-                    fontSize = 24;
-                    lineWidth = 3;
-                    break;
-                }
-            case "think":
-            default:
-                {
-                    template = 'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
-                    x = 1920;
-                    y = 1080;
-                    fontSize = 100
-                    lineWidth = 8;
-                    break;
-                }
-
+            case 'fist':
+            case 'arthur': {
+                template =
+                    'https://cdn.discordapp.com/attachments/870361524789723187/902359723809075231/template2.png';
+                x = 499;
+                y = 433;
+                fontSize = 24;
+                lineWidth = 3;
+                break;
+            }
+            case 'think':
+            default: {
+                template =
+                    'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
+                x = 1920;
+                y = 1080;
+                fontSize = 100;
+                lineWidth = 8;
+                break;
+            }
         }
 
         text = args.slice(2).reduce((prev, cur, _index, _array) => {
             return prev + ' ' + cur;
         });
         if (text.length > 50) {
-            await MessageUtils.send(msg.channel, "sentence too long lol");
+            await MessageUtils.send(msg.channel, 'sentence too long lol');
             return;
         }
         const canvas = Canvas.createCanvas(x, y);
@@ -76,11 +77,8 @@ export class SubtitleCommand implements Command {
 
             // Declare a base size of the font
 
-
             do {
-
-                context.font = `${fontSize -= 10}px sans-serif`;
-
+                context.font = `${(fontSize -= 10)}px sans-serif`;
             } while (context.measureText(text).width > canvas.width - 100);
 
             // Return the result to use in the actual canvas
@@ -89,11 +87,18 @@ export class SubtitleCommand implements Command {
         // Assign the decided font to the canvas
         // ctx.font = applyText(canvas, text);
         ctx.font = `${fontSize}px sans-serif`;
-        ctx.textAlign = "center";
+        ctx.textAlign = 'center';
         ctx.strokeStyle = 'black';
         ctx.lineWidth = lineWidth;
         ctx.fillStyle = '#1fe5ea';
-        this.wrapText(ctx, text, canvas.width / 2, canvas.height * 0.9, canvas.width * 0.85, fontSize)
+        this.wrapText(
+            ctx,
+            text,
+            canvas.width / 2,
+            canvas.height * 0.9,
+            canvas.width * 0.85,
+            fontSize
+        );
 
         // Use the helpful Attachment class structure to process the file for you
         const attachment = new MessageAttachment(canvas.toBuffer(), 'yourgarbagememe.png');
@@ -101,7 +106,7 @@ export class SubtitleCommand implements Command {
         await MessageUtils.send(msg.channel, { files: [attachment] });
     }
     private wrapText(context, text, x, y, maxWidth, lineHeight) {
-        console.log(text)
+        console.log(text);
         var words = text.split(' '),
             line = '',
             lineCount = 0,
@@ -118,7 +123,7 @@ export class SubtitleCommand implements Command {
                 metrics = context.measureText(test);
             }
             if (words[i] != test) {
-                words.splice(i + 1, 0, words[i].substr(test.length))
+                words.splice(i + 1, 0, words[i].substr(test.length));
                 words[i] = test;
             }
 
@@ -132,13 +137,11 @@ export class SubtitleCommand implements Command {
                 line = words[i] + ' ';
                 y += lineHeight;
                 lineCount++;
-            }
-            else {
+            } else {
                 line = test;
             }
         }
         context.strokeText(line, x, y);
         context.fillText(line, x, y);
     }
-
 }

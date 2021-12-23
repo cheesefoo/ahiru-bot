@@ -1,13 +1,11 @@
 import {
-    Collection,
+    CommandInteraction,
     DiscordAPIError,
     EmojiResolvable,
     Message,
-    MessageAttachment,
     MessageEmbed,
     MessageOptions,
     MessageReaction,
-    Snowflake,
     TextBasedChannels,
     User,
 } from 'discord.js';
@@ -21,6 +19,29 @@ export class MessageUtils {
         try {
             let msgOptions = this.messageOptions(content);
             return await target.send(msgOptions);
+        } catch (error) {
+            // 10003: "Unknown channel"
+            // 10004: "Unknown guild"
+            // 10013: "Unknown user"
+            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
+            if (
+                error instanceof DiscordAPIError &&
+                [10003, 10004, 10013, 50007].includes(error.code)
+            ) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public static async sendIntr(
+        intr: CommandInteraction,
+        content: string | MessageEmbed | MessageOptions
+    ): Promise<Message> {
+        try {
+            let msgOptions = this.messageOptions(content);
+            return (await intr.webhook.send(msgOptions)) as Message;
         } catch (error) {
             // 10003: "Unknown channel"
             // 10004: "Unknown guild"

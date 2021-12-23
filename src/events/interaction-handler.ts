@@ -22,13 +22,12 @@ let Debug = require('../../config/debug.json');
 let Logs = require('../../lang/logs.json');
 
 export class InteractionHandler implements EventHandler {
-    constructor(private commandHandler: CommandHandler) { }
+    constructor(private commandHandler: CommandHandler) {}
 
     private rateLimiter = new RateLimiter(
         Config.rateLimiting.commands.amount,
         Config.rateLimiting.commands.interval * 1000
     );
-
 
     public async process(interaction: CommandInteraction): Promise<void> {
         /*  // Check if user is rate limited

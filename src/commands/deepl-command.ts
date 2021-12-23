@@ -1,14 +1,19 @@
 import translate from 'deepl';
-import { Message } from 'discord.js';
+import { ApplicationCommandData, CommandInteraction, Message } from 'discord.js';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
 import { ApiUtils, MessageUtils } from '../utils';
 import { Command } from './command';
+import { MessageCommand } from './messageCommand';
 
 let Config = require('../../config/config.json');
 
-export class DeepLCommand implements Command {
+export class DeepLCommand implements Command,MessageCommand {
+    public data: ApplicationCommandData = {
+        name: Lang.getCom('commands.deepl'),
+        description: Lang.getRef('commandDescs.deepl', Lang.Default),
+    };
     public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
@@ -21,16 +26,24 @@ export class DeepLCommand implements Command {
     public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.deepl', langCode);
     }
+    public async execute(intr: CommandInteraction, data: EventData): Promise<void> {
+        let text = intr.options.getString('text');
+        await MessageUtils.sendIntr(intr, Lang.getEmbed('displayEmbeds.test', data.lang()));
+    }
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+    public async executeMessageCommand(msg: Message, args: string[], data: EventData): Promise<void> {
         let url = await MessageUtils.getUrl(msg, args);
-        let detectedText;
-        let text;
-        if (url == undefined && args.length === 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
+
+        if (url === undefined && args.length === 2) {
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('displayEmbeds.deepLHelp', data.lang())
+            );
             return;
         }
-        if (url != undefined) {
+        let detectedText;
+        let text;
+        if (url !== undefined) {
             try {
                 const result = await ApiUtils.OCRRequest(url);
                 const errMsg = result?.error?.message;
@@ -76,14 +89,14 @@ export class DeepLCommand implements Command {
         const emoji = msg.client.emojis.cache.find(e => e.name === 'deepl');
 
         let resp = await translate({
-            text: text,
+            text,
             target_lang: 'EN',
             auth_key: process.env.deepl_key,
             free_api: true,
         });
         let tl = await ApiUtils.ParseTranslations(resp.data.translations[0]);
 
-        if (tl != undefined) {
+        if (tl !== undefined) {
             tl = `${emoji}:${tl}`;
         }
         await MessageUtils.send(msg.channel, tl);

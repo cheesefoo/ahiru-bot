@@ -1,27 +1,25 @@
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/rest/v9';
 import { Options } from 'discord.js';
 
 import { Bot } from './bot';
 import {
     DeepLCommand,
     DevCommand,
-    DocsCommand,
     HelpCommand,
     InfoCommand,
-    InviteCommand,
     JishoCommand,
     OCRCommand,
     PuzzleCommand,
-    SupportCommand,
     TestCommand,
     TranslateCommand,
-    VoteCommand,
-    SubtitleCommand
+    SubtitleCommand,
+    Command,
 } from './commands';
 import {
     CommandHandler,
     GuildJoinHandler,
     GuildLeaveHandler,
-    InteractionHandler,
     MessageHandler,
     ReactionHandler,
     TriggerHandler,
@@ -47,14 +45,10 @@ async function start(): Promise<void> {
 
     // Commands
     let devCommand = new DevCommand();
-    let docsCommand = new DocsCommand();
     let helpCommand = new HelpCommand();
     let infoCommand = new InfoCommand();
-    let inviteCommand = new InviteCommand();
-    let supportCommand = new SupportCommand();
     let testCommand = new TestCommand();
     let translateCommand = new TranslateCommand();
-    let voteCommand = new VoteCommand();
     let ocrCommand = new OCRCommand();
     let deepLCommand = new DeepLCommand();
     let puzzleCommand = new PuzzleCommand();
@@ -64,35 +58,51 @@ async function start(): Promise<void> {
     // Event handlers
     let guildJoinHandler = new GuildJoinHandler();
     let guildLeaveHandler = new GuildLeaveHandler();
-    let commandHandler = new CommandHandler(Config.prefix, helpCommand, [
-        devCommand,
-        puzzleCommand,
-        deepLCommand,
-        ocrCommand,
-        jishoCommand,
-        voteCommand,
-        subtitleCommand
-    ]);
-
+    let commandHandler = new CommandHandler(commands);
     let triggerHandler = new TriggerHandler([]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
     let reactionHandler = new ReactionHandler([]);
-    let interactionHandler = new InteractionHandler(commandHandler);
-
-    let jobService = new JobService([new CheckInstagram(client), new CheckTwitter(client)])
 
     let bot = new Bot(
-        process.env.discord_token,
+        Config.client.token,
         client,
         guildJoinHandler,
         guildLeaveHandler,
         messageHandler,
+        commandHandler,
         reactionHandler,
-        jobService,
-        interactionHandler
+        new JobService([])
     );
 
+    if (process.argv[2] === '--register') {
+        await registerCommands(commands);
+        process.exit();
+    }
+
     await bot.start();
+}
+
+async function registerCommands(commands: Command[]): Promise<void> {
+    let cmdDatas = commands.map(cmd => cmd.data);
+    let cmdNames = cmdDatas.map(cmdData => cmdData.name);
+
+    Logger.info(
+        Logs.info.commandsRegistering.replaceAll(
+            '{COMMAND_NAMES}',
+            cmdNames.map(cmdName => `'${cmdName}'`).join(', ')
+        )
+    );
+
+    try {
+        let rest = new REST({ version: '9' }).setToken(Config.client.token);
+        await rest.put(Routes.applicationCommands(Config.client.id), { body: [] });
+        await rest.put(Routes.applicationCommands(Config.client.id), { body: cmdDatas });
+    } catch (error) {
+        Logger.error(Logs.error.commandsRegistering, error);
+        return;
+    }
+
+    Logger.info(Logs.info.commandsRegistered);
 }
 
 process.on('unhandledRejection', (reason, promise) => {

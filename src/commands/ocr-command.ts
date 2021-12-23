@@ -1,13 +1,18 @@
-import { Message } from 'discord.js';
+import { ApplicationCommandData, CommandInteraction, Message } from 'discord.js';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
 import { ApiUtils, MessageUtils } from '../utils';
 import { Command } from './command';
+import { MessageCommand } from './messageCommand';
 
 let Config = require('../../config/config.json');
 
-export class OCRCommand implements Command {
+export class OCRCommand implements Command,MessageCommand {
+    public data: ApplicationCommandData = {
+        name: Lang.getCom('commands.ocr'),
+        description: Lang.getRef('commandDescs.ocr', Lang.Default),
+    };
     public requireDev = false;
     public requireGuild = false;
     public requirePerms = [];
@@ -19,8 +24,10 @@ export class OCRCommand implements Command {
     public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.ocr', langCode);
     }
-
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+    public async execute(intr: CommandInteraction, data: EventData): Promise<void> {
+        await MessageUtils.sendIntr(intr, Lang.getEmbed('displayEmbeds.test', data.lang()));
+    }
+    public async executeMessageCommand(msg: Message, args: string[], data: EventData): Promise<void> {
         let url = await MessageUtils.getUrl(msg, args);
         let detectedText: string;
 

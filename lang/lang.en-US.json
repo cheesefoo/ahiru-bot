@@ -2,7 +2,7 @@
     "data": {
         "displayEmbeds": {
             "help": {
-                "title": "{{REF:bot.name}} - Help",
+                "title": "{{COM:bot.name}} - Help",
                 "description": "{{REF:bot.description}}",
                 "fields": [{
                     "name": "{{REF:fields.commands}}",
@@ -101,14 +101,15 @@
                 "color": "{{REF:colors.error}}"
             },
             "dev": {
-                "title": "{{REF:bot.name}} - Developer Info",
-                "fields": [{
+                "title": "{{COM:bot.name}} - Developer Info",
+                "fields": [
+                    {
                         "name": "Versions",
                         "value": [
                             "**Node.js**: {{NODE_VERSION}}",
                             "**TypeScript**: {{TS_VERSION}}",
                             "**ECMAScript**: {{ES_VERSION}}",
-                            "**discord.js-light**: {{DJS_VERSION}}"
+                            "**discord.js**: {{DJS_VERSION}}"
                         ]
                     },
                     {
@@ -129,6 +130,7 @@
                     {
                         "name": "IDs",
                         "value": [
+                            "**Hostname**: {{HOSTNAME}}",
                             "**Shard ID**: {{SHARD_ID}}",
                             "**Server ID**: {{SERVER_ID}}",
                             "**Bot ID**: {{BOT_ID}}",
@@ -202,6 +204,20 @@
             "name": "ahiru bot",
             "description": "a bot that saves you 15s in making a jigsaw puzzle. it also has an OCR and DeepL function btw",
             "prefix": "~"
+        },
+        "commandDescs": {
+            "dev": "View developer info.",
+            "help": "View help menu and list of commands.",
+            "info": "View bot info.",
+            "link": "Get links to invite, support, etc.",
+            "test": "Run the test command.",
+            "translate": "View translation info.",
+            "puzzle": "Make a jigsaw puzzle",
+            "ocr": "optical character recognition",
+            "deepl": "Translate text to English or English text to Japanese",
+            "jisho": "Check a single kanji on Jisho.org",
+            "subtitle": "Make a shitty image macro",
+            "fist": "Make a shitty image macro"
         },
         "colors": {
             "success": "00ff83",

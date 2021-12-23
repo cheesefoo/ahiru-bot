@@ -14,7 +14,7 @@ export class MessageHandler implements EventHandler {
         // Process command
         let args = msg.content.split(' ');
         if (this.commandHandler.shouldHandle(msg, args)) {
-            await this.commandHandler.process(msg, args);
+            await this.commandHandler.processMessage(msg, args);
             return;
         }
 
