@@ -2,7 +2,7 @@ import { ShardingManager } from 'discord.js';
 import 'reflect-metadata';
 
 import { Api } from './api';
-import { GuildsController, RootController, ShardsController } from './controllers';
+import { GuildsController, RootController, ShardsController, WebhookEndpoint } from './controllers';
 import { UpdateServerCountJob } from './jobs';
 import { Manager } from './manager';
 import { HttpService, JobService, Logger, MasterApiService } from './services';
@@ -33,7 +33,8 @@ async function start(): Promise<void> {
             totalShards = Math.max(requiredShards, resBody.totalShards);
         } else {
             let recommendedShards = await ShardUtils.recommendedShardCount(
-                Config.client.token,
+                // Config.client.token,
+                process.env.discord_token,
                 Config.sharding.serversPerShard
             );
             shardList = MathUtils.range(0, recommendedShards);
@@ -59,7 +60,7 @@ async function start(): Promise<void> {
 
     // Jobs
     let jobs = [
-        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService) 
+        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService),
     ].filter(Boolean);
     let jobService = new JobService(jobs);
 
@@ -69,7 +70,9 @@ async function start(): Promise<void> {
     let guildsController = new GuildsController(shardManager);
     let shardsController = new ShardsController(shardManager);
     let rootController = new RootController();
+    // let webhookEndpoint = new WebhookEndpoint()
     let api = new Api([guildsController, shardsController, rootController]);
+    // let api = new Api([guildsController, shardsController, rootController, webhookEndpoint]);
 
     // Start
     await manager.start();

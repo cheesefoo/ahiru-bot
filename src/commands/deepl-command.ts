@@ -27,7 +27,10 @@ export class DeepLCommand implements Command {
         let detectedText;
         let text;
         if (url == undefined && args.length === 2) {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('displayEmbeds.deepLHelp', data.lang())
+            );
             return;
         }
         if (url != undefined) {

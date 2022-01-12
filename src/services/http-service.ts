@@ -12,8 +12,6 @@ export class HttpService {
         });
     }
 
- 
-
     public async post(url: string | URL, authorization: string, body?: object): Promise<Response> {
         return fetch(url, {
             method: 'post',

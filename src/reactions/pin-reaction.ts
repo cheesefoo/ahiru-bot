@@ -78,7 +78,7 @@ export class PinReaction implements Reaction {
             }
 
             const starMsg = await starChannel.messages.fetch(starboardedMessage.id);
-            await starMsg.edit({ embeds:[embed] });
+            await starMsg.edit({ embeds: [embed] });
             console.log(`Edited ${msg.id}, ${msgReaction.count} pins`);
         }
         if (!starboardedMessage) {
@@ -101,7 +101,7 @@ export class PinReaction implements Reaction {
                     `https://cdn.discordapp.com/attachments/766887144455012393/870375200938663936/emoji.png`
                 )
                 .setImage(image);
-            await starChannel.send({ embeds:[embed] });
+            await starChannel.send({ embeds: [embed] });
             console.log(`Pinned ${msg.id}, ${msgReaction.count} pins`);
         }
     }

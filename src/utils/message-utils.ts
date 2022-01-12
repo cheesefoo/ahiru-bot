@@ -1,5 +1,5 @@
 import {
-    Collection,
+    Collection, CommandInteraction,
     DiscordAPIError,
     EmojiResolvable,
     Message,
@@ -11,7 +11,17 @@ import {
     TextBasedChannels,
     User,
 } from 'discord.js';
-import { UrlUtils } from '.';
+import { UrlUtils } from '.';import { RESTJSONErrorCodes as DiscordApiErrors } from 'discord-api-types/rest/v9';
+import { EmbedUtils } from './embed-utils';
+const IGNORED_ERRORS = [
+    DiscordApiErrors.UnknownMessage,
+    DiscordApiErrors.UnknownChannel,
+    DiscordApiErrors.UnknownGuild,
+    DiscordApiErrors.UnknownUser,
+    DiscordApiErrors.UnknownInteraction,
+    DiscordApiErrors.CannotSendMessagesToThisUser, // User blocked bot or DM disabled
+    DiscordApiErrors.ReactionWasBlocked, // User blocked bot or DM disabled
+];
 
 export class MessageUtils {
     public static async send(
@@ -30,6 +40,49 @@ export class MessageUtils {
                 error instanceof DiscordAPIError &&
                 [10003, 10004, 10013, 50007].includes(error.code)
             ) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+    public static content(msg: Message): string {
+        return [
+            msg.content,
+            ...msg.embeds.filter(embed => !embed.provider).map(embed => EmbedUtils.content(embed)),
+        ]
+            .filter(Boolean)
+            .join('\n');
+    }   public static async deferIntr(
+        intr: CommandInteraction,
+        hidden: boolean = false
+    ): Promise<void> {
+        try {
+            return await intr.deferReply({
+                ephemeral: hidden,
+            });
+        } catch (error) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public static async sendIntr(
+        intr: CommandInteraction,
+        content: string | MessageEmbed | MessageOptions,
+        hidden: boolean = false
+    ): Promise<Message> {
+        try {
+            let msgOptions = this.messageOptions(content);
+            return (await intr.followUp({
+                ...msgOptions,
+                ephemeral: hidden,
+            })) as Message;
+        } catch (error) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;

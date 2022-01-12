@@ -1,4 +1,6 @@
+import bodyParser from 'body-parser';
 import express, { Express } from 'express';
+
 import util from 'util';
 
 import { Controller } from './controllers';
@@ -14,6 +16,8 @@ export class Api {
     constructor(public controllers: Controller[]) {
         this.app = express();
         this.app.use(express.json());
+        // this.app.use(bodyParser.urlencoded({ extended: false }));
+        // this.app.use(bodyParser.json());
         this.setupControllers();
         this.app.use(handleError());
     }

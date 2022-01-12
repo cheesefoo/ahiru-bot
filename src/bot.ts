@@ -9,7 +9,14 @@ import {
     User,
 } from 'discord.js';
 
-import { CommandHandler, GuildJoinHandler, GuildLeaveHandler, MessageHandler, ReactionHandler, InteractionHandler } from './events';
+import {
+    CommandHandler,
+    GuildJoinHandler,
+    GuildLeaveHandler,
+    MessageHandler,
+    ReactionHandler,
+    InteractionHandler,
+} from './events';
 import { JobService, Logger } from './services';
 import { PartialUtils } from './utils';
 
@@ -29,7 +36,7 @@ export class Bot {
         private reactionHandler: ReactionHandler,
         private jobService: JobService,
         private interactionHandler: InteractionHandler
-    ) { }
+    ) {}
 
     public async start(): Promise<void> {
         this.registerListeners();
@@ -51,18 +58,18 @@ export class Bot {
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
         );
-        this.client.on(Constants.Events.INTERACTION_CREATE, (interaction: Interaction) => this.onInteraction(interaction));
+        this.client.on(Constants.Events.INTERACTION_CREATE, (interaction: Interaction) =>
+            this.onInteraction(interaction)
+        );
     }
     private async onInteraction(interaction: Interaction): Promise<void> {
-
-        if (!interaction.isCommand()) return; 
+        if (!interaction.isCommand()) return;
 
         try {
             await this.interactionHandler.process(interaction);
         } catch (error) {
             Logger.error(Logs.error.message, error);
-        }       
-
+        }
     }
 
     private async login(token: string): Promise<void> {

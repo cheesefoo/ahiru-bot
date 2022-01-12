@@ -28,7 +28,7 @@ export class CommandHandler {
         private prefix: string,
         private helpCommand: Command,
         private commands: Command[]
-    ) { }
+    ) {}
 
     public shouldHandle(msg: Message, args: string[]): boolean {
         if (args[0].startsWith(this.prefix + this.prefix)) {
@@ -38,7 +38,7 @@ export class CommandHandler {
             args.splice(1, 0, args[0].slice(1));
             args[0] = this.prefix;
         }
-        
+
         return (
             [this.prefix, `<@${msg.client.user.id}>`, `<@!${msg.client.user.id}>`].includes(
                 args[0].toLowerCase()
@@ -127,19 +127,19 @@ export class CommandHandler {
                     msg.channel instanceof NewsChannel ||
                     msg.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                        .replaceAll('{MESSAGE_ID}', msg.id)
-                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replaceAll('{USER_TAG}', msg.author.tag)
-                        .replaceAll('{USER_ID}', msg.author.id)
-                        .replaceAll('{CHANNEL_NAME}', msg.channel.name)
-                        .replaceAll('{CHANNEL_ID}', msg.channel.id)
-                        .replaceAll('{GUILD_NAME}', msg.guild.name)
-                        .replaceAll('{GUILD_ID}', msg.guild.id)
+                          .replaceAll('{MESSAGE_ID}', msg.id)
+                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replaceAll('{USER_TAG}', msg.author.tag)
+                          .replaceAll('{USER_ID}', msg.author.id)
+                          .replaceAll('{CHANNEL_NAME}', msg.channel.name)
+                          .replaceAll('{CHANNEL_ID}', msg.channel.id)
+                          .replaceAll('{GUILD_NAME}', msg.guild.name)
+                          .replaceAll('{GUILD_ID}', msg.guild.id)
                     : Logs.error.commandOther
-                        .replaceAll('{MESSAGE_ID}', msg.id)
-                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replaceAll('{USER_TAG}', msg.author.tag)
-                        .replaceAll('{USER_ID}', msg.author.id),
+                          .replaceAll('{MESSAGE_ID}', msg.id)
+                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replaceAll('{USER_TAG}', msg.author.tag)
+                          .replaceAll('{USER_ID}', msg.author.id),
                 error
             );
         }

@@ -6,4 +6,3 @@ export { ReactionHandler } from './reaction-handler';
 export { MessageHandler } from './message-handler';
 export { TriggerHandler } from './trigger-handler';
 export { InteractionHandler } from './interaction-handler';
-

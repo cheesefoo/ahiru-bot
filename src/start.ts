@@ -15,7 +15,7 @@ import {
     TestCommand,
     TranslateCommand,
     VoteCommand,
-    SubtitleCommand
+    SubtitleCommand,
 } from './commands';
 import {
     CommandHandler,
@@ -26,10 +26,13 @@ import {
     ReactionHandler,
     TriggerHandler,
 } from './events';
+import {AMSRTrigger} from './triggers'
 import { CustomClient } from './extensions';
 import { CheckInstagram, CheckTwitter } from './jobs';
 import { HttpService, JobService, Logger } from './services';
 
+import { Api } from './api';
+import { GuildsController, RootController, ShardsController, WebhookEndpoint } from './controllers';
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
@@ -71,15 +74,22 @@ async function start(): Promise<void> {
         ocrCommand,
         jishoCommand,
         voteCommand,
-        subtitleCommand
+        subtitleCommand,
     ]);
 
-    let triggerHandler = new TriggerHandler([]);
+    let amsrtrigger = new AMSRTrigger();
+
+    let triggerHandler = new TriggerHandler([amsrtrigger]);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
     let reactionHandler = new ReactionHandler([]);
     let interactionHandler = new InteractionHandler(commandHandler);
 
-    let jobService = new JobService([new CheckInstagram(client), new CheckTwitter(client)])
+    let jobService = new JobService([new CheckInstagram(client), new CheckTwitter(client)]);
+
+    let rootController = new RootController();
+    let webhookEndpoint = new WebhookEndpoint(client);
+    let api = new Api([rootController, webhookEndpoint]);
+    await api.start();
 
     let bot = new Bot(
         process.env.discord_token,
