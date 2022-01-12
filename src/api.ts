@@ -24,7 +24,7 @@ export class Api {
 
     public async start(): Promise<void> {
         let listen = util.promisify(this.app.listen.bind(this.app));
-        let port = process.env.API_PORT;
+        let port = process.env.PORT;
         await listen(port);
         Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', port));
     }
