@@ -1,4 +1,5 @@
 // const Twitter = require('twitter-v2');
+import { createRequire } from 'node:module';
 import Twitter from 'twitter-v2';
 import { Response } from 'node-fetch';
 import { Logger } from '../services';
@@ -7,6 +8,7 @@ import { Job } from './job';
 
 import { Client, TextChannel, User } from 'discord.js';
 import { TwitterSpaceUtils } from '../utils/twitter-space-utils';
+const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 let baseEndpoint = 'https://api.twitter.com/2/spaces/search';

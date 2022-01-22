@@ -1,5 +1,7 @@
+import { createRequire } from 'node:module';
 import { URL } from 'url';
 
+const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 
 export class UrlUtils {

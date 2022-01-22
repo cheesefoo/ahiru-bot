@@ -1,12 +1,12 @@
-import bodyParser from 'body-parser';
 import express, { Express } from 'express';
+import { createRequire } from 'node:module';
+import util from 'node:util';
 
-import util from 'util';
+import { Controller } from './controllers/index.js';
+import { checkAuth, handleError } from './middleware/index.js';
+import { Logger } from './services/index.js';
 
-import { Controller } from './controllers';
-import { checkAuth, handleError } from './middleware';
-import { Logger } from './services';
-
+const require = createRequire(import.meta.url);
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
@@ -16,17 +16,14 @@ export class Api {
     constructor(public controllers: Controller[]) {
         this.app = express();
         this.app.use(express.json());
-        // this.app.use(bodyParser.urlencoded({ extended: false }));
-        // this.app.use(bodyParser.json());
         this.setupControllers();
         this.app.use(handleError());
     }
 
     public async start(): Promise<void> {
         let listen = util.promisify(this.app.listen.bind(this.app));
-        let port = process.env.PORT;
-        await listen(port);
-        Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', port));
+        await listen(Config.api.port);
+        Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', Config.api.port));
     }
 
     private setupControllers(): void {

@@ -1,2 +1,1 @@
-export { Trigger } from './trigger';
-export { AMSRTrigger } from './AMSRTrigger';
+export { Trigger } from './trigger.js';
