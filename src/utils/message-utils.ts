@@ -9,6 +9,7 @@ import {
     TextBasedChannel,
     User,
 } from 'discord.js';
+import { EmbedUtils } from './embed-utils';
 import { UrlUtils } from './url-utils';
 
 const IGNORED_ERRORS = [
@@ -51,6 +52,14 @@ export class MessageUtils {
                 throw error;
             }
         }
+    }
+    public static content(msg: Message): string {
+        return [
+            msg.content,
+            ...msg.embeds.filter(embed => !embed.provider).map(embed => EmbedUtils.content(embed)),
+        ]
+            .filter(Boolean)
+            .join('\n');
     }
 
     public static async edit(
