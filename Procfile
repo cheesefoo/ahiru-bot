@@ -1,1 +1,1 @@
-worker: node dist/start.js
+worker: node --experimental-specifier-resolution=node dist/start.js
