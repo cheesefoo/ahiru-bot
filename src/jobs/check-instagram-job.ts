@@ -1,10 +1,12 @@
-import fetch, { HeaderInit } from 'node-fetch';
+import fetch, { HeadersInit } from 'node-fetch';
+import { createRequire } from 'node:module';
 import { BotSite } from '../models/config-models';
 import { HttpService, Lang, Logger } from '../services';
 import { DatabaseUtils, MessageUtils, ShardUtils } from '../utils';
 import { Job } from './job';
 
 import { Channel, Client, Collection, Guild, GuildMember, TextChannel } from 'discord.js';
+const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
 
@@ -12,7 +14,7 @@ export class CheckInstagram implements Job {
     public name = 'Check Instagram';
     public schedule: string = Config.jobs.checkInstagram.schedule;
     public log: boolean = Config.jobs.checkInstagram.log;
-    private headers: HeaderInit = {
+    private headers: HeadersInit = {
         Host: 'www.instagram.com',
         'User-Agent':
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',

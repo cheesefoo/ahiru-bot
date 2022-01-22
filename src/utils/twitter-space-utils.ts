@@ -1,5 +1,5 @@
 import Twitter from 'twitter-v2';
-import fetch, { HeaderInit, Response } from 'node-fetch';
+import fetch, { HeadersInit, Response } from 'node-fetch';
 import fs, { mkdir, createWriteStream } from 'fs';
 import { open, readdir, } from 'fs/promises'
 import { URL, URLSearchParams, parse } from 'url';
@@ -48,7 +48,7 @@ export class TwitterSpaceUtils {
         let url = new URL(process.env.twitter_endpoint);
         url.search = searchParams;
 
-        let res = await fetch(url, {
+        let res = await fetch(url.toString(), {
             headers: headers,
         });
         let json = await res.json();

@@ -1,12 +1,14 @@
-import { URL } from 'url';
+import { createRequire } from 'node:module';
+import { URL } from 'node:url';
 
-import { HttpService } from '.';
 import {
     LoginClusterResponse,
     RegisterClusterRequest,
     RegisterClusterResponse,
-} from '../models/master-api';
+} from '../models/master-api/index.js';
+import { HttpService } from './index.js';
 
+const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 
 export class MasterApiService {
@@ -33,7 +35,7 @@ export class MasterApiService {
             throw res;
         }
 
-        let resBody: RegisterClusterResponse = await res.json();
+        let resBody = (await res.json()) as RegisterClusterResponse;
         this.clusterId = resBody.id;
     }
 
@@ -47,7 +49,7 @@ export class MasterApiService {
             throw res;
         }
 
-        return res.json();
+        return (await res.json()) as LoginClusterResponse;
     }
 
     public async ready(): Promise<void> {

@@ -1,13 +1,15 @@
 import { ShardingManager } from 'discord.js';
+import { createRequire } from 'node:module';
 import 'reflect-metadata';
 
-import { Api } from './api';
-import { GuildsController, RootController, ShardsController } from './controllers';
-import { UpdateServerCountJob } from './jobs';
-import { Manager } from './manager';
-import { HttpService, JobService, Logger, MasterApiService } from './services';
-import { MathUtils, ShardUtils } from './utils';
+import { Api } from './api.js';
+import { GuildsController, RootController, ShardsController } from './controllers/index.js';
+import { Job, UpdateServerCountJob } from './jobs/index.js';
+import { Manager } from './manager.js';
+import { HttpService, JobService, Logger, MasterApiService } from './services/index.js';
+import { MathUtils, ShardUtils } from './utils/index.js';
 
+const require = createRequire(import.meta.url);
 let Config = require('../config/config.json');
 let Debug = require('../config/debug.json');
 let Logs = require('../lang/logs.json');
@@ -58,12 +60,12 @@ async function start(): Promise<void> {
     });
 
     // Jobs
-    let jobs = [
-        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService) 
+    let jobs: Job[] = [
+        Config.clustering.enabled ? undefined : new UpdateServerCountJob(shardManager, httpService),
+        // TODO: Add new jobs here
     ].filter(Boolean);
-    let jobService = new JobService(jobs);
 
-    let manager = new Manager(shardManager, jobService);
+    let manager = new Manager(shardManager, new JobService(jobs));
 
     // API
     let guildsController = new GuildsController(shardManager);
@@ -79,7 +81,7 @@ async function start(): Promise<void> {
     }
 }
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason, _promise) => {
     Logger.error(Logs.error.unhandledRejection, reason);
 });
 

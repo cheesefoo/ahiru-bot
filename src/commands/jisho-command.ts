@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
+import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
 
 import JishoAPI from 'unofficial-jisho-api';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
 import { MessageUtils } from '../utils';
-import { Command } from './command';
+import { Command, CommandDeferType } from './command';
 import { MessageEmbed } from 'discord.js';
 
 export class JishoCommand implements Command {
@@ -22,7 +22,7 @@ export class JishoCommand implements Command {
         return Lang.getRegex('commandRegexes.jisho', langCode);
     }
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.jishoHelp', data.lang()));
             return;
@@ -128,4 +128,20 @@ export class JishoCommand implements Command {
 
         await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.jishoHelp', data.lang()));
     }
+
+    deferType: CommandDeferType;
+    metadata: ApplicationCommandData= {
+        name: Lang.getCom('commands.jisho'),
+        description: Lang.getRef('commandDescs.jisho', Lang.Default),
+    };
+    requireClientPerms: PermissionString[] = [];
+    requireUserPerms: PermissionString[] = [];
+
+    execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
+    {
+        return Promise.resolve(undefined);
+    }
+
+
+
 }

@@ -1,14 +1,16 @@
-import { Message } from 'discord.js';
+import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
 import fetch from 'node-fetch';
 
 import FormData from 'form-data';
 import { parse } from 'node-html-parser';
+import { createRequire } from 'node:module';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
 import { MathUtils, MessageUtils, UrlUtils } from '../utils';
-import { Command } from './command';
+import { Command, CommandDeferType } from './command';
 
+const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 
 export class PuzzleCommand implements Command {
@@ -23,8 +25,16 @@ export class PuzzleCommand implements Command {
     public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.puzzle', langCode);
     }
+    deferType: CommandDeferType;
+    metadata: ApplicationCommandData;
+    requireClientPerms: PermissionString[] = [];
+    requireUserPerms: PermissionString[] = [];
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+    execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
+    {
+        return Promise.resolve(undefined);
+    }
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
         if (args.length == 2) {
             await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.puzzleHelp', data.lang()));
             return;

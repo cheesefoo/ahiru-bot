@@ -10,3 +10,7 @@ export { StringUtils } from './string-utils';
 export { ApiUtils } from './api-utils';
 export { UrlUtils } from './url-utils';
 export { DatabaseUtils } from './db-utils';
+
+export { CommandUtils } from './command-utils.js';
+
+export { InteractionUtils } from './interaction-utils.js';

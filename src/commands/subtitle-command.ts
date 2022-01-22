@@ -1,12 +1,20 @@
-import { Message, MessageAttachment } from 'discord.js';
+import {
+    ApplicationCommandData,
+    BaseCommandInteraction,
+    Message,
+    MessageAttachment,
+    PermissionString,
+} from 'discord.js';
+import { createRequire } from 'node:module';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang, Logger } from '../services';
 import { MessageUtils } from '../utils';
-import { Command } from './command';
+import { Command, CommandDeferType } from './command';
 import Canvas from 'canvas';
 import { Url } from 'url';
 
+const require = createRequire(import.meta.url);
 
 let Config = require('../../config/config.json');
 // let template = require("../../static/template.png");
@@ -23,8 +31,19 @@ export class SubtitleCommand implements Command {
     public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.subtitle', langCode);
     }
+    deferType: CommandDeferType;
+    metadata: ApplicationCommandData= {
+        name: Lang.getCom('commands.subtitle'),
+        description: Lang.getRef('commandDescs.subtitle', Lang.Default),
+    };
+    requireClientPerms: PermissionString[] = [];
+    requireUserPerms: PermissionString[] = [];
 
-    public async execute(msg: Message, args: string[], data: EventData): Promise<void> {
+    execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
+    {
+        return Promise.resolve(undefined);
+    }
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
         let template, text: string;
         let x, y, fontSize, lineWidth: number;
         if (args.length === 2) {

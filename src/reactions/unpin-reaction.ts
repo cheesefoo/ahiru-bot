@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js';
+import { Message, MessageEmbed, MessageReaction, TextChannel, User } from 'discord.js';
 
 import { Reaction } from '.';
 import { EventData } from '../models/internal-models';
@@ -12,8 +12,12 @@ export class UnPinReaction implements Reaction {
 
     constructor() {}
 
+    requireSentByClient: boolean;
+    requireEmbedAuthorTag: boolean;
+
     public async execute(
         msgReaction: MessageReaction,
+        msg: Message,
         reactor: User,
         data: EventData
     ): Promise<void> {
@@ -23,7 +27,7 @@ export class UnPinReaction implements Reaction {
         if (msgReaction.emoji.name != 'SubaPin') {
             return;
         }
-        let msg = msgReaction.message;
+        // let msg = msgReaction.message;
         // Don't respond to reaction on client's message
         if (msg.author.id === msg.client.user.id) {
             return;

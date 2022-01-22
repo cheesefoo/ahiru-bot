@@ -1,39 +1,42 @@
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
 import { Options } from 'discord.js';
+import { createRequire } from 'node:module';
 
-import { Bot } from './bot';
+import { Bot } from './bot.js';
+import { Button } from './buttons/index.js';
 import {
+    Command,
     DeepLCommand,
-    DevCommand,
-    DocsCommand,
     HelpCommand,
-    InfoCommand,
-    InviteCommand,
     JishoCommand,
     OCRCommand,
     PuzzleCommand,
-    SupportCommand,
-    TestCommand,
-    TranslateCommand,
-    VoteCommand,
-    SubtitleCommand
-} from './commands';
+    SubtitleCommand,
+} from './commands/index.js';
 import {
+    ButtonHandler,
     CommandHandler,
     GuildJoinHandler,
     GuildLeaveHandler,
-    InteractionHandler,
     MessageHandler,
     ReactionHandler,
     TriggerHandler,
 } from './events';
 import { CustomClient } from './extensions';
 import { CheckInstagram, CheckTwitter } from './jobs';
-import { HttpService, JobService, Logger } from './services';
+import { Job } from './jobs/index.js';
+import { Reaction } from './reactions/index.js';
+import { JobService, Logger } from './services';
+import { Trigger } from './triggers/index.js';
+
+const require = createRequire(import.meta.url);
 
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
-async function start(): Promise<void> {
+async function start(): Promise<void>
+{
     let client = new CustomClient({
         intents: Config.client.intents,
         partials: Config.client.partials,
@@ -46,59 +49,106 @@ async function start(): Promise<void> {
     });
 
     // Commands
-    let devCommand = new DevCommand();
-    let docsCommand = new DocsCommand();
-    let helpCommand = new HelpCommand();
-    let infoCommand = new InfoCommand();
-    let inviteCommand = new InviteCommand();
-    let supportCommand = new SupportCommand();
-    let testCommand = new TestCommand();
-    let translateCommand = new TranslateCommand();
-    let voteCommand = new VoteCommand();
-    let ocrCommand = new OCRCommand();
-    let deepLCommand = new DeepLCommand();
-    let puzzleCommand = new PuzzleCommand();
-    let jishoCommand = new JishoCommand();
-    let subtitleCommand = new SubtitleCommand();
+
+    let commands: Command[] = [
+        new HelpCommand(),
+        // TODO: Add new commands here
+        new OCRCommand(),
+        new DeepLCommand(),
+        // new PuzzleCommand(),
+        new JishoCommand(),
+        new SubtitleCommand(),
+    ].sort((a, b) => (a.metadata.name > b.metadata.name ? 1 : -1));
+
+    // Buttons
+    let buttons: Button[] = [
+        // TODO: Add new buttons here
+    ];
+
+    // Reactions
+    let reactions: Reaction[] = [
+        // TODO: Add new reactions here
+    ];
+
+    // Triggers
+    let triggers: Trigger[] = [
+        // TODO: Add new triggers here
+    ];
 
     // Event handlers
     let guildJoinHandler = new GuildJoinHandler();
     let guildLeaveHandler = new GuildLeaveHandler();
-    let commandHandler = new CommandHandler(Config.prefix, helpCommand, [
-        devCommand,
-        puzzleCommand,
-        deepLCommand,
-        ocrCommand,
-        jishoCommand,
-        voteCommand,
-        subtitleCommand
-    ]);
-
-    let triggerHandler = new TriggerHandler([]);
+    let commandHandler = new CommandHandler(Config.prefix, new HelpCommand(), commands);
+    let buttonHandler = new ButtonHandler(buttons);
+    let triggerHandler = new TriggerHandler(triggers);
     let messageHandler = new MessageHandler(commandHandler, triggerHandler);
-    let reactionHandler = new ReactionHandler([]);
-    let interactionHandler = new InteractionHandler(commandHandler);
+    let reactionHandler = new ReactionHandler(reactions);
 
-    let jobService = new JobService([new CheckInstagram(client), new CheckTwitter(client)])
+    // Jobs
+    let jobs: Job[] = [
+        // TODO: Add new jobs here
+        // new CheckInstagram(client),
+        // new CheckTwitter(client),
+    ];
+    const token = process.env.discord_token;
 
+    // Bot
     let bot = new Bot(
-        process.env.discord_token,
+        token,
         client,
         guildJoinHandler,
         guildLeaveHandler,
         messageHandler,
+        commandHandler,
+        buttonHandler,
         reactionHandler,
-        jobService,
-        interactionHandler
+        new JobService(jobs),
     );
+
+    // Register
+    if (process.argv[2] === '--register')
+    {
+        await registerCommands(commands);
+        process.exit();
+    }
 
     await bot.start();
 }
 
-process.on('unhandledRejection', (reason, promise) => {
+async function registerCommands(commands: Command[]): Promise<void>
+{
+    let cmdDatas = commands.map(cmd => cmd.metadata);
+    let cmdNames = cmdDatas.map(cmdData => cmdData.name);
+
+    Logger.info(
+        Logs.info.commandsRegistering.replaceAll(
+            '{COMMAND_NAMES}',
+            cmdNames.map(cmdName => `'${cmdName}'`).join(', '),
+        ),
+    );
+
+    try
+    {
+        const token = process.env.discord_token;
+        let id = '824488445811490827';
+        let rest = new REST({ version: '9' }).setToken(token);
+        await rest.put(Routes.applicationCommands(id), { body: [] });
+        await rest.put(Routes.applicationCommands(id), { body: cmdDatas });
+    } catch (error)
+    {
+        Logger.error(Logs.error.commandsRegistering, error);
+        return;
+    }
+
+    Logger.info(Logs.info.commandsRegistered);
+}
+
+process.on('unhandledRejection', (reason, _promise) =>
+{
     Logger.error(Logs.error.unhandledRejection, reason);
 });
 
-start().catch(error => {
+start().catch(error =>
+{
     Logger.error(Logs.error.unspecified, error);
 });

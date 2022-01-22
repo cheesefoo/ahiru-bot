@@ -1,8 +1,7 @@
-import { Lang } from '../../services';
+import { Lang } from '../../services/index.js';
 
 export enum LangCode {
-    EN_US = 'en-US',
-    EN_PIRATE = 'en-Pirate',
+    EN_US = 'en-US'
 }
 
 export class Language {
@@ -16,6 +15,10 @@ export class Language {
 
     public static displayName(langCode: LangCode): string {
         return Lang.getRef('meta.languageDisplay', langCode);
+    }
+
+    public static locale(langCode: LangCode): string {
+        return Lang.getRef('meta.locale', langCode);
     }
 
     public static translators(langCode: LangCode): string {

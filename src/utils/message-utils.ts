@@ -1,35 +1,35 @@
+import { RESTJSONErrorCodes as DiscordApiErrors } from 'discord-api-types/v9';
 import {
-    Collection,
     DiscordAPIError,
     EmojiResolvable,
     Message,
-    MessageAttachment,
     MessageEmbed,
     MessageOptions,
     MessageReaction,
-    Snowflake,
-    TextBasedChannels,
+    TextBasedChannel,
     User,
 } from 'discord.js';
-import { UrlUtils } from '.';
+import { UrlUtils } from './url-utils';
+
+const IGNORED_ERRORS = [
+    DiscordApiErrors.UnknownMessage,
+    DiscordApiErrors.UnknownChannel,
+    DiscordApiErrors.UnknownGuild,
+    DiscordApiErrors.UnknownUser,
+    DiscordApiErrors.CannotSendMessagesToThisUser, // User blocked bot or DM disabled
+    DiscordApiErrors.ReactionWasBlocked, // User blocked bot or DM disabled
+];
 
 export class MessageUtils {
     public static async send(
-        target: User | TextBasedChannels,
+        target: User | TextBasedChannel,
         content: string | MessageEmbed | MessageOptions
     ): Promise<Message> {
         try {
             let msgOptions = this.messageOptions(content);
             return await target.send(msgOptions);
         } catch (error) {
-            // 10003: "Unknown channel"
-            // 10004: "Unknown guild"
-            // 10013: "Unknown user"
-            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
-            if (
-                error instanceof DiscordAPIError &&
-                [10003, 10004, 10013, 50007].includes(error.code)
-            ) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;
@@ -45,9 +45,7 @@ export class MessageUtils {
             let msgOptions = this.messageOptions(content);
             return await msg.reply(msgOptions);
         } catch (error) {
-            // 10008: "Unknown Message" (Message was deleted)
-            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
-            if (error instanceof DiscordAPIError && [10008, 50007].includes(error.code)) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;
@@ -63,9 +61,7 @@ export class MessageUtils {
             let msgOptions = this.messageOptions(content);
             return await msg.edit(msgOptions);
         } catch (error) {
-            // 10008: "Unknown Message" (Message was deleted)
-            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
-            if (error instanceof DiscordAPIError && [10008, 50007].includes(error.code)) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;
@@ -95,9 +91,7 @@ export class MessageUtils {
         try {
             return await msg.react(emoji);
         } catch (error) {
-            // 10008: "Unknown Message" (Message was deleted)
-            // 90001: "Reaction Blocked" (User blocked bot)
-            if (error instanceof DiscordAPIError && [10008, 90001].includes(error.code)) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;
@@ -109,9 +103,7 @@ export class MessageUtils {
         try {
             return await msg.delete();
         } catch (error) {
-            // 10008: "Unknown Message" (Message was deleted)
-            // 50007: "Cannot send messages to this user" (User blocked bot or DM disabled)
-            if (error instanceof DiscordAPIError && [10008, 50007].includes(error.code)) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
             } else {
                 throw error;
@@ -119,7 +111,7 @@ export class MessageUtils {
         }
     }
 
-    private static messageOptions(content: string | MessageEmbed | MessageOptions): MessageOptions {
+    public static messageOptions(content: string | MessageEmbed | MessageOptions): MessageOptions {
         let options: MessageOptions = {};
         if (typeof content === 'string') {
             options.content = content;

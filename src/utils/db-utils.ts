@@ -1,5 +1,8 @@
-import { Client } from 'pg';
+import { createRequire } from 'node:module';
+import pg from 'pg';
+const  Client  = pg.Client;
 import { Logger } from '../services';
+const require = createRequire(import.meta.url);
 let Logs = require('../../lang/logs.json');
 
 export class DatabaseUtils {
@@ -51,8 +54,8 @@ export class DatabaseUtils {
     */
 
 
-    private static async Connect(): Promise<Client> {
-        let cs = `postgres://xftvylgzxtlzjg:1c8577672fa547ea6b6f77302481c37da9688e5fadc653e91fde6d7b7fbd4b59@ec2-54-209-187-69.compute-1.amazonaws.com:5432/d9g4k6kdbc0vv9`
+    private static async Connect(){
+        let cs = process.env.DATABASE_URL
 
         const client = new Client({
             connectionString: cs,
@@ -69,4 +72,3 @@ export class DatabaseUtils {
         return client;
     }
 }
-

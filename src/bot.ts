@@ -1,18 +1,31 @@
 import {
+    ButtonInteraction,
     Client,
+    CommandInteraction,
     Constants,
     Guild,
     Interaction,
-    Message,
+    Message, MessageContextMenuInteraction,
     MessageReaction,
+    PartialMessageReaction,
+    PartialUser,
     RateLimitData,
     User,
 } from 'discord.js';
+import { createRequire } from 'node:module';
 
-import { CommandHandler, GuildJoinHandler, GuildLeaveHandler, MessageHandler, ReactionHandler, InteractionHandler } from './events';
-import { JobService, Logger } from './services';
-import { PartialUtils } from './utils';
+import {
+    ButtonHandler,
+    CommandHandler,
+    GuildJoinHandler,
+    GuildLeaveHandler,
+    MessageHandler,
+    ReactionHandler,
+} from './events/index.js';
+import { JobService, Logger } from './services/index.js';
+import { PartialUtils } from './utils/index.js';
 
+const require = createRequire(import.meta.url);
 let Config = require('../config/config.json');
 let Debug = require('../config/debug.json');
 let Logs = require('../lang/logs.json');
@@ -26,10 +39,11 @@ export class Bot {
         private guildJoinHandler: GuildJoinHandler,
         private guildLeaveHandler: GuildLeaveHandler,
         private messageHandler: MessageHandler,
+        private commandHandler: CommandHandler,
+        private buttonHandler: ButtonHandler,
         private reactionHandler: ReactionHandler,
-        private jobService: JobService,
-        private interactionHandler: InteractionHandler
-    ) { }
+        private jobService: JobService
+    ) {}
 
     public async start(): Promise<void> {
         this.registerListeners();
@@ -38,31 +52,25 @@ export class Bot {
 
     private registerListeners(): void {
         this.client.on(Constants.Events.CLIENT_READY, () => this.onReady());
-        this.client.on(Constants.Events.SHARD_READY, (shardId: number) =>
-            this.onShardReady(shardId)
+        this.client.on(
+            Constants.Events.SHARD_READY,
+            (shardId: number, unavailableGuilds: Set<string>) =>
+                this.onShardReady(shardId, unavailableGuilds)
         );
         this.client.on(Constants.Events.GUILD_CREATE, (guild: Guild) => this.onGuildJoin(guild));
         this.client.on(Constants.Events.GUILD_DELETE, (guild: Guild) => this.onGuildLeave(guild));
         this.client.on(Constants.Events.MESSAGE_CREATE, (msg: Message) => this.onMessage(msg));
+        this.client.on(Constants.Events.INTERACTION_CREATE, (intr: Interaction) =>
+            this.onInteraction(intr)
+        );
         this.client.on(
             Constants.Events.MESSAGE_REACTION_ADD,
-            (messageReaction: MessageReaction, user: User) => this.onReaction(messageReaction, user)
+            (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+                this.onReaction(messageReaction, user)
         );
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
         );
-        this.client.on(Constants.Events.INTERACTION_CREATE, (interaction: Interaction) => this.onInteraction(interaction));
-    }
-    private async onInteraction(interaction: Interaction): Promise<void> {
-
-        if (!interaction.isCommand()) return; 
-
-        try {
-            await this.interactionHandler.process(interaction);
-        } catch (error) {
-            Logger.error(Logs.error.message, error);
-        }       
-
     }
 
     private async login(token: string): Promise<void> {
@@ -75,7 +83,7 @@ export class Bot {
     }
 
     private async onReady(): Promise<void> {
-        let userTag = this.client.user.tag;
+        let userTag = this.client.user?.tag;
         Logger.info(Logs.info.clientLogin.replaceAll('{USER_TAG}', userTag));
 
         if (!Debug.dummyMode.enabled) {
@@ -86,7 +94,7 @@ export class Bot {
         Logger.info(Logs.info.clientReady);
     }
 
-    private onShardReady(shardId: number): void {
+    private onShardReady(shardId: number, _unavailableGuilds: Set<string>): void {
         Logger.setShardId(shardId);
     }
 
@@ -134,7 +142,39 @@ export class Bot {
         }
     }
 
-    private async onReaction(msgReaction: MessageReaction, reactor: User): Promise<void> {
+    private async onInteraction(intr: Interaction): Promise<void> {
+        if (
+            !this.ready ||
+            (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(intr.user.id))
+        ) {
+            return;
+        }
+
+        if (intr instanceof CommandInteraction) {
+            try {
+                await this.commandHandler.process(intr);
+            } catch (error) {
+                Logger.error(Logs.error.command, error);
+            }
+        } else if (intr instanceof ButtonInteraction) {
+            try {
+                await this.buttonHandler.process(intr, intr.message as Message);
+            } catch (error) {
+                Logger.error(Logs.error.button, error);
+            }
+        }else if (intr instanceof MessageContextMenuInteraction){
+            try {
+                await this.commandHandler.process(intr);
+            } catch (error) {
+                Logger.error(Logs.error.command, error);
+            }
+        }
+    }
+
+    private async onReaction(
+        msgReaction: MessageReaction | PartialMessageReaction,
+        reactor: User | PartialUser
+    ): Promise<void> {
         if (
             !this.ready ||
             (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(reactor.id))
@@ -147,8 +187,17 @@ export class Bot {
             return;
         }
 
+        reactor = await PartialUtils.fillUser(reactor);
+        if (!reactor) {
+            return;
+        }
+
         try {
-            await this.reactionHandler.process(msgReaction, reactor);
+            await this.reactionHandler.process(
+                msgReaction,
+                msgReaction.message as Message,
+                reactor
+            );
         } catch (error) {
             Logger.error(Logs.error.reaction, error);
         }

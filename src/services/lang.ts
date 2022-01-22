@@ -1,15 +1,18 @@
 import { MessageEmbed } from 'discord.js';
 import { Linguini, TypeMapper, TypeMappers, Utils } from 'linguini';
-import path from 'path';
-import { URL } from 'url';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import { LangCode } from '../models/enums';
 
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 export class Lang {
     public static Default = LangCode.EN_US;
 
-    private static linguini = new Linguini(path.resolve(__dirname, '../../lang'), 'lang');
+    private static linguini = new Linguini(
+        path.resolve(__dirname , '../../lang'),
+        'lang'
+    );
 
     public static getEmbed(
         location: string,
@@ -51,19 +54,23 @@ export class Lang {
             author: jsonValue.author,
             title: Utils.join(jsonValue.title, '\n'),
             url: jsonValue.url,
-            thumbnail: jsonValue.thumbnail,
+            thumbnail: {
+                url: jsonValue.thumbnail,
+            },
             description: Utils.join(jsonValue.description, '\n'),
             fields: jsonValue.fields?.map(field => ({
                 name: Utils.join(field.name, '\n'),
                 value: Utils.join(field.value, '\n'),
             })),
-            image: jsonValue.image,
+            image: {
+                url: jsonValue.image,
+            },
             footer: {
                 text: Utils.join(jsonValue.footer?.text, '\n'),
-                iconURL: Utils.join(jsonValue.footer?.icon, '\n'),
+                iconURL: jsonValue.footer?.icon,
             },
             timestamp: jsonValue.timestamp ? Date.now() : undefined,
-            color: jsonValue.color ?? '#0099ff',
+            color: jsonValue.color ?? Lang.getCom('colors.default'),
         });
     };
 }
