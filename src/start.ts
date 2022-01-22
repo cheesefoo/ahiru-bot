@@ -28,6 +28,7 @@ import { CheckInstagram, CheckTwitter } from './jobs';
 import { Job } from './jobs/index.js';
 import { Reaction } from './reactions/index.js';
 import { JobService, Logger } from './services';
+import { AMSRTrigger } from './triggers/AMSRTrigger';
 import { Trigger } from './triggers/index.js';
 
 const require = createRequire(import.meta.url);
@@ -73,6 +74,7 @@ async function start(): Promise<void>
     // Triggers
     let triggers: Trigger[] = [
         // TODO: Add new triggers here
+        new AMSRTrigger()
     ];
 
     // Event handlers
