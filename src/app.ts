@@ -3,11 +3,11 @@ import { createRequire } from 'node:module';
 import 'reflect-metadata';
 
 import { Api } from './api.js';
-import { GuildsController, RootController, ShardsController } from './controllers/index.js';
-import { Job, UpdateServerCountJob } from './jobs/index.js';
+import { GuildsController, RootController, ShardsController,WebhookEndpoint } from './controllers';
+import { Job, UpdateServerCountJob } from './jobs';
 import { Manager } from './manager.js';
-import { HttpService, JobService, Logger, MasterApiService } from './services/index.js';
-import { MathUtils, ShardUtils } from './utils/index.js';
+import { HttpService, JobService, Logger, MasterApiService } from './services';
+import { MathUtils, ShardUtils } from './utils';
 
 const require = createRequire(import.meta.url);
 let Config = require('../config/config.json');

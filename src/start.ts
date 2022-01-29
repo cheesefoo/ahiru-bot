@@ -2,9 +2,11 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Options } from 'discord.js';
 import { createRequire } from 'node:module';
+import { WebhookEndpoint } from './controllers';
+import { Api } from './api';
 
 import { Bot } from './bot.js';
-import { Button } from './buttons/index.js';
+import { Button } from './buttons';
 import {
     Command,
     DeepLCommand,
@@ -13,7 +15,7 @@ import {
     OCRCommand,
     PuzzleCommand,
     SubtitleCommand,
-} from './commands/index.js';
+} from './commands';
 import {
     ButtonHandler,
     CommandHandler,
@@ -25,11 +27,11 @@ import {
 } from './events';
 import { CustomClient } from './extensions';
 import { CheckInstagram, CheckTwitter } from './jobs';
-import { Job } from './jobs/index.js';
-import { Reaction } from './reactions/index.js';
+import { Job } from './jobs';
+import { Reaction } from './reactions';
 import { JobService, Logger } from './services';
 import { AMSRTrigger } from './triggers/AMSRTrigger';
-import { Trigger } from './triggers/index.js';
+import { Trigger } from './triggers';
 
 const require = createRequire(import.meta.url);
 
@@ -114,6 +116,10 @@ async function start(): Promise<void>
         process.exit();
     }
 
+    let webhookController = new WebhookEndpoint(client);
+    let api = new Api([webhookController]);
+
+    await api.start();
     await bot.start();
 }
 
