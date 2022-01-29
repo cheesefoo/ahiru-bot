@@ -65,6 +65,12 @@ export class OCRCommand implements Command
             {
                 await InteractionUtils.send(intr, text, false);
                 return;
+            } else
+            {
+                await InteractionUtils.send(intr,
+                    Lang.getEmbed('displayEmbeds.OCRNoTextDetected', data.lang()),
+                    true,
+                );
             }
         } catch (errMsg)
         {
@@ -114,6 +120,11 @@ export class OCRCommand implements Command
             {
                 const detectedText = await ApiUtils.OCRRequest(url);
                 console.log(detectedText);
+                if (detectedText == undefined)
+                {
+                    await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.OCRNoTextDetected', data.lang()));
+                    return;
+                }
                 await MessageUtils.send(msg.channel, `\`\`\`${detectedText}\`\`\``);
             } catch (errMsg)
             {
