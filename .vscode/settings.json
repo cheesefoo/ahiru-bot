@@ -17,6 +17,8 @@
         "discordbotlist",
         "discordjs",
         "discordlabs",
+        "discordlist",
+        "disforge",
         "filesize",
         "ondiscord",
         "parens",
@@ -24,5 +26,6 @@
         "regexes",
         "respawn",
         "varchar"
-    ]
+    ],
+    "typescript.preferences.importModuleSpecifierEnding": "js"
 }

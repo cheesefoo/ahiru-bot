@@ -30,6 +30,10 @@
                 "description": "Couldn't find an image in that message.",
                 "color": "{{REF:colors.error}}"
             },
+            "OCRNoTextDetected": {
+                "description": "Google Vision didn't detect any text.",
+                "color": "{{REF:colors.error}}"
+            },
             "OCRGenericError": {
                 "description": "Error: {{ERROR}}",
                 "color": "{{REF:colors.error}}"
@@ -188,10 +192,6 @@
                     {
                         "name": "Error code",
                         "value": "{{ERROR_CODE}}"
-                    },
-                    {
-                        "name": "Contact support",
-                        "value": "{{COM:links.support}}"
                     }
                 ],
                 "color": "{{COM:colors.error}}"
@@ -227,7 +227,7 @@
         },
         "bot": {
             "name": "ahiru bot",
-            "description": "a bot that saves you 15s in making a jigsaw puzzle. it also has an OCR and DeepL function btw",
+            "description": ":^)",
             "prefix": "~"
         },
         "colors": {
@@ -250,7 +250,18 @@
             "ocr": "ocr",
             "deepl": "deepl",
             "jisho": "jisho",
-            "subtitle": "subtitle"
+            "subtitle": "subtitle",
+            "fist": "fist"
+        },
+
+        "commandDescs": {
+            "help": "displays this",
+            "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
+            "ocr":"<img link or attachment>** - extract text from image",
+            "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",
+            "jisho": "<term to search>** - search Jisho.org",
+            "subtitle": "<caption text>** - clutter chat with a garbage meme",
+            "fist": "<caption text>** - lower IQ of chat with a trash meme"
         },
 
         "commandDescs": {

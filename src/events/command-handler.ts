@@ -100,6 +100,11 @@ export class CommandHandler implements EventHandler
             }
         }
 
+        // Return if defer was unsuccessful
+        if (command.deferType !== CommandDeferType.NONE && !intr.deferred) {
+            return;
+        }
+
         // TODO: Get data from database
         let data = new EventData();
 

@@ -112,7 +112,7 @@ async function start(): Promise<void>
     // Register
     if (process.argv[2] === '--register')
     {
-        await registerCommands(commands);
+        await registerCommands([new OCRCommand(), new DeepLCommand()]);
         process.exit();
     }
 

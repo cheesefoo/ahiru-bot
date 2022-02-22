@@ -34,7 +34,7 @@ export class DeepLCommand implements Command
     cooldown?: RateLimiter;
     deferType: CommandDeferType;
     requireClientPerms: PermissionString[] = [];
-    requireUserPerms: PermissionString[]  = [];
+    requireUserPerms: PermissionString[] = [];
 
     public async execute(intr: MessageContextMenuInteraction, data: EventData): Promise<void>
     {
@@ -55,6 +55,14 @@ export class DeepLCommand implements Command
         try
         {
             let text = await ApiUtils.OCRRequest(url);
+            if (text == undefined)
+            {
+                await InteractionUtils.send(intr,
+                    Lang.getEmbed('displayEmbeds.OCRNoTextDetected', data.lang()),
+                    true,
+                );
+                return;
+            }
             let tl = await this.GetTranslation(text);
             if (tl != undefined)
             {
