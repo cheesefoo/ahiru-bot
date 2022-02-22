@@ -38,8 +38,8 @@ export class SubtitleCommand implements Command
 
     deferType: CommandDeferType;
     metadata: ApplicationCommandData = {
-        name: Lang.getCom('commands.subtitle'),
-        description: Lang.getRef('commandDescs.subtitle', Lang.Default),
+        name: Lang.getCom('commands.fist'),
+        description: Lang.getRef('commandDescs.fist', Lang.Default),
         options: [{
             name: 'text',
             description: 'ur subtitle',
@@ -62,7 +62,11 @@ export class SubtitleCommand implements Command
         }
         else{
             let template = 'https://cdn.discordapp.com/attachments/825378176993722378/901942196293492836/template.png';
-            let attachment = await CanvasUtils.OverlayText(template,text);
+            let x = 1920;
+            let y = 1080;
+            let fontSize = 100;
+            let lineWidth = 8;
+            let attachment = await CanvasUtils.OverlayText(template,text,x,y,fontSize,lineWidth);
             await InteractionUtils.send(intr,{attachments:[attachment]});
             return;
         }

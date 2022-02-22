@@ -250,7 +250,18 @@
             "ocr": "ocr",
             "deepl": "deepl",
             "jisho": "jisho",
-            "subtitle": "subtitle"
+            "subtitle": "subtitle",
+            "fist": "fist"
+        },
+
+        "commandDescs": {
+            "help": "displays this",
+            "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
+            "ocr":"<img link or attachment>** - extract text from image",
+            "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",
+            "jisho": "<term to search>** - search Jisho.org",
+            "subtitle": "<caption text>** - clutter chat with a garbage meme",
+            "fist": "<caption text>** - lower IQ of chat with a trash meme"
         },
 
         "commandDescs": {
