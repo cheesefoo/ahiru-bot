@@ -37,8 +37,8 @@ export class CheckHolodex implements Job
     {
         const lives = await this.holoapi.getLiveVideos({
             // channel_id: 'UChAnqc_AY5_I3Px5dig3X1Q',
-            channel_id: 'UCvzGlP9oQwU--Y0r9id_jnA',
-            // org:'Hololive',
+            // channel_id: 'UCvzGlP9oQwU--Y0r9id_jnA',
+            org:'Hololive',
             max_upcoming_hours: 1,
         });
         for (const live of lives)

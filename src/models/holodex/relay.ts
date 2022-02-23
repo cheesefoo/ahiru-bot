@@ -7,7 +7,7 @@ import { MessageUtils } from '../../utils';
 
 export class Relay
 {
-    private broadcastCh = '722257568361087057';
+    private broadcastCh = '945888571619934240';
     private tldex;
     public subscribedVideos=[];
 
