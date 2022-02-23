@@ -53,6 +53,20 @@ export class DatabaseUtils {
     }
     */
 
+ /*   public static async GetRelaySetting() :Promise<boolean>{
+        let client = await this.Connect();
+        try {
+            let res = await client.query(`SELECT RELAY from settings`);
+            console.log(res);
+            return res === 'true'
+        }
+        catch (error) {
+            Logger.error(Logs.error.database.replace('{DB}', 'settings'), error);
+        }
+        finally {
+            client.end();
+        }
+    }*/
 
     private static async Connect(){
         let cs = process.env.DATABASE_URL

@@ -53,7 +53,7 @@ export class CheckTwitter implements Job {
                 try {
                     //Check if we've seen it already
                     if (await DatabaseUtils.CheckIfExists('SPACES', spaceId)) {
-                        Logger.info(Logs.info.spacesold.replace('{SC}', spaceId));
+                        Logger.trace(Logs.info.spacesold.replace('{SC}', spaceId));
                     } else {
                         //New, post to discord
                         let embed = await this.buildEmbed(spaceId);
@@ -72,10 +72,10 @@ export class CheckTwitter implements Job {
                     Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
                 }
             } else {
-                Logger.info(Logs.info.nospace);
+                Logger.trace(Logs.info.nospace);
             }
         });
-        Logger.info(Logs.info.jobCompleted.replace('{JOB}', 'CheckTwitter'));
+        Logger.trace(Logs.info.jobCompleted.replace('{JOB}', 'CheckTwitter'));
     }
 
     private async buildEmbed(spaceId) {

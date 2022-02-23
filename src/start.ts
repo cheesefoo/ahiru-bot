@@ -28,6 +28,8 @@ import {
 import { CustomClient } from './extensions';
 import { CheckInstagram, CheckTwitter } from './jobs';
 import { Job } from './jobs';
+import { CheckHolodex } from './jobs/check-holodex';
+import { Relay } from './models/holodex/relay';
 import { Reaction } from './reactions';
 import { JobService, Logger } from './services';
 import { AMSRTrigger } from './triggers/AMSRTrigger';
@@ -93,6 +95,7 @@ async function start(): Promise<void>
         // TODO: Add new jobs here
         new CheckInstagram(client),
         new CheckTwitter(client),
+        new CheckHolodex(client)
     ];
     const token = process.env.discord_token;
 
@@ -116,10 +119,11 @@ async function start(): Promise<void>
         process.exit();
     }
 
-    let webhookController = new WebhookEndpoint(client);
-    let api = new Api([webhookController]);
+    // let webhookController = new WebhookEndpoint(client);
+    // let api = new Api([webhookController]);
 
-    await api.start();
+
+    // await api.start();
     await bot.start();
 }
 
