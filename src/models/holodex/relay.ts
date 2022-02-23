@@ -40,7 +40,7 @@ export class Relay
             this.subscribedVideos.push(msg.id);
             ch =  this.client.channels.cache.get(this.broadcastCh) as TextChannel;
             await MessageUtils.send(ch, `Relaying holodex TLs for ${msg.id}`);
-            Logger.error(this.subscribedVideos.toString());
+
 
         });
         const retries: Record<string, number> = {};
