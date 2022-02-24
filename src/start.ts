@@ -15,6 +15,7 @@ import {
     OCRCommand,
     PuzzleCommand,
     SubtitleCommand,
+    RelayCommand,
 } from './commands';
 import {
     ButtonHandler,
@@ -29,7 +30,6 @@ import { CustomClient } from './extensions';
 import { CheckInstagram, CheckTwitter } from './jobs';
 import { Job } from './jobs';
 import { CheckHolodex } from './jobs/check-holodex';
-import { Relay } from './models/holodex/relay';
 import { Reaction } from './reactions';
 import { JobService, Logger } from './services';
 import { AMSRTrigger } from './triggers/AMSRTrigger';
@@ -61,6 +61,7 @@ async function start(): Promise<void>
         new OCRCommand(),
         new DeepLCommand(),
         // new PuzzleCommand(),
+        new RelayCommand(),
         new JishoCommand(),
         new SubtitleCommand(),
     ].sort((a, b) => (a.metadata.name > b.metadata.name ? 1 : -1));

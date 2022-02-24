@@ -1,13 +1,13 @@
 import { Client } from 'discord.js';
 import { HolodexApiClient } from 'holodex.js';
 import { createRequire } from 'node:module';
-import { stringify } from 'querystring';
 import { Relay } from '../models/holodex/relay';
+import { DatabaseUtils } from '../utils';
 import { Job } from './job';
+
 const require = createRequire(import.meta.url);
 
 let Config = require('../../config/config.json');
-import { Logger } from '../services';
 
 export class CheckHolodex implements Job
 {
@@ -17,26 +17,38 @@ export class CheckHolodex implements Job
     public log: boolean = Config.jobs.checkHolodex.log;
 
     private holoapi;
-    private relay;
+    public relay;
+    private lastCheck = true;
 
-    constructor(private client: Client) {
+    constructor(private client: Client)
+    {
 
         this.holoapi = new HolodexApiClient({
             apiKey: process.env.holodex_api,
         });
-        this.relay = new Relay(client)
+        this.relay = new Relay(client);
     }
 
     public async run(): Promise<void>
     {
-        await this.Check();
+        let shouldCheck = await DatabaseUtils.GetRelaySetting();
+        //gheto as fuk
+        if (shouldCheck == false && shouldCheck != this.lastCheck)
+        {
+            this.relay.tldex.off();
+        }
+        if (shouldCheck)
+        {
+            await this.Check();
+        }
+        this.lastCheck = shouldCheck;
     }
 
 
     private async Check()
     {
         const lives = await this.holoapi.getLiveVideos({
-            // channel_id: 'UChAnqc_AY5_I3Px5dig3X1Q',
+            // channel_id: 'UCgmPnx-EEeOrZSg5Tiw7ZRQ',
             channel_id: 'UCvzGlP9oQwU--Y0r9id_jnA',
             // org:'Hololive',
             max_upcoming_hours: 1,

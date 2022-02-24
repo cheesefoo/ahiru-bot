@@ -7,22 +7,22 @@ import { MessageUtils } from '../../utils';
 
 export class Relay
 {
-    private broadcastCh = '945888571619934240';
-    private tldex;
-    public subscribedVideos=[];
+    private broadcastCh = '722257568361087057';
+    public tldex;
+    public subscribedVideos = [];
 
-      constructor(private client: Client, )
-    { 
-        this.start( ).then(()=>Logger.info("relay created"));
+    constructor(private client: Client)
+    {
+        this.start().then(() => Logger.info('relay created'));
 
-        
+
     }
 
-    public async start( ):  Promise<void>
+    public async start(): Promise<void>
     {
-        let ch =  this.client.channels.cache.get(this.broadcastCh) as TextChannel;
+        let ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
 
-        
+
         this.tldex = io('wss://holodex.net', {
             path: '/api/socket.io/', transports: ['websocket'],
         });
@@ -37,10 +37,38 @@ export class Relay
         this.tldex.on('subscribeSuccess', async msg =>
         {
             Logger.info('subscribeSuccess ' + JSON.stringify(msg));
-            this.subscribedVideos.push(msg.id);
-            ch =  this.client.channels.cache.get(this.broadcastCh) as TextChannel;
+            let videoId = msg.id;
+            this.subscribedVideos.push(videoId);
+            ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
             await MessageUtils.send(ch, `Relaying holodex TLs for ${msg.id}`);
+            this.tldex.on(`${videoId}/en`, async msg =>
+            {
+                Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
 
+                if (msg.name)
+                {
+                    const cmt = {
+                        id: msg.channel_id ?? 'MChad-' + (msg.name as string),
+                        name: msg.name,
+                        body: msg.message.replace(/:http\S+( |$)/g, ':'),
+                        time: msg.timestamp,
+                        isMod: msg.is_moderator,
+                        isTl: msg.is_tl || msg.source === 'MChad',
+                        isV: msg.is_vtuber,
+                        isVerified: msg.is_verified,
+                    };
+                    if (cmt.isV || cmt.isTl)
+                    {
+                        let shorttime= cmt.time.toString().substring(0,10);
+                        await MessageUtils.send(ch, `<t:${shorttime}:t>\`${cmt.name}:${cmt.body}\``);
+                    }
+
+                } else if (msg.type === 'end')
+                {
+                    await MessageUtils.send(ch, 'おつヴぁる～ (Stream ended).');
+
+                }
+            });
 
         });
         const retries: Record<string, number> = {};
@@ -70,40 +98,15 @@ export class Relay
 
     public setupLive(live: Video): void
     {
-        let ch =  this.client.channels.cache.get(this.broadcastCh) as TextChannel;
-
+        if (this.subscribedVideos.includes(live.videoId))
+        {
+            return;
+        }
+        let ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
         Logger.info(`setting up ${live.status} ${live.videoId} ${live.title}`);
         // this.tldex.emit('subscribe', { video_id: live.videoId });
         this.tldex.emit('subscribe', { video_id: live.videoId, lang: 'en' });
 
 
-        this.tldex.on(`${live.videoId}/en`, async msg =>
-        {
-            Logger.info(`Received a message in ${live.videoId}: ${JSON.stringify(msg)}`);
-
-            if (msg.name)
-            {
-                const cmt = {
-                    id: msg.channel_id ?? 'MChad-' + (msg.name as string),
-                    name: msg.name,
-                    body: msg.message.replace(/:http\S+( |$)/g, ':'),
-                    time: msg.timestamp,
-                    isMod: msg.is_moderator,
-                    isOwner: msg.channel_id === live.channel.channelId,
-                    isTl: msg.is_tl || msg.source === 'MChad',
-                    isV: msg.is_vtuber,
-                    isVerified: msg.is_verified,
-                };
-                if (cmt.isV || cmt.isTl || cmt.isOwner)
-                {
-                    await MessageUtils.send(ch, `<t:${cmt.time}:t>${cmt.name}:${cmt.body}`);
-                }
-
-            } else if (msg.type === 'end')
-            {
-                await MessageUtils.send(ch, 'おつヴぁる～ (Stream ended).');
-
-            }
-        });
     }
 }
