@@ -3,7 +3,7 @@ import { Video } from 'holodex.js';
 import { io } from 'socket.io-client';
 import { Logger } from '../../services';
 
-import { MessageUtils } from '../../utils';
+import { DatabaseUtils, MessageUtils } from '../../utils';
 
 export class Relay
 {
@@ -44,6 +44,9 @@ export class Relay
             this.tldex.on(`${videoId}/en`, async msg =>
             {
                 Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
+                let shouldRelay = await DatabaseUtils.GetRelaySetting();
+                if(!shouldRelay)
+                    return;
 
                 if (msg.name)
                 {

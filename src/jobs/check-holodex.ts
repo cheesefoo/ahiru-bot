@@ -31,7 +31,7 @@ export class CheckHolodex implements Job
 
     public async run(): Promise<void>
     {
-        let shouldCheck = await DatabaseUtils.GetRelaySetting();
+/*        let shouldCheck = await DatabaseUtils.GetRelaySetting();
         //gheto as fuk
         if (shouldCheck == false && shouldCheck != this.lastCheck)
         {
@@ -41,7 +41,9 @@ export class CheckHolodex implements Job
         {
             await this.Check();
         }
-        this.lastCheck = shouldCheck;
+        this.lastCheck = shouldCheck;*/
+        await this.Check();
+
     }
 
 
