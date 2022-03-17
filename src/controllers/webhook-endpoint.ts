@@ -10,10 +10,12 @@ export class WebhookEndpoint implements Controller {
     public router: Router = router();
 
     constructor(private client: Client) {}
-    private broadcastCh = '923726316333850635';
+
+    // private broadcastCh = '945888571619934240';
+    //private broadcastCh = '945888571619934240'; // aaaaaa
     // private mem = '764841347273195580'
     // private broadcastCh = '825378176993722378';
-    // private  broadcastCh = '722257568361087057';
+    private  broadcastCh = '722257568361087057'; //stream-chat
 
     public register(): void {
         this.router.get('/', (req, res) => this.get(req, res));
@@ -25,13 +27,13 @@ export class WebhookEndpoint implements Controller {
     }
     private async post(req: Request, res: Response): Promise<void> {
         let body = req.body;
-        let time = body.timestampUsec.substring(0,10);
+
         let author = body.authorName;
-        let message = body.message[0].text;
+        let message = body.message;
         console.log(body);
         let ch: TextChannel = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
-        const emoji = this.client.emojis.cache.find(e => e.name === 'd_');
-        await MessageUtils.send(ch, `<t:${time}:T>${author}:${message}`);
+        // const emoji = this.client.emojis.cache.find(e => e.name === 'd_');
+        await MessageUtils.send(ch, `${author}:${message}`);
         res.status(204) // Responding is important
     }
     private adjustForTimezone(d:Date, offset:number):Date{

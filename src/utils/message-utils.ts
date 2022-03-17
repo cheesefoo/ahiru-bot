@@ -90,6 +90,8 @@ export class MessageUtils {
         return embedUrl;
     }
     public static async getUrl(msg: Message, args: string[]): Promise<string> | undefined {
+        //add delay cause discord/google is too slow/fast
+        await new Promise(r => setTimeout(r, 3000));
         let url = await MessageUtils.getEmbedUrl(msg);
         if (url === undefined && UrlUtils.isValidHttpUrl(args[2])) {
             url = args[2];
