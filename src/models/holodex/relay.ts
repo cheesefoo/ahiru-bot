@@ -63,7 +63,7 @@ export class Relay
                     if (cmt.isV || cmt.isTl)
                     {
                         let shorttime= cmt.time.toString().substring(0,10);
-                        await MessageUtils.send(ch, `<t:${shorttime}:t>\`${cmt.name}:${cmt.body}\``);
+                        await MessageUtils.send(ch, `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``);
                     }
 
                 } else if (msg.type === 'end')
