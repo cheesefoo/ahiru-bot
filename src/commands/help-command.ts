@@ -8,9 +8,7 @@ import { MessageUtils } from '../utils';
 import { InteractionUtils } from '../utils/index.js';
 import { Command, CommandDeferType } from './index.js';
 
-
-export class HelpCommand implements Command
-{
+export class HelpCommand implements Command {
     public metadata: ApplicationCommandData = {
         name: Lang.getCom('commands.help'),
         description: Lang.getRef('commandDescs.help', Lang.Default),
@@ -22,23 +20,19 @@ export class HelpCommand implements Command
     public requireUserPerms: PermissionString[] = [];
     public requirePerms = [];
 
-    public keyword(langCode: LangCode): string
-    {
+    public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.help', langCode);
     }
 
-    public async execute(intr: CommandInteraction, data: EventData): Promise<void>
-    {
+    public async execute(intr: CommandInteraction, data: EventData): Promise<void> {
         await InteractionUtils.send(intr, Lang.getEmbed('displayEmbeds.help', data.lang()));
     }
 
-    public regex(langCode: LangCode): RegExp
-    {
+    public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.help', langCode);
     }
 
-    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void>
-    {
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
         await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.help', data.lang()));
     }
 }

@@ -53,7 +53,7 @@ export class ReactionHandler implements EventHandler {
         let data = new EventData();
 
         // Execute the reaction
-        await reaction.execute(msgReaction, msg,reactor, data);
+        await reaction.execute(msgReaction, msg, reactor, data);
     }
 
     private findReaction(emoji: string): Reaction {

@@ -6,18 +6,15 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 
-export class ApiUtils
-{
-    public static async OCRRequest(
-        url: string,
-    ): Promise<string>
-    {
+export class ApiUtils {
+    public static async OCRRequest(url: string): Promise<string> {
         let googleApiKey: string = process.env.google_privatekey;
 
         googleApiKey = googleApiKey.replace(/\\n/g, '\n');
 
-
-        const options = { 'credentials': { 'client_email': process.env.google_email, 'private_key': googleApiKey } };
+        const options = {
+            credentials: { client_email: process.env.google_email, private_key: googleApiKey },
+        };
         const client = new ImageAnnotatorClient(options);
         const request = {
             image: {
@@ -38,9 +35,8 @@ export class ApiUtils
         };
 
         const [result] = await client.textDetection(request);
-        let hasError = result?.error?.message
-        if(hasError)
-        {
+        let hasError = result?.error?.message;
+        if (hasError) {
             throw hasError;
         }
         return result.fullTextAnnotation?.text;
@@ -49,13 +45,11 @@ export class ApiUtils
     public static async ParseTranslations(translations: {
         detected_source_language: string;
         text: string;
-    }): Promise<string>
-    {
+    }): Promise<string> {
         let srcLang = translations.detected_source_language;
         let text = translations.text;
         let tl = text;
-        if (ApiUtils.IsEnglish(srcLang))
-        {
+        if (ApiUtils.IsEnglish(srcLang)) {
             tl = await translate({
                 text: text,
                 source_lang: 'EN',
@@ -69,8 +63,7 @@ export class ApiUtils
         return tl;
     }
 
-    private static IsEnglish(lang: string): boolean
-    {
+    private static IsEnglish(lang: string): boolean {
         return lang == 'EN' || lang == 'EN-US' || lang == 'EN-GB';
     }
 }

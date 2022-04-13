@@ -30,7 +30,6 @@ export class PinReaction implements Reaction {
             return;
         }
 
-
         // Don't respond to reaction on client's message
         if (msg.author.id === msg.client.user.id) {
             return;

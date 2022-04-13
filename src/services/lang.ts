@@ -9,10 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export class Lang {
     public static Default = LangCode.EN_US;
 
-    private static linguini = new Linguini(
-        path.resolve(__dirname , '../../lang'),
-        'lang'
-    );
+    private static linguini = new Linguini(path.resolve(__dirname, '../../lang'), 'lang');
 
     public static getEmbed(
         location: string,
@@ -26,11 +23,10 @@ export class Lang {
     }
 
     public static getRegex(location: string, langCode: LangCode): RegExp {
-
         let r = this.linguini.get(location, langCode, TypeMappers.RegExp);
         let t = this.linguini.get(location, this.Default, TypeMappers.RegExp);
 
-        return (r ?? t);
+        return r ?? t;
     }
 
     public static getRef(

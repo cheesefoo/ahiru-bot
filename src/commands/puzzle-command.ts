@@ -1,8 +1,12 @@
-import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
+import {
+    ApplicationCommandData,
+    BaseCommandInteraction,
+    Message,
+    PermissionString,
+} from 'discord.js';
 import fetch from 'node-fetch';
 
 import FormData from 'form-data';
-import { parse } from 'node-html-parser';
 import { createRequire } from 'node:module';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
@@ -30,12 +34,11 @@ export class PuzzleCommand implements Command {
     requireClientPerms: PermissionString[] = [];
     requireUserPerms: PermissionString[] = [];
 
-    execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
-    {
+    execute(intr: BaseCommandInteraction, data: EventData): Promise<void> {
         return Promise.resolve(undefined);
     }
     public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
-        if (args.length == 2) {
+        /*    if (args.length == 2) {
             await MessageUtils.send(
                 msg.channel,
                 Lang.getEmbed('displayEmbeds.puzzleHelp', data.lang())
@@ -67,10 +70,10 @@ export class PuzzleCommand implements Command {
         } else {
             let reply = await this.getPuzzle(imgUrl, numOfPieces, isRotation);
             await MessageUtils.send(msg.channel, reply);
-        }
+        }*/
     }
 
-    private async getPuzzle(
+    /*    private async getPuzzle(
         imgUrl: string,
         numberOfPieces: Number,
         shouldRotate: boolean
@@ -107,5 +110,5 @@ export class PuzzleCommand implements Command {
         let reply = `Here is your ${numberOfPieces} piece puzzle. Remember to set it to multiplayer.\n${link}`;
 
         return reply;
-    }
+    }*/
 }

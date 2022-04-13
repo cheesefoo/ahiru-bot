@@ -1,4 +1,10 @@
-import { BaseCommandInteraction, CommandInteraction, GuildChannel, GuildMember, Permissions } from 'discord.js';
+import {
+    BaseCommandInteraction,
+    CommandInteraction,
+    GuildChannel,
+    GuildMember,
+    Permissions,
+} from 'discord.js';
 import { createRequire } from 'node:module';
 
 import { Command } from '../commands/index.js';

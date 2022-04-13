@@ -257,7 +257,7 @@
         "commandDescs": {
             "help": "displays this",
             "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
-            "ocr":"<img link or attachment>** - extract text from image",
+            "ocr": "<img link or attachment>** - extract text from image",
             "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",
             "jisho": "<term to search>** - search Jisho.org",
             "subtitle": "<caption text>** - clutter chat with a garbage meme",
@@ -267,7 +267,7 @@
         "commandDescs": {
             "help": "displays this",
             "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
-            "ocr":"<img link or attachment>** - extract text from image",
+            "ocr": "<img link or attachment>** - extract text from image",
             "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",
             "jisho": "<term to search>** - search Jisho.org",
             "subtitle": "<caption text>** - clutter chat with a garbage meme"

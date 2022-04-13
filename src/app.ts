@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import 'reflect-metadata';
 
 import { Api } from './api.js';
-import { GuildsController, RootController, ShardsController,WebhookEndpoint } from './controllers';
+import { GuildsController, RootController, ShardsController, WebhookEndpoint } from './controllers';
 import { Job, UpdateServerCountJob } from './jobs';
 import { Manager } from './manager.js';
 import { HttpService, JobService, Logger, MasterApiService } from './services';

@@ -1,4 +1,9 @@
-import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
+import {
+    ApplicationCommandData,
+    BaseCommandInteraction,
+    Message,
+    PermissionString,
+} from 'discord.js';
 
 import JishoAPI from 'unofficial-jisho-api';
 import { LangCode } from '../models/enums';
@@ -135,18 +140,14 @@ export class JishoCommand implements Command {
     }
 
     deferType: CommandDeferType;
-    metadata: ApplicationCommandData= {
+    metadata: ApplicationCommandData = {
         name: Lang.getCom('commands.jisho'),
         description: Lang.getRef('commandDescs.jisho', Lang.Default),
     };
     requireClientPerms: PermissionString[] = [];
     requireUserPerms: PermissionString[] = [];
 
-    execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
-    {
+    execute(intr: BaseCommandInteraction, data: EventData): Promise<void> {
         return Promise.resolve(undefined);
     }
-
-
-
 }

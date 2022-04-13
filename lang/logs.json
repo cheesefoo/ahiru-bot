@@ -39,7 +39,7 @@
         "guildLeave": "An error occurred while processing a guild leave.",
         "message": "An error occurred while processing a message.",
         "reaction": "An error occurred while processing a reaction.",
-   
+
         "database": "Database error. {DB}",
         "command": "An error occurred while processing a command interaction.",
         "button": "An error occurred while processing a button interaction.",

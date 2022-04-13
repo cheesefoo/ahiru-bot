@@ -24,77 +24,64 @@ let Debug = require('../../config/debug.json');
 
 let Logs = require('../../lang/logs.json');
 
-export class CommandHandler implements EventHandler
-{
+export class CommandHandler implements EventHandler {
     private rateLimiter = new RateLimiter(
         Config.rateLimiting.commands.amount,
-        Config.rateLimiting.commands.interval * 1000,
+        Config.rateLimiting.commands.interval * 1000
     );
 
     constructor(
         private prefix: string,
         private helpCommand: Command,
-        private commands: Command[],
-    )
-    {
-    }
+        private commands: Command[]
+    ) {}
 
-    public shouldHandle(msg: Message, args: string[]): boolean
-    {
-        if (args[0].startsWith(this.prefix + this.prefix))
-        {
+    public shouldHandle(msg: Message, args: string[]): boolean {
+        if (args[0].startsWith(this.prefix + this.prefix)) {
             return false;
         }
-        if (args[0].length > 0 && args[0][0] == this.prefix)
-        {
+        if (args[0].length > 0 && args[0][0] == this.prefix) {
             args.splice(1, 0, args[0].slice(1));
             args[0] = this.prefix;
         }
 
         return (
             [this.prefix, `<@${msg.client.user.id}>`, `<@!${msg.client.user.id}>`].includes(
-                args[0].toLowerCase(),
+                args[0].toLowerCase()
             ) && !msg.author.bot
         );
     }
 
-    public async process(intr: BaseCommandInteraction): Promise<void>
-    {
+    public async process(intr: BaseCommandInteraction): Promise<void> {
         // Don't respond to self, or other bots
-        if (intr.user.id === intr.client.user?.id || intr.user.bot)
-        {
+        if (intr.user.id === intr.client.user?.id || intr.user.bot) {
             return;
         }
         // Check if user is rate limited
         let limited = this.rateLimiter.take(intr.user.id);
-        if (limited)
-        {
+        if (limited) {
             return;
         }
 
         // Try to find the command the user wants
         let command = this.commands.find(command => command.metadata.name === intr.commandName);
-        if (!command)
-        {
+        if (!command) {
             Logger.error(
                 Logs.error.commandNotFound
                     .replaceAll('{INTERACTION_ID}', intr.id)
-                    .replaceAll('{COMMAND_NAME}', intr.commandName),
+                    .replaceAll('{COMMAND_NAME}', intr.commandName)
             );
             return;
         }
 
         // Defer interaction
         // NOTE: Anything after this point we should be responding to the interaction
-        switch (command.deferType)
-        {
-            case CommandDeferType.PUBLIC:
-            {
+        switch (command.deferType) {
+            case CommandDeferType.PUBLIC: {
                 await InteractionUtils.deferReply(intr, false);
                 break;
             }
-            case CommandDeferType.HIDDEN:
-            {
+            case CommandDeferType.HIDDEN: {
                 await InteractionUtils.deferReply(intr, true);
                 break;
             }
@@ -108,49 +95,44 @@ export class CommandHandler implements EventHandler
         // TODO: Get data from database
         let data = new EventData();
 
-        try
-        {
+        try {
             // Check if interaction passes command checks
             let passesChecks = await CommandUtils.runChecks(command, intr, data);
-            if (passesChecks)
-            {
+            if (passesChecks) {
                 // Execute the command
                 await command.execute(intr, data);
             }
-        } catch (error)
-        {
+        } catch (error) {
             await this.sendError(intr, data);
 
             // Log command error
             Logger.error(
                 intr.channel instanceof TextChannel ||
-                intr.channel instanceof NewsChannel ||
-                intr.channel instanceof ThreadChannel
+                    intr.channel instanceof NewsChannel ||
+                    intr.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                        .replaceAll('{INTERACTION_ID}', intr.id)
-                        .replaceAll('{COMMAND_NAME}', command.metadata.name)
-                        .replaceAll('{USER_TAG}', intr.user.tag)
-                        .replaceAll('{USER_ID}', intr.user.id)
-                        .replaceAll('{CHANNEL_NAME}', intr.channel.name)
-                        .replaceAll('{CHANNEL_ID}', intr.channel.id)
-                        .replaceAll('{GUILD_NAME}', intr.guild?.name)
-                        .replaceAll('{GUILD_ID}', intr.guild?.id)
+                          .replaceAll('{INTERACTION_ID}', intr.id)
+                          .replaceAll('{COMMAND_NAME}', command.metadata.name)
+                          .replaceAll('{USER_TAG}', intr.user.tag)
+                          .replaceAll('{USER_ID}', intr.user.id)
+                          .replaceAll('{CHANNEL_NAME}', intr.channel.name)
+                          .replaceAll('{CHANNEL_ID}', intr.channel.id)
+                          .replaceAll('{GUILD_NAME}', intr.guild?.name)
+                          .replaceAll('{GUILD_ID}', intr.guild?.id)
                     : Logs.error.commandOther
-                        .replaceAll('{INTERACTION_ID}', intr.id)
-                        .replaceAll('{COMMAND_NAME}', command.metadata.name)
-                        .replaceAll('{USER_TAG}', intr.user.tag)
-                        .replaceAll('{USER_ID}', intr.user.id),
-                error,
+                          .replaceAll('{INTERACTION_ID}', intr.id)
+                          .replaceAll('{COMMAND_NAME}', command.metadata.name)
+                          .replaceAll('{USER_TAG}', intr.user.tag)
+                          .replaceAll('{USER_ID}', intr.user.id),
+                error
             );
         }
     }
 
-    public async processMessage(msg: Message, args: string[]): Promise<void>
-    {
+    public async processMessage(msg: Message, args: string[]): Promise<void> {
         // Check if user is rate limited
         let limited = this.rateLimiter.take(msg.author.id);
-        if (limited)
-        {
+        if (limited) {
             return;
         }
 
@@ -158,11 +140,9 @@ export class CommandHandler implements EventHandler
         let data = new EventData();
 
         // Check if I have permission to send a message
-        if (!PermissionUtils.canSendEmbed(msg.channel))
-        {
+        if (!PermissionUtils.canSendEmbed(msg.channel)) {
             // No permission to send message
-            if (PermissionUtils.canSend(msg.channel))
-            {
+            if (PermissionUtils.canSend(msg.channel)) {
                 let message = Lang.getRef('messages.missingEmbedPerms', data.lang());
                 await MessageUtils.send(msg.channel, message);
             }
@@ -170,8 +150,7 @@ export class CommandHandler implements EventHandler
         }
 
         // If only a prefix, run the help command
-        if (args.length === 1)
-        {
+        if (args.length === 1) {
             await this.helpCommand.executeMessage(msg, args, data);
             return;
         }
@@ -180,93 +159,82 @@ export class CommandHandler implements EventHandler
         let command = this.find(args[1], data.lang());
 
         // If no command found, run the help command
-        if (!command)
-        {
+        if (!command) {
             await this.helpCommand.executeMessage(msg, args, data);
             return;
         }
 
-        if (command.requireDev && !Config.developers.includes(msg.author.id))
-        {
+        if (command.requireDev && !Config.developers.includes(msg.author.id)) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('validationEmbeds.devOnlyCommand', data.lang()),
+                Lang.getEmbed('validationEmbeds.devOnlyCommand', data.lang())
             );
             return;
         }
 
-        if (command.requireGuild && !msg.guild)
-        {
+        if (command.requireGuild && !msg.guild) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('validationEmbeds.serverOnlyCommand', data.lang()),
+                Lang.getEmbed('validationEmbeds.serverOnlyCommand', data.lang())
             );
             return;
         }
 
-        if (msg.member && !this.hasPermission(msg.member, command))
-        {
+        if (msg.member && !this.hasPermission(msg.member, command)) {
             await MessageUtils.send(
                 msg.channel,
-                Lang.getEmbed('validationEmbeds.permissionRequired', data.lang()),
+                Lang.getEmbed('validationEmbeds.permissionRequired', data.lang())
             );
             return;
         }
 
         // Execute the command
-        try
-        {
+        try {
             await command.executeMessage(msg, args, data);
-        } catch (error)
-        {
+        } catch (error) {
             // Try to notify sender of command error
-            try
-            {
+            try {
                 await MessageUtils.send(
                     msg.channel,
                     Lang.getEmbed('errorEmbeds.command', data.lang(), {
                         ERROR_CODE: msg.id,
-                    }),
+                    })
                 );
-            } catch
-            {
+            } catch {
                 // Ignore
             }
 
             // Log command error
             Logger.error(
                 msg.channel instanceof TextChannel ||
-                msg.channel instanceof NewsChannel ||
-                msg.channel instanceof ThreadChannel
+                    msg.channel instanceof NewsChannel ||
+                    msg.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                        .replaceAll('{MESSAGE_ID}', msg.id)
-                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replaceAll('{USER_TAG}', msg.author.tag)
-                        .replaceAll('{USER_ID}', msg.author.id)
-                        .replaceAll('{CHANNEL_NAME}', msg.channel.name)
-                        .replaceAll('{CHANNEL_ID}', msg.channel.id)
-                        .replaceAll('{GUILD_NAME}', msg.guild.name)
-                        .replaceAll('{GUILD_ID}', msg.guild.id)
+                          .replaceAll('{MESSAGE_ID}', msg.id)
+                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replaceAll('{USER_TAG}', msg.author.tag)
+                          .replaceAll('{USER_ID}', msg.author.id)
+                          .replaceAll('{CHANNEL_NAME}', msg.channel.name)
+                          .replaceAll('{CHANNEL_ID}', msg.channel.id)
+                          .replaceAll('{GUILD_NAME}', msg.guild.name)
+                          .replaceAll('{GUILD_ID}', msg.guild.id)
                     : Logs.error.commandOther
-                        .replaceAll('{MESSAGE_ID}', msg.id)
-                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                        .replaceAll('{USER_TAG}', msg.author.tag)
-                        .replaceAll('{USER_ID}', msg.author.id),
-                error,
+                          .replaceAll('{MESSAGE_ID}', msg.id)
+                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                          .replaceAll('{USER_TAG}', msg.author.tag)
+                          .replaceAll('{USER_ID}', msg.author.id),
+                error
             );
         }
     }
 
-    private find(input: string, langCode: LangCode): Command
-    {
+    private find(input: string, langCode: LangCode): Command {
         return this.commands.find(command => command.regex(langCode).test(input));
     }
 
-    private hasPermission(member: GuildMember, command: Command): boolean
-    {
+    private hasPermission(member: GuildMember, command: Command): boolean {
         // Debug option to bypass permission checks
-        if (Debug.skip.checkPerms)
-        {
+        if (Debug.skip.checkPerms) {
             return true;
         }
 
@@ -274,32 +242,27 @@ export class CommandHandler implements EventHandler
         if (
             member.permissions.has(Permissions.FLAGS.MANAGE_GUILD) ||
             Config.developers.includes(member.id)
-        )
-        {
+        ) {
             return true;
         }
 
         // Check if member has required permissions for command
-        if (!member.permissions.has(command.requireClientPerms))
-        {
+        if (!member.permissions.has(command.requireClientPerms)) {
             return false;
         }
 
         return true;
     }
 
-    private async sendError(intr: BaseCommandInteraction, data: EventData): Promise<void>
-    {
-        try
-        {
+    private async sendError(intr: BaseCommandInteraction, data: EventData): Promise<void> {
+        try {
             await InteractionUtils.send(
                 intr,
                 Lang.getEmbed('errorEmbeds.command', data.lang(), {
                     ERROR_CODE: intr.id,
-                }),
+                })
             );
-        } catch
-        {
+        } catch {
             // Ignore
         }
     }

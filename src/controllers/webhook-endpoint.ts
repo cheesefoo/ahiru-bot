@@ -25,19 +25,19 @@ export class WebhookEndpoint implements Controller {
     }
     private async post(req: Request, res: Response): Promise<void> {
         let body = req.body;
-        let time = body.timestampUsec.substring(0,10);
+        let time = body.timestampUsec.substring(0, 10);
         let author = body.authorName;
         let message = body.message[0].text;
         console.log(body);
         let ch: TextChannel = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
         const emoji = this.client.emojis.cache.find(e => e.name === 'd_');
         await MessageUtils.send(ch, `<t:${time}:T>${author}:${message}`);
-        res.status(204) // Responding is important
+        res.status(204); // Responding is important
     }
-    private adjustForTimezone(d:Date, offset:number):Date{
+    private adjustForTimezone(d: Date, offset: number): Date {
         const date = d.toISOString();
         const targetTime = new Date(date);
-         //time zone value from database
+        //time zone value from database
         //get the timezone offset from local time in minutes
         const tzDifference = offset * 60 + targetTime.getTimezoneOffset();
         //convert the offset to milliseconds, add to targetTime, and make a new Date

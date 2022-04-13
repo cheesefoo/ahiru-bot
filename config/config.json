@@ -65,7 +65,7 @@
         "checkTwitter": {
             "schedule": "0 */1 * * * *",
             "log": true
-        }        ,
+        },
         "checkHolodex": {
             "schedule": "0 */3 * * * *",
             "log": true
@@ -78,7 +78,8 @@
         "commands": {
             "amount": 10,
             "interval": 30
-        },       "buttons": {
+        },
+        "buttons": {
             "amount": 10,
             "interval": 30
         },
