@@ -56,16 +56,16 @@
     "jobs": {
         "updateServerCount": {
             "schedule": "0 */5 * * * *",
-            "log": true
+            "log": false
         },
         "checkInstagram": {
             "schedule": "0 */1 * * * *",
-            "log": true
+            "log": false
         },
         "checkTwitter": {
-            "schedule": "0 */1 * * * *",
-            "log": true
-        },
+            "schedule": "0 */3 * * * *",
+            "log": false
+        }        ,
         "checkHolodex": {
             "schedule": "0 */3 * * * *",
             "log": true
@@ -78,8 +78,7 @@
         "commands": {
             "amount": 10,
             "interval": 30
-        },
-        "buttons": {
+        },       "buttons": {
             "amount": 10,
             "interval": 30
         },

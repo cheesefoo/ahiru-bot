@@ -27,13 +27,13 @@ export class WebhookEndpoint implements Controller {
     }
     private async post(req: Request, res: Response): Promise<void> {
         let body = req.body;
-
+        let time = body.timestampUsec.substring(0,10);
         let author = body.authorName;
-        let message = body.message;
+        let message = body.message[0].text;
         console.log(body);
         let ch: TextChannel = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
         // const emoji = this.client.emojis.cache.find(e => e.name === 'd_');
-        await MessageUtils.send(ch, `${author}:${message}`);
+        await MessageUtils.send(ch, `<t:${time}:T> ${author}:${message}`);
         res.status(204) // Responding is important
     }
     private adjustForTimezone(d:Date, offset:number):Date{

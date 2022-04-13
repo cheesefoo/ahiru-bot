@@ -27,6 +27,7 @@ import {
     OCRCommand,
     PuzzleCommand,
     SubtitleCommand,
+    RelayCommand,
 } from './commands';
 import {
     ButtonHandler,
@@ -71,13 +72,14 @@ async function start(): Promise<void> {
     // Commands
 
     let commands: Command[] = [
-        // new HelpCommand(),
-        // // TODO: Add new commands here
-        // new OCRCommand(),
-        // new DeepLCommand(),
-        // // new PuzzleCommand(),
-        // new JishoCommand(),
-        // new SubtitleCommand(),
+        new HelpCommand(),
+        // TODO: Add new commands here
+        new OCRCommand(),
+        new DeepLCommand(),
+        // new PuzzleCommand(),
+        new RelayCommand(),
+        new JishoCommand(),
+        new SubtitleCommand(),
     ].sort((a, b) => (a.metadata.name > b.metadata.name ? 1 : -1));
 
     // Buttons

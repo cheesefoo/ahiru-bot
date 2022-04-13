@@ -20,7 +20,7 @@ let broadcastChannel = '722257568361087057';
 let broadcastChannel2 = '825378176993722378';
 let checks = [
     [subaId, broadcastChannel],
-    [uimamaId, broadcastChannel2],
+    // [uimamaId, broadcastChannel2],
 ];
 export class CheckTwitter implements Job {
     public name = 'Check Twitter';

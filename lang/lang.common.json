@@ -7,7 +7,7 @@
         "dev": "dev",
         "deepl": "deepl",
         "ocr": "ocr",
-
+        "relay": "relay",
         "jisho": "jisho",
         "subtitle": "subtitle",
         "help": "help",
