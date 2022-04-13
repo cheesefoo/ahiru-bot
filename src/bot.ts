@@ -5,7 +5,8 @@ import {
     Constants,
     Guild,
     Interaction,
-    Message, MessageContextMenuInteraction,
+    Message,
+    MessageContextMenuInteraction,
     MessageReaction,
     PartialMessageReaction,
     PartialUser,
@@ -162,7 +163,7 @@ export class Bot {
             } catch (error) {
                 Logger.error(Logs.error.button, error);
             }
-        }else if (intr instanceof MessageContextMenuInteraction){
+        } else if (intr instanceof MessageContextMenuInteraction) {
             try {
                 await this.commandHandler.process(intr);
             } catch (error) {

@@ -3,7 +3,6 @@ import { Message } from 'discord.js';
 import { CommandHandler, EventHandler, TriggerHandler } from '.';
 
 export class MessageHandler implements EventHandler {
-
     constructor(private commandHandler: CommandHandler, private triggerHandler: TriggerHandler) {}
 
     public async process(msg: Message): Promise<void> {

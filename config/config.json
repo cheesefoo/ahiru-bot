@@ -65,6 +65,10 @@
         "checkTwitter": {
             "schedule": "0 */1 * * * *",
             "log": true
+        },
+        "checkHolodex": {
+            "schedule": "0 */3 * * * *",
+            "log": true
         }
     },
     "reactions": {
@@ -74,7 +78,8 @@
         "commands": {
             "amount": 10,
             "interval": 30
-        },       "buttons": {
+        },
+        "buttons": {
             "amount": 10,
             "interval": 30
         },
@@ -88,6 +93,7 @@
         }
     },
     "logging": {
+        "pretty": true,
         "rateLimit": {
             "minTimeout": 30
         }

@@ -17,9 +17,7 @@ import { Command, CommandDeferType } from './command';
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 
-export class DeepLCommand implements Command
-{
-
+export class DeepLCommand implements Command {
     public metadata: MessageApplicationCommandData = {
         name: Lang.getCom('commands.deepl'),
         // description: Lang.getRef('commandDescs.deepl', Lang.Default),
@@ -36,129 +34,116 @@ export class DeepLCommand implements Command
     requireClientPerms: PermissionString[] = [];
     requireUserPerms: PermissionString[] = [];
 
-    public async execute(intr: MessageContextMenuInteraction, data: EventData): Promise<void>
-    {
+    public async execute(intr: MessageContextMenuInteraction, data: EventData): Promise<void> {
         // throw new Error('Method not implemented.');
 
         await intr.deferReply();
         let attachments = intr.targetMessage.attachments;
         let len: number = attachments instanceof Collection ? attachments.size : attachments.length;
-        if (len !== 1)
-        {
-            await InteractionUtils.send(intr,
+        if (len !== 1) {
+            await InteractionUtils.send(
+                intr,
                 Lang.getEmbed('displayEmbeds.OCRNoImage', data.lang()),
-                true,
+                true
             );
             return;
         }
-        let url = attachments instanceof Collection ? attachments.first().url : attachments.entries()[0].url;
-        try
-        {
+        let url =
+            attachments instanceof Collection
+                ? attachments.first().url
+                : attachments.entries()[0].url;
+        try {
             let text = await ApiUtils.OCRRequest(url);
-            if (text == undefined)
-            {
-                await InteractionUtils.send(intr,
+            if (text == undefined) {
+                await InteractionUtils.send(
+                    intr,
                     Lang.getEmbed('displayEmbeds.OCRNoTextDetected', data.lang()),
-                    true,
+                    true
                 );
                 return;
             }
             let tl = await this.GetTranslation(text);
-            if (tl != undefined)
-            {
+            if (tl != undefined) {
                 await InteractionUtils.send(intr, tl, false);
                 return;
             }
-        } catch (errMsg)
-        {
+        } catch (errMsg) {
             console.log(errMsg);
-            if (errMsg.startsWith('We can not access the URL currently)'))
-            {
-                await InteractionUtils.send(intr,
+            if (errMsg.startsWith('We can not access the URL currently)')) {
+                await InteractionUtils.send(
+                    intr,
                     Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang()),
-                    true,
+                    true
                 );
                 return;
-            } else
-            {
-                await InteractionUtils.send(intr,
+            } else {
+                await InteractionUtils.send(
+                    intr,
                     Lang.getEmbed('displayEmbeds.OCRGenericError', data.lang(), {
-                            ERROR: errMsg,
-                        },
-                    ), true,
+                        ERROR: errMsg,
+                    }),
+                    true
                 );
                 return;
             }
         }
     }
 
-    public keyword(langCode: LangCode): string
-    {
+    public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.deepl', langCode);
     }
 
-    public regex(langCode: LangCode): RegExp
-    {
+    public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.deepl', langCode);
     }
 
-    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void>
-    {
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
         let url = await MessageUtils.getUrl(msg, args);
 
         let text;
-        if (url == undefined && args.length === 2)
-        {
-            await MessageUtils.send(msg.channel, Lang.getEmbed('displayEmbeds.deepLHelp', data.lang()));
+        if (url == undefined && args.length === 2) {
+            await MessageUtils.send(
+                msg.channel,
+                Lang.getEmbed('displayEmbeds.deepLHelp', data.lang())
+            );
             return;
         }
-        if (url !== undefined)
-        {
-            try
-            {
+        if (url !== undefined) {
+            try {
                 text = await ApiUtils.OCRRequest(url);
-
-            } catch (errMsg)
-            {
+            } catch (errMsg) {
                 console.log(errMsg);
-                if (errMsg.startsWith('We can not access the URL currently)'))
-                {
+                if (errMsg.startsWith('We can not access the URL currently)')) {
                     await MessageUtils.send(
                         msg.channel,
-                        Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang()),
+                        Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang())
                     );
                     return;
-                } else
-                {
+                } else {
                     await MessageUtils.send(
                         msg.channel,
                         Lang.getEmbed('displayEmbeds.OCRGenericError', data.lang(), {
                             ERROR: errMsg,
-                        }),
+                        })
                     );
                     return;
                 }
             }
-        } else
-        {
-            text = args.slice(2).reduce((prev, cur, _index, _array) =>
-            {
+        } else {
+            text = args.slice(2).reduce((prev, cur, _index, _array) => {
                 return prev + ' ' + cur;
             });
         }
 
         const emoji = msg.client.emojis.cache.find(e => e.name === 'deepl');
         let tl = await this.GetTranslation(text);
-        if (tl != undefined)
-        {
+        if (tl != undefined) {
             tl = `${emoji}:${tl}`;
         }
         await MessageUtils.send(msg.channel, tl);
     }
 
-    private async GetTranslation(text: string): Promise<string>
-    {
-
+    private async GetTranslation(text: string): Promise<string> {
         let resp = await translate({
             text: text,
             target_lang: 'EN',

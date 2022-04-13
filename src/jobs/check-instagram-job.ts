@@ -41,7 +41,7 @@ export class CheckInstagram implements Job {
                     'shortcode'
                 ];
             if (await DatabaseUtils.CheckIfExists('INSTAGRAM', shortcode)) {
-                Logger.info(Logs.info.instagram.replace('{SC}', shortcode));
+                Logger.trace(Logs.info.instagram.replace('{SC}', shortcode));
             } else {
                 await DatabaseUtils.Insert(
                     'INSTAGRAM',
@@ -58,7 +58,7 @@ export class CheckInstagram implements Job {
             Logger.error(Logs.error.job.replace('{JOB}', 'CheckInstagram'), error);
         }
 
-        Logger.info(Logs.info.jobCompleted.replace('{JOB}', 'CheckInstagram'));
+        Logger.trace(Logs.info.jobCompleted.replace('{JOB}', 'CheckInstagram'));
     }
 
     public async buildEmbed(json) {

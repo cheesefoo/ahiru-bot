@@ -4,8 +4,10 @@ import {
     CommandInteraction,
     DiscordAPIError,
     Message,
-    MessageComponentInteraction, MessageContextMenuInteraction,
-    MessageEmbed, MessageInteraction,
+    MessageComponentInteraction,
+    MessageContextMenuInteraction,
+    MessageEmbed,
+    MessageInteraction,
     MessageOptions,
 } from 'discord.js';
 

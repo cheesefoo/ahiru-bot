@@ -29,6 +29,10 @@ let logger = pino(
 export class Logger {
     private static shardId: number;
 
+    public static trace(message: string): void {
+        logger.trace(message);
+    }
+
     public static info(message: string): void {
         logger.info(message);
     }

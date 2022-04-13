@@ -15,19 +15,19 @@ export class JobService {
             schedule.scheduleJob(job.schedule, async () => {
                 try {
                     if (job.log) {
-                        Logger.info(Logs.info.jobRun.replaceAll('{JOB}', job.name));
+                        Logger.trace(Logs.info.jobRun.replaceAll('{JOB}', job.name));
                     }
 
                     await job.run();
 
                     if (job.log) {
-                        Logger.info(Logs.info.jobCompleted.replaceAll('{JOB}', job.name));
+                        Logger.trace(Logs.info.jobCompleted.replaceAll('{JOB}', job.name));
                     }
                 } catch (error) {
                     Logger.error(Logs.error.job.replaceAll('{JOB}', job.name), error);
                 }
             });
-            Logger.info(
+            Logger.trace(
                 Logs.info.jobScheduled
                     .replaceAll('{JOB}', job.name)
                     .replaceAll('{SCHEDULE}', job.schedule)

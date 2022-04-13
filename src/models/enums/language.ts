@@ -1,7 +1,7 @@
 import { Lang } from '../../services/index.js';
 
 export enum LangCode {
-    EN_US = 'en-US'
+    EN_US = 'en-US',
 }
 
 export class Language {

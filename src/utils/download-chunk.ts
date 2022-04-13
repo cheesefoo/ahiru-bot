@@ -4,7 +4,6 @@ import fs, { mkdir, createWriteStream } from 'fs';
 import { open, readdir } from 'fs/promises';
 import { URL, URLSearchParams, parse } from 'url';
 import { pipeline } from 'stream/promises';
-import { StaticPool } from 'node-worker-threads-pool';
 import os from 'os';
 
 // Access the workerData by requiring it.

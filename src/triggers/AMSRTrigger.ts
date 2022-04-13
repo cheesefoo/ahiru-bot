@@ -3,16 +3,12 @@ import { EventData } from '../models/internal-models';
 import { MessageUtils, PermissionUtils } from '../utils';
 import { Trigger } from './trigger';
 
-export class AMSRTrigger implements Trigger
-{
-
+export class AMSRTrigger implements Trigger {
     public requireGuild = true;
 
-    public triggered(msg: Message): boolean
-    {
+    public triggered(msg: Message): boolean {
         // Check prerequisite permissions needed for execute
-        if (!(PermissionUtils.canReact(msg.channel) || PermissionUtils.canSend(msg.channel)))
-        {
+        if (!(PermissionUtils.canReact(msg.channel) || PermissionUtils.canSend(msg.channel))) {
             return false;
         }
 
@@ -20,16 +16,13 @@ export class AMSRTrigger implements Trigger
         return input.match(/amsr/i) !== null;
     }
 
-    public async execute(msg: Message, data: EventData): Promise<void>
-    {
-        if (PermissionUtils.canReact(msg.channel))
-        {
+    public async execute(msg: Message, data: EventData): Promise<void> {
+        if (PermissionUtils.canReact(msg.channel)) {
             // @ts-ignore
-            MessageUtils.react(msg,'🅰️').
-            then(()=>MessageUtils.react(msg,'🇸')).
-            then(()=>MessageUtils.react(msg,"Ⓜ")).
-            then(()=>MessageUtils.react(msg,"🇷"))
-            ;
+            MessageUtils.react(msg, '🅰️')
+                .then(() => MessageUtils.react(msg, '🇸'))
+                .then(() => MessageUtils.react(msg, 'Ⓜ'))
+                .then(() => MessageUtils.react(msg, '🇷'));
         }
     }
 }
