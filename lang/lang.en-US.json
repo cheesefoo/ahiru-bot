@@ -10,6 +10,7 @@
                         "value": [
                             "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
                             "**{{REF:bot.prefix}}{{REF:commands.relay}} <on || off>** enable or disable holodex tl relay",
+                            "**{{REF:bot.prefix}}{{REF:commands.relay}} <add> <youtube id>** relay individual stream",
                             "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
                             "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
                             "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org",
