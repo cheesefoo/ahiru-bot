@@ -259,7 +259,8 @@
 
         "commandDescs": {
             "help": "displays this",
-            "relay": "<on || off> enable or disable holodex tl relay",
+            "relay": "<on || off> enable or disable holodex tl relay \n<add> <youtube ID> sub to holodex TL for a stream",
+
             "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
             "ocr":"<img link or attachment>** - extract text from image",
             "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",

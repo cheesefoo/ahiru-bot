@@ -1,15 +1,10 @@
-import {
-    ApplicationCommandData,
-    BaseCommandInteraction,
-    CommandInteraction,
-    Message,
-    PermissionString,
-} from 'discord.js';
+import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
+import { HolodexApiClient } from 'holodex.js';
 import { createRequire } from 'node:module';
 import { LangCode } from '../models/enums';
 import { EventData } from '../models/internal-models';
 import { Lang } from '../services';
-import { DatabaseUtils, InteractionUtils, MessageUtils } from '../utils';
+import { DatabaseUtils, MessageUtils } from '../utils';
 import { Command, CommandDeferType } from './command';
 
 const require = createRequire(import.meta.url);
@@ -23,6 +18,14 @@ export class RelayCommand implements Command
     public requireDev = false;
     public requireGuild = false;
     public requirePerms = ['KICK_MEMBERS'];
+    private relayService;
+    private holodexClient :HolodexApiClient;
+
+    constructor(holodexClient, relayService)
+    {
+        this.holodexClient = holodexClient;
+        this.relayService = relayService;
+    }
 
     public keyword(langCode: LangCode): string
     {
@@ -35,15 +38,15 @@ export class RelayCommand implements Command
     }
 
     deferType: CommandDeferType;
-    metadata: ApplicationCommandData         ={
+    metadata: ApplicationCommandData = {
         name: Lang.getCom('commands.relay'),
         description: Lang.getRef('commandDescs.relay', Lang.Default),
-         options: [{
-                    name: 'text',
-                    description: 'ur subtitle',
-                    type: 3,
-                    required: true,
-                }],
+        options: [{
+            name: 'text',
+            description: 'ur subtitle',
+            type: 3,
+            required: true,
+        }],
     };
     requireClientPerms: PermissionString[] = [];
     requireUserPerms: PermissionString[] = [];
@@ -61,19 +64,33 @@ export class RelayCommand implements Command
             return;
         }
 
+        let arg2 = args[2];
+        if (arg2 === 'add')
+        {
+            let videoId = args[3];
+            let holodexResp = await this.holodexClient.getLiveVideos({id:videoId,
 
-        let setting = args[2];
-        if (setting === 'on')
+            });
+            if(holodexResp.length!=1){
+                MessageUtils.send(msg.channel,`couldn't find \`${videoId}\` on holodex :(`);
+                return;
+            }
+            this.relayService.setupLive(holodexResp[0]);
+            MessageUtils.send(msg.channel,`yes master...`);
+
+        }
+
+        if (arg2 === 'on')
         {
             await DatabaseUtils.SetRelaySetting(true);
-        } else if (setting === 'off')
+        } else if (arg2 === 'off')
         {
             await DatabaseUtils.SetRelaySetting(false);
         } else
         {
             return;
         }
-        await MessageUtils.send(msg.channel, `relay ${setting}`);
+        await MessageUtils.send(msg.channel, `relay ${arg2}`);
     }
 
 

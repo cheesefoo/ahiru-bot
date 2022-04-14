@@ -1,9 +1,9 @@
 import { Client, TextChannel } from 'discord.js';
 import { Video } from 'holodex.js';
 import { io } from 'socket.io-client';
-import { Logger } from '../../services';
 
-import { DatabaseUtils, MessageUtils } from '../../utils';
+import { DatabaseUtils, MessageUtils } from '../utils';
+import { Logger } from './logger';
 
 export class Relay
 {
@@ -14,8 +14,6 @@ export class Relay
     constructor(private client: Client)
     {
         this.start().then(() => Logger.info('relay created'));
-
-
     }
 
     public async start(): Promise<void>
@@ -45,7 +43,7 @@ export class Relay
             {
                 Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
                 let shouldRelay = await DatabaseUtils.GetRelaySetting();
-                if(!shouldRelay)
+                if (!shouldRelay)
                     return;
 
                 if (msg.name)
@@ -62,7 +60,7 @@ export class Relay
                     };
                     if (cmt.isV || cmt.isTl)
                     {
-                        let shorttime= cmt.time.toString().substring(0,10);
+                        let shorttime = cmt.time.toString().substring(0, 10);
                         await MessageUtils.send(ch, `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``);
                     }
 
@@ -105,9 +103,7 @@ export class Relay
         {
             return;
         }
-        let ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
         Logger.info(`setting up ${live.status} ${live.videoId} ${live.title}`);
-        // this.tldex.emit('subscribe', { video_id: live.videoId });
         this.tldex.emit('subscribe', { video_id: live.videoId, lang: 'en' });
 
 

@@ -1,11 +1,18 @@
 import { ActivityType, Client, ClientOptions, Presence } from 'discord.js';
+import { RelaySetting } from '../models/discord/servers';
 
-export class CustomClient extends Client {
-    constructor(clientOptions: ClientOptions) {
+export class CustomClient extends Client
+{
+    public relaySettings:RelaySetting[];
+
+    constructor(clientOptions: ClientOptions, relaySettings?: RelaySetting[])
+    {
         super(clientOptions);
+        this.relaySettings = relaySettings;
     }
 
-    public setPresence(type: ActivityType, name: string, url: string): Presence {
+    public setPresence(type: ActivityType, name: string, url: string): Presence
+    {
         return this.user?.setPresence({
             activities: [
                 {
@@ -18,4 +25,5 @@ export class CustomClient extends Client {
             ],
         });
     }
+
 }
