@@ -25,20 +25,7 @@ export class CheckHolodex implements Job
         this.relayService = relayService;
     }
 
-    public isNewOrChanged(vid: Video): boolean
-    {
 
-        if (!this.checkedVideos.some(v => v.videoId === vid.videoId))
-        {
-            this.checkedVideos.push(vid);
-            return true;
-        }
-
-
-        return this.checkedVideos.some(v => vid.videoId == v.videoId && vid.status == v.status);
-
-
-    }
 
 
     public async run(): Promise<void>
@@ -56,7 +43,7 @@ export class CheckHolodex implements Job
         {
             const videoId = live.videoId;
             if (!videoId) continue;
-            if (this.isNewOrChanged(live))
+
 
 
                 if (!this.relayService.subscribedVideos.includes(videoId))
