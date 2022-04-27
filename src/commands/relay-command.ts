@@ -76,7 +76,12 @@ export class RelayCommand implements Command
                 return;
             }
             this.relayService.setupLive(holodexResp[0]);
-            MessageUtils.send(msg.channel,`yes master...`);
+            let reply = `yes master...`
+            if(msg.author.id == '614280577687748610' )
+            {
+                reply = '...はい、お兄ちゃん'
+            }
+            MessageUtils.send(msg.channel,reply);
 
         }
 
