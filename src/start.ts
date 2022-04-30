@@ -44,7 +44,7 @@ import {
     TriggerHandler,
 } from './events';
 import { CustomClient } from './extensions';
-import { Job } from './jobs';
+import { CheckInstagram, CheckTwitter, Job } from './jobs';
 import { CheckHolodex } from './jobs/check-holodex';
 import { Reaction } from './reactions';
 import { JobService, Logger } from './services';
@@ -145,8 +145,8 @@ async function start(): Promise<void>
     // Jobs
     let jobs: Job[] = [
         // TODO: Add new jobs here
-        // new CheckInstagram(client),
-        // new CheckTwitter(client),
+        new CheckInstagram(client),
+        new CheckTwitter(client),
         new CheckHolodex(client,holodexClient,relayService),
     ];
     const token = process.env.discord_token;
