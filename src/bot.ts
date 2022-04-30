@@ -49,6 +49,14 @@ export class Bot {
     public async start(): Promise<void> {
         this.registerListeners();
         await this.login(this.token);
+        this.client.user.setPresence({
+            status: 'online',
+            activities: [{
+                name: 'Subaru',
+                type: 'WATCHING',
+                url: 'https://www.youtube.com/channel/UCvzGlP9oQwU--Y0r9id_jnA/live'
+            }]
+        })
     }
 
     private registerListeners(): void {
